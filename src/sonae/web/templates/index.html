@@ -45,11 +45,27 @@
   .ribbon.show{display:flex}
 
   /* ---------- status band ---------- */
-  .band{display:grid;grid-template-columns:290px 1fr auto;gap:14px 18px;align-items:stretch;padding:12px 24px 16px;border-bottom:1px solid var(--line);background:var(--bg2)}
-  .statusline{grid-column:1/-1;display:flex;align-items:baseline;gap:14px;padding:2px 2px 0;flex-wrap:wrap}
+  .band{padding:12px 24px;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .statusrow{display:flex;align-items:center;gap:16px}
+  .lvlbadge{flex:none;width:56px;height:56px;border-radius:14px;display:grid;place-items:center;
+            font-family:var(--mono);font-size:20px;font-weight:700;border:1.5px solid var(--line2);
+            background:var(--panel);color:var(--cyan);position:relative}
+  .lvlbadge.c0{border-color:var(--cyan-deep);color:var(--cyan)}
+  .lvlbadge.c1{color:var(--l1)} .lvlbadge.c2{color:var(--l2);border-color:#6b6600}
+  .lvlbadge.c3{color:var(--l3);border-color:#8a1600;background:linear-gradient(160deg,#2a0b04,#160503)}
+  .lvlbadge.c4{color:#e07fe0;border-color:#5c0f5c;background:linear-gradient(160deg,#250425,#12021a)}
+  .lvlbadge.c5{color:#ff5a5a;border-color:#ff5a5a;background:#000}
+  .lvlbadge.pulse::after{content:"";position:absolute;inset:-4px;border-radius:16px;border:1.5px solid currentColor;opacity:0;animation:ring 1.6s infinite}
+  .statusline{min-width:0;display:flex;flex-direction:column;gap:3px}
   .statusline .big{font-size:17px;font-weight:700;letter-spacing:.01em}
   .statusline .big .ja{color:var(--dim);font-weight:500;margin-left:10px;font-size:13px}
-  .statusline .meta{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .statusline .meta{font-family:var(--mono);font-size:10.5px;color:var(--faint)}
+  .bandactions{margin-left:auto;display:flex;align-items:center;gap:12px;flex:none}
+  .quietline{color:var(--faint);font-size:12px;font-style:italic;padding:14px;text-align:center;line-height:1.6}
+  .cardtoggle{cursor:pointer;user-select:none}
+  .cardtoggle .lastline{font-size:10.5px;color:var(--faint);font-family:var(--mono);margin-left:10px;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:230px}
+  .infoBtn{background:none;border:0;color:var(--faint);cursor:pointer;font-size:11px;padding:0}
   .statusline.s-calm .big{color:var(--green)}
   .statusline.s-prep .big{color:var(--l2)}
   .statusline.s-act .big{color:#ff8f83}
@@ -86,41 +102,13 @@
   .feedbar{display:flex;gap:8px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line)}
   .fchip{border:1px solid var(--line);background:none;color:var(--dim);font-size:10px;border-radius:99px;padding:3px 10px;cursor:pointer}
   .fchip.on{border-color:var(--cyan);color:var(--cyan)}
-  .plate{border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:2px;
-         border:1px solid var(--line2);background:var(--panel);position:relative;overflow:hidden}
-  .plate .lvl{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1}
-  .plate .name{font-size:15px;font-weight:700;margin-top:4px}
-  .plate .en{font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
-  .plate.c0{border-color:var(--cyan-deep)} .plate.c0 .lvl{color:var(--cyan)}
-  .plate.c1 .lvl{color:var(--l1)} .plate.c2 .lvl{color:var(--l2)}
-  .plate.c3{border-color:#8a1600;background:linear-gradient(160deg,#2a0b04,#160503)} .plate.c3 .lvl{color:var(--l3)}
-  .plate.c4{border-color:#5c0f5c;background:linear-gradient(160deg,#250425,#12021a)} .plate.c4 .lvl{color:#e07fe0}
-  .plate.c5{border-color:#ff5a5a;background:#000} .plate.c5 .lvl{color:#ff5a5a}
-  .plate.pulse::after{content:"";position:absolute;inset:0;border-radius:14px;border:1px solid currentColor;opacity:0;animation:ring 1.6s infinite}
   @keyframes ring{0%{opacity:.55;transform:scale(.985)}100%{opacity:0;transform:scale(1.03)}}
-
-  .ladder{display:flex;gap:8px;align-items:stretch}
-  .rung{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--panel);opacity:.55;transition:.3s}
-  .rung .no{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--faint)}
-  .rung .ja{font-size:12px;font-weight:600;margin-top:2px}
-  .rung .en{font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
-  .rung.on{opacity:1;border-color:var(--line2)}
-  .rung.on.k1{box-shadow:inset 0 -3px 0 var(--l1)} .rung.on.k2{box-shadow:inset 0 -3px 0 var(--l2)}
-  .rung.on.k3{box-shadow:inset 0 -3px 0 var(--l3)} .rung.on.k4{box-shadow:inset 0 -3px 0 var(--l4)}
-  .rung.on.k5{box-shadow:inset 0 -3px 0 #ff5a5a}
-  .rung.now{outline:1px solid var(--line2);background:var(--panel2)}
-
-  .deck{display:flex;flex-direction:column;gap:10px;justify-content:center;min-width:330px}
-  .clockrow{display:flex;align-items:baseline;gap:12px}
-  .simclock{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--amber);letter-spacing:.02em}
-  .simclock.calm{color:var(--dim);font-size:16px}
-  .next{font-size:11px;color:var(--dim);max-width:330px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .controls{display:flex;gap:8px}
+  .simclock{font-family:var(--mono);font-size:16px;font-weight:700;color:var(--amber);letter-spacing:.02em}
+  .next{font-size:11px;color:var(--dim);max-width:340px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel2);
        color:var(--text);font-family:var(--sans);font-size:12px;font-weight:600;border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s}
   .btn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
   .btn:disabled{opacity:.35;cursor:default}
-  .btn .k{font-family:var(--mono);font-size:10px;color:var(--faint);border:1px solid var(--line2);border-radius:5px;padding:1px 5px}
   .btn.primary{background:linear-gradient(135deg,var(--cyan),#63dcff);color:#052330;border:0}
   .btn.primary:hover:not(:disabled){filter:brightness(1.1);color:#052330}
   .busy{display:none;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--cyan)}
@@ -131,7 +119,8 @@
   /* ---------- layout ---------- */
   main{display:grid;grid-template-columns:minmax(430px,1.15fr) minmax(400px,1fr) minmax(360px,.95fr);gap:16px;padding:16px 24px;align-items:start}
   @media (max-width:1250px){main{grid-template-columns:1fr 1fr}}
-  @media (max-width:950px){main{grid-template-columns:1fr}.band{grid-template-columns:1fr}.deck{min-width:0}
+  @media (max-width:950px){main{grid-template-columns:1fr}
+    .statusrow{flex-wrap:wrap}.bandactions{margin-left:0;width:100%;flex-wrap:wrap}
     .statusline .meta{margin-left:0;width:100%}.famstrip{flex-wrap:nowrap}}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
   .card > .hd{display:flex;align-items:baseline;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
@@ -303,27 +292,13 @@
 <div class="ribbon" id="ribbon">⏮ HISTORICAL REPLAY — reconstructed from official post-event records · タイムスタンプは公式記録どおり</div>
 
 <div class="band">
-  <div class="statusline s-idle" id="statusline">
-    <span class="big" id="statusBig">…</span>
-    <span class="meta" id="statusMeta"></span>
-  </div>
-  <div class="plate c0" id="plate">
-    <div class="lvl" id="plateLvl">—</div>
-    <div class="name" id="plateName">Standing by</div>
-    <div class="en" id="plateEn">NO ACTIVE ALERT</div>
-  </div>
-  <div style="display:flex;flex-direction:column;gap:10px;justify-content:center">
-    <div class="ladder" id="ladder"></div>
-    <div class="next" id="next"></div>
-  </div>
-  <div class="deck">
-    <div class="clockrow"><span class="simclock calm" id="simClock">— live time —</span>
-      <span class="busy" id="busy"><span class="spin"></span><span id="busyLabel">agents working</span></span></div>
-    <div class="controls">
-      <button class="btn" id="btnOnboard"><span class="k">1</span> Protect this home</button>
-      <button class="btn" id="btnLoad"><span class="k">2</span> Load Hagibis replay</button>
-      <button class="btn primary" id="btnStep"><span class="k">3</span> Advance ▸</button>
+  <div class="statusrow">
+    <div class="lvlbadge c0" id="lvlBadge">◎</div>
+    <div class="statusline s-idle" id="statusline">
+      <span class="big" id="statusBig">…</span>
+      <span class="meta" id="statusMeta"></span>
     </div>
+    <div class="bandactions" id="bandActions"></div>
   </div>
 </div>
 
@@ -382,17 +357,22 @@
       <div class="bd"><div class="phones" id="phones"></div></div>
     </div>
     <div class="card" id="circleCard" style="display:none">
-      <div class="hd"><span class="t">NEIGHBORHOOD</span><span class="ja">自主防災会</span>
-        <span class="right" id="circleName"></span></div>
-      <div class="bd" id="circleBody"></div>
+      <div class="hd cardtoggle" onclick="circleToggle()"><span class="t">NEIGHBORHOOD</span><span class="ja">自主防災会</span>
+        <span class="lastline" id="circleMini"></span>
+        <span class="right" id="circleCaret">▸</span></div>
+      <div class="bd" id="circleBody" style="display:none"></div>
     </div>
     <div class="card">
-      <div class="hd"><span class="t">AGENT ACTIVITY</span><span class="ja">フライトレコーダー</span></div>
-      <div class="feedbar">
-        <button class="fchip on" id="fDecisions">decisions & dispatch</button>
-        <button class="fchip" id="fEngine" onclick="toggleEngine()">⚙ engine detail (tool calls)</button>
+      <div class="hd cardtoggle" onclick="feedToggle()"><span class="t">AGENT ACTIVITY</span><span class="ja">フライトレコーダー</span>
+        <span class="lastline" id="feedMini"></span>
+        <span class="right" id="feedCaret">▸</span></div>
+      <div id="feedWrap" style="display:none">
+        <div class="feedbar">
+          <button class="fchip on">decisions & dispatch</button>
+          <button class="fchip" id="fEngine" onclick="toggleEngine();event.stopPropagation()">⚙ engine detail (tool calls)</button>
+        </div>
+        <div class="feed" id="feed"><div class="empty">—</div></div>
       </div>
-      <div class="feed" id="feed"><div class="empty">—</div></div>
     </div>
   </section>
 </main>
@@ -421,9 +401,8 @@
 </div>
 
 <footer id="disclaimer">
-  Sonae relays and organizes official information (JMA · MLIT/GSI · municipalities) bound to a family-approved plan; it never
-  invents evacuation judgments. Municipal instructions always take precedence. Shelter data can lag municipal updates — confirm locally.
-  Basemap © 国土地理院 (GSI tiles) · flood layer: ハザードマップポータルサイト.
+  Sonae relays official information (JMA · GSI · municipalities) bound to a family-approved plan — it never invents
+  evacuation judgments, and municipal instructions always take precedence. Basemap © 国土地理院.
 </footer>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -506,8 +485,41 @@ function drawShelters(profile, plan){
   }
 }
 
+function loadReplay(){ return post("/api/replay/load", {household:HOUSEHOLD}); }
+function stepReplay(){ return post("/api/replay/step", {household:HOUSEHOLD}); }
+
+function renderBandActions(s, level){
+  const el = $("bandActions");
+  const r = s.replay || {};
+  let html = "";
+  if(s.busy){
+    html += `<span class="busy show"><span class="spin"></span>${esc(s.busy)} · agents working</span>`;
+  }
+  if(!s.household){
+    el.innerHTML = html; return;
+  }
+  if(s.plan && !s.plan.family_approved && !s.busy){
+    html += `<button class="approveBtn" style="margin-top:0" onclick="approvePlan()">✍ Approve — authorize Sonae</button>`;
+  } else if(r.loaded && !r.exhausted){
+    if(r.now) html += `<span class="simclock" style="font-size:18px">${esc(r.now.slice(5,10).replace("-","/") + " " + r.now.slice(11,16))} JST</span>`;
+    if(r.next) html += `<span class="next">NEXT ▸ ${esc(r.next.ts.slice(5,16).replace("T"," "))} — ${esc(r.next.title)}</span>`;
+    html += `<button class="btn primary" onclick="stepReplay()" ${s.busy?"disabled":""}>Advance ▸</button>`;
+  } else if(r.loaded && r.exhausted){
+    html += `<span class="next">replay complete — the family was long safe when the levee failed.</span>`;
+  } else if(s.plan && s.plan.family_approved && !s.busy){
+    html += `<button class="btn" onclick="loadReplay()">⏮ Hagibis 2019 replay</button>`;
+  }
+  el.innerHTML = html;
+}
+
 function renderStatusLine(s, level){
   const el = $("statusline"), big = $("statusBig"), meta = $("statusMeta");
+  const badge = $("lvlBadge");
+  badge.className = `lvlbadge c${level}` + (level>=3 ? " pulse" : "");
+  badge.textContent = level ? `L${level}` : "◎";
+  const w0 = $("watching");
+  w0.classList.toggle("alert", level>=3);
+  $("watchLabel").textContent = (s.replay&&s.replay.loaded) ? (level>=3?"PLAN ACTIVE":"REPLAY ARMED") : (s.household?"WATCHING":"STANDBY");
   let cls = "s-idle", en = "", ja = "", m = [];
   const w = s.watch || {};
   if(!s.household){
@@ -589,23 +601,6 @@ async function toggleHhMenu(){
   hhMenuLoaded = true;
 }
 
-function renderBand(level, s){
-  const meta = LEVELS[level] || LEVELS[0];
-  const plate = $("plate");
-  plate.className = `plate c${level}` + (level>=3 ? " pulse" : "");
-  $("plateLvl").textContent = level ? `L${level}` : "◎";
-  $("plateName").textContent = meta.name;
-  $("plateEn").textContent = (meta.ja ? meta.ja + " · " : "") + meta.en;
-  const ladder = $("ladder");
-  ladder.innerHTML = [1,2,3,4,5].map(i => `
-    <div class="rung k${i} ${level>=i?"on":""} ${level===i?"now":""}">
-      <div class="no">L${i}</div><div class="ja">${LEVELS[i].name}</div><div class="en">${LEVELS[i].en}</div>
-    </div>`).join("");
-  const w = $("watching");
-  w.classList.toggle("alert", level>=3);
-  $("watchLabel").textContent = s.replay.loaded ? (level>=3?"PLAN ACTIVE":"REPLAY ARMED") : (s.household?"WATCHING":"STANDBY");
-}
-
 function avatarColor(name, members){
   const i = Math.max(0, members.findIndex(m => m.name === name));
   return AVA_COLORS[i % AVA_COLORS.length];
@@ -618,22 +613,21 @@ function renderRisk(s){
   $("hhChip").innerHTML = `👨‍👩‍👧 <b>${esc(h.household_id.toUpperCase())}</b> <span>${esc(h.pref_name)}${esc(h.muni_name)} · JMA ${esc(h.jma_class20_code||"")}</span>`;
   let html = "";
   if(p){
-    html += `<div class="hazrow">` + p.assessments.map(a => {
+    // Risks first-class; the all-clear hazards shrink to one muted line.
+    const risky = p.assessments.filter(a => a.at_risk);
+    const clear = p.assessments.filter(a => !a.at_risk);
+    html += `<div class="hazrow">` + risky.map(a => {
       const [en, ja] = HAZ[a.hazard] || [a.hazard, ""];
-      return `<span class="haz ${a.at_risk?"risk":"ok"}">${a.at_risk?"⚠":"✓"} ${en} <small>${ja}</small>${a.at_risk&&a.severity?` · ${esc(a.severity.replace("expected flood depth ",""))}`:""}</span>`;
+      return `<span class="haz risk">⚠ ${en} <small>${ja}</small>${a.severity?` · ${esc(a.severity.replace("expected flood depth ",""))}`:""}</span>`;
     }).join("") + `</div>`;
+    if(clear.length) html += `<div style="font-size:11px;color:var(--faint);margin:-4px 0 10px">
+      ✓ clear: ${clear.map(a => (HAZ[a.hazard]||[a.hazard])[1] || a.hazard).join(" · ")}</div>`;
     html += `<div class="summary">${esc(p.summary)}</div>`;
+    if(p.caveats && p.caveats.length)
+      html += `<details class="supplies"><summary>ⓘ data notes · データについて</summary>
+        <div class="caveat" style="border:0;padding-top:6px">※ ${p.caveats.map(esc).join("<br>※ ")}</div></details>`;
   }
-  html += `<div class="members">` + h.members.map((m,i) => `
-    <div class="member">
-      <div class="ava" style="background:${AVA_COLORS[i%AVA_COLORS.length]}">${initial(m.name)}</div>
-      <div><b>${esc(m.name)}</b>${m.age?` <span class="meta">${m.age}</span>`:""}
-        <span class="meta">${m.lives_at_home?"🏠 at the home":"🌏 remote watcher"} · ${esc(m.preferred_language)}</span>
-        ${m.needs&&m.needs.length?`<div class="needs">◦ ${esc(m.needs.join(" ◦ "))}</div>`:""}
-      </div>
-    </div>`).join("") + `</div>`;
-  if(p && p.caveats && p.caveats.length) html += `<div class="caveat">※ ${p.caveats.map(esc).join("<br>※ ")}</div>`;
-  $("riskBody").innerHTML = html;
+  $("riskBody").innerHTML = html || '<div class="empty">—</div>';
 }
 
 const tlManual = {};
@@ -691,6 +685,13 @@ function renderPhones(s){
   const h = s.household;
   if(!h) { $("phones").innerHTML = '<div class="empty">—</div>'; return; }
   const inbox = s.inbox || [];
+  // Simplicity: no phones until there is something on them. The phones appear
+  // the moment the first verified notification (or check-in request) exists.
+  if(!inbox.length && !(s.checkins||[]).length){
+    $("phones").innerHTML = `<div class="quietline">No notifications yet — when official signals fire,
+      each family member's verified message appears here in their own language.<br>通知はまだありません · そなえは静かに見守り中</div>`;
+    return;
+  }
   const byMember = {};
   for(const n of inbox) (byMember[n.to_member] = byMember[n.to_member] || []).push(n);
   const ci = {};
@@ -741,16 +742,35 @@ function renderBreachMarkers(replay, level){
   }
 }
 
-let circleTick = 0;
-async function renderCircle(circleId){
+// Progressive disclosure: the neighborhood board stays a one-line summary
+// until someone needs help, an evacuation-level event opens check-ins, or
+// the coordinator clicks it open.
+let circleTick = 0, circleOpen = null, lastCircleLevel = 0;
+function circleToggle(){
+  const auto = _circleAuto();
+  circleOpen = !((circleOpen === null) ? auto : circleOpen);
+  _applyCircleOpen();
+}
+let _circleAutoState = false;
+function _circleAuto(){ return _circleAutoState; }
+function _applyCircleOpen(){
+  const open = (circleOpen === null) ? _circleAuto() : circleOpen;
+  $("circleBody").style.display = open ? "" : "none";
+  $("circleCaret").textContent = open ? "▾" : "▸";
+}
+async function renderCircle(circleId, level){
   const card = $("circleCard");
   if(!circleId){ card.style.display = "none"; return; }
   card.style.display = "";
+  lastCircleLevel = level || 0;
   if(circleTick++ % 2 !== 0) return;  // poll circle at half rate
   try{
     const c = await (await fetch(`/api/circle/${circleId}`)).json();
-    $("circleName").textContent = `${c.circle.name} · coord: ${c.circle.coordinator}`;
     const k = c.counts;
+    _circleAutoState = (k.needs_help||0) > 0 || lastCircleLevel >= 4;
+    $("circleMini").textContent =
+      `${c.circle.name.split(" (")[0]} · ${k.safe||0} safe · ${(k.needs_help||0)} help · ${(k.pending||0)+(k.no_response||0)} unconfirmed`;
+    _applyCircleOpen();
     let html = `<div class="counts">
       <div class="cnt safe"><b>${k.safe||0}</b>safe</div>
       <div class="cnt help"><b>${k.needs_help||0}</b>needs help</div>
@@ -780,8 +800,38 @@ function toggleEngine(){
   document.getElementById("fEngine").classList.toggle("on", showEngine);
 }
 
-function renderFeed(journal){
+// Flight recorder: collapsed to its latest line by default; auto-opens while
+// agents are actively working (that's when it IS the progress view).
+let feedOpen = null, _feedAutoState = false;
+function feedToggle(){
+  feedOpen = !((feedOpen === null) ? _feedAutoState : feedOpen);
+  _applyFeedOpen();
+}
+function _applyFeedOpen(){
+  const open = (feedOpen === null) ? _feedAutoState : feedOpen;
+  $("feedWrap").style.display = open ? "" : "none";
+  $("feedCaret").textContent = open ? "▾" : "▸";
+}
+
+function _feedRowText(j){
+  switch(j.kind){
+    case "sentinel_decision": return j.triggered ? `sentinel: ACTIVATE L${j.level}` : "sentinel: stand by";
+    case "notifications_sent": return `dispatched ${j.count} at L${j.level}`;
+    case "verification": return `verifier pass ${j.attempt}: ${j.approved ? "approved" : "rejected"}`;
+    case "onboarding_complete": return "plan built & verified";
+    case "plan_approved": return "plan approved";
+    case "checkin": return `check-in: ${j.member} ${j.status}`;
+    case "error": return `error: ${j.op}`;
+    default: return null;
+  }
+}
+
+function renderFeed(journal, busy){
+  _feedAutoState = !!busy;
   const rows = (journal||[]).filter(j => showEngine || (j.kind !== "tool_call" && j.kind !== "tool_result"));
+  const last = [...(journal||[])].reverse().map(_feedRowText).find(Boolean);
+  $("feedMini").textContent = busy ? `⏳ ${busy} · agents working…` : (last || "");
+  _applyFeedOpen();
   $("feed").innerHTML = rows.slice().reverse().map(j => {
     let who = j.agent || "", what = "", cls = "";
     switch(j.kind){
@@ -861,39 +911,21 @@ async function submitOnboard(){
 async function approvePlan(){
   await post("/api/approve", {household: HOUSEHOLD});
 }
-$("btnOnboard").onclick = openOnboard;
-$("btnLoad").onclick = () => post("/api/replay/load", {household:HOUSEHOLD});
-$("btnStep").onclick = () => post("/api/replay/step", {household:HOUSEHOLD});
-
 async function tick(){
   try{
     const s = await (await fetch(`/api/state?household=${HOUSEHOLD}`)).json();
     const level = (s.watch && s.watch.activated_level) || 0;
     renderStatusLine(s, level);
+    renderBandActions(s, level);
     renderFamStrip(s, level);
-    renderBand(level, s);
     renderRisk(s);
     renderPlan(s, level);
     renderPhones(s);
-    renderCircle(s.circle);
-    renderFeed(s.journal);
+    renderCircle(s.circle, level);
+    renderFeed(s.journal, s.busy);
     if(s.household){ initMap(s.household, s.profile, s.plan); drawShelters(s.profile, s.plan); }
     renderBreachMarkers(s.replay, level);
-    $("busy").classList.toggle("show", !!s.busy);
-    $("busyLabel").textContent = s.busy ? `${s.busy} · agents working` : "";
-    $("btnStep").disabled = !!s.busy || !s.replay.loaded || !!s.replay.exhausted;
-    $("btnOnboard").disabled = !!s.busy;
-    $("ribbon").classList.toggle("show", !!s.replay.loaded);
-    const clock = $("simClock");
-    if(s.replay.now){
-      clock.classList.remove("calm");
-      clock.textContent = s.replay.now.slice(5,10).replace("-","/") + " " + s.replay.now.slice(11,16) + " JST";
-    } else {
-      clock.classList.add("calm");
-      clock.textContent = s.replay.loaded ? "replay armed — advance ▸" : new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}) + " live";
-    }
-    $("next").textContent = s.replay.next ? `NEXT ▸ ${s.replay.next.ts.slice(5,16).replace("T"," ")} — ${s.replay.next.title}`
-                          : (s.replay.exhausted ? "replay complete — the levee at Hoyasu failed at dawn; this family was out by 18:15." : "");
+    $("ribbon").classList.toggle("show", !!(s.replay && s.replay.loaded));
   }catch(e){/* server restarting */}
 }
 setInterval(tick, 1500); tick();
