@@ -10,10 +10,11 @@ Built for the **AWS Agents for Humans Hackathon** (Good Neighbor track) with the
 
 **Demo video:** _(link)_ · **Live demo:** _(link)_
 
-![Sonae dashboard during the Typhoon Hagibis replay — Level 3 active, grandmother evacuating](docs/screenshots/dashboard-l3.png)
-*The dashboard mid-replay: the home (amber) sits in the Chikuma River's 10–20 m statutory inundation
-zone; the plan's Level 3 step is active; each family member's phone has received their verified,
-cited instructions — Japanese for grandmother, English for her son in Tokyo.*
+![Sonae dashboard during the Typhoon Hagibis replay](docs/screenshots/dashboard-replay.png)
+*Mid-replay, all content agent-generated: the home (amber) sits in the Chikuma River's 10–20 m
+statutory inundation zone; the plan's steps light up as official signals fire; each family member's
+phone receives their verified, cited instructions — Japanese for grandmother, English for her son in
+Tokyo — with safety check-in buttons, and the neighborhood association board on the right.*
 
 ---
 
