@@ -7,36 +7,66 @@ heartbeat that makes the Sentinel ambient; household state persists outside the 
 EventBridge Scheduler ──(every 5 min: {"action":"watch_cycle",...})──▶ AgentCore Runtime
                                                                         └─ Sonae agents (Strands)
 Web dashboard / CLI ──(onboard / replay / status)──────────────────────▲
-Model calls ──▶ Amazon Bedrock (Claude)      State ──▶ S3-backed store / AgentCore Memory
+Model calls ──▶ Amazon Bedrock (Claude)      State ──▶ AgentCore Memory / mounted store
 ```
+
+These steps are the ones we actually ran for this submission (AgentCore CLI ≥ 0.27, CDK-based).
 
 ## Prerequisites
 
-- AWS account with Bedrock model access (Claude Sonnet) in your region
-- `uv sync` done locally, plus: `uv pip install bedrock-agentcore bedrock-agentcore-starter-toolkit`
-- Docker (the starter toolkit builds the container image)
+- AWS account with Bedrock model access (Claude Sonnet 4.5) in your region
+- Docker, Node.js, and the AgentCore CLI: `npm install -g @aws/agentcore`
+- A `requirements.txt` at the repo root (regenerate with
+  `uv export --no-dev --format requirements-txt --no-hashes > requirements.txt`,
+  then append `bedrock-agentcore`); the repo's `Dockerfile` builds the runtime container
 
 ## Steps
 
 ```bash
-cd <repo root>
+# 1. Create the CDK-managed AgentCore project (already committed under deploy/sonae)
+cd deploy && agentcore create --no-agent --project-name sonae && cd sonae
 
-# 1. Configure the runtime from the entrypoint (creates .agentcore.yaml + Dockerfile)
-agentcore configure --entrypoint deploy/agentcore/entrypoint.py --name sonae
+# 2. Register the Sonae repo as a bring-your-own Container agent
+agentcore add agent --name sonae --type byo --build Container --language Python \
+  --framework Strands --model-provider Bedrock \
+  --code-location /path/to/agent-for-human-hackson-2026 \
+  --entrypoint deploy/agentcore/entrypoint.py --protocol HTTP
 
-# 2. Launch to your account (builds, pushes to ECR, creates the AgentCore Runtime)
-agentcore launch
+# 3. Deploy (CDK bootstrap on first run, container build & push, runtime creation)
+agentcore deploy --yes
 
-# 3. Smoke-test: onboard the demo family in the cloud
-agentcore invoke '{"action":"onboard","profile":'"$(cat examples/aoki_family.json)"',"approve":true}'
+# 4. Runtime ARN + status
+agentcore status --json
+```
 
-# 4. One live watch cycle against real JMA feeds
-agentcore invoke '{"action":"watch_cycle","household":"aoki"}'
+## Invoking
+
+The runtime speaks raw JSON payloads (the same shape EventBridge sends). The `agentcore invoke`
+convenience command wraps its argument as `{"prompt": ...}`, so for Sonae's action payloads call the
+runtime API directly:
+
+```bash
+ARN="arn:aws:bedrock-agentcore:us-west-2:<account>:runtime/sonae_sonae-XXXX"
+
+aws bedrock-agentcore invoke-agent-runtime --agent-runtime-arn "$ARN" \
+  --payload "$(echo -n '{"action":"status","household":"aoki"}' | base64)" \
+  --content-type application/json --accept application/json out.json && cat out.json
+
+# Onboard the demo family in the cloud (runs the full verification graph; allow ~10 min)
+python -c 'import json,base64;print(base64.b64encode(json.dumps({"action":"onboard","profile":json.load(open("examples/aoki_family.json")),"approve":True}).encode()).decode())' > payload.b64
+aws bedrock-agentcore invoke-agent-runtime --agent-runtime-arn "$ARN" \
+  --payload file://payload.b64 --cli-read-timeout 900 \
+  --content-type application/json --accept application/json out.json && cat out.json
+
+# One live watch cycle against real JMA feeds
+aws bedrock-agentcore invoke-agent-runtime --agent-runtime-arn "$ARN" \
+  --payload "$(echo -n '{"action":"watch_cycle","household":"aoki"}' | base64)" \
+  --content-type application/json --accept application/json out.json && cat out.json
 ```
 
 ## Making the watch ambient
 
-Create a schedule that invokes the runtime every 5 minutes (agent runtime ARN from `agentcore status`):
+Create a schedule that invokes the runtime every 5 minutes:
 
 ```bash
 aws scheduler create-schedule \
@@ -50,18 +80,18 @@ aws scheduler create-schedule \
   }'
 ```
 
-During calm weather each cycle is a cheap no-op (feed fetch, no new signals, no model tokens beyond
-the Sentinel skip-path); during an event it runs the full verified pipeline.
+During calm weather each cycle is a cheap no-op (feed fetch, dedup, no model tokens); during an
+event it runs the full verified pipeline.
 
 ## State
 
-The demo store is filesystem JSON (`SONAE_STORE_DIR`). For multi-tenant cloud use, mount durable
-storage or use the AgentCore Memory adapter so each household's plan, watch state, and flight
-recorder survive container recycling. Notifications dispatch through the channel layer — swap the
-inbox channel for LINE/SES/SNS in `sonae/channels/`.
+The demo container stores household state under `SONAE_DATA_DIR` (`/tmp/sonae-data` — ephemeral,
+per-instance). For production use, mount durable storage or use the AgentCore Memory adapter so each
+household's plan, watch state, and flight recorder survive container recycling. Notifications
+dispatch through the channel layer — swap the inbox channel for LINE/SES/SNS in `sonae/channels/`.
 
 ## Observability
 
 Strands emits OpenTelemetry traces natively; AgentCore Observability picks them up without code
-changes. Each household's flight-recorder journal complements the traces with a family-readable
-audit trail.
+changes (`agentcore obs`, or CloudWatch: `/aws/bedrock-agentcore/runtimes/<runtime-id>`). Each
+household's flight-recorder journal complements the traces with a family-readable audit trail.
