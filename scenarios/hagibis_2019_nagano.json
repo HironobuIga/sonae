@@ -24,6 +24,14 @@
       "note": "Hoyasu levee: overtopping 01:08 Oct 13, breach announced 06:00"
     }
   ],
+  "map_markers": [
+    {
+      "appear_at_level": 5,
+      "lat": 36.6868,
+      "lon": 138.2792,
+      "label": "堤防決壊地点 · Levee breach — Chikuma R. left bank 57.5k, Hoyasu (L≈70 m, announced 06:00 Oct 13)"
+    }
+  ],
   "events": [
     {
       "ts": "2019-10-11T08:46:00+09:00",

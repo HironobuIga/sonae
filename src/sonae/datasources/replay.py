@@ -24,6 +24,7 @@ class Scenario:
     disclaimer: str
     sources: list[Source]
     events: list[FeedEvent]
+    map_markers: list[dict]  # e.g. historical breach points, revealed by alert level
 
 
 def load_scenario(path: Path | str) -> Scenario:
@@ -50,6 +51,7 @@ def load_scenario(path: Path | str) -> Scenario:
         disclaimer=data["disclaimer"],
         sources=base_sources,
         events=events,
+        map_markers=data.get("map_markers", []),
     )
 
 

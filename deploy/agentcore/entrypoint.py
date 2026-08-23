@@ -29,7 +29,7 @@ if _SRC.exists() and str(_SRC) not in sys.path:
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 
 from sonae.channels.inbox import InboxChannel
-from sonae.config import REPO_ROOT
+from sonae.config import REPO_ROOT, settings
 from sonae.datasources import jma
 from sonae.datasources.replay import ReplayClock, load_scenario
 from sonae.memory.store import HouseholdStore
@@ -38,10 +38,60 @@ app = BedrockAgentCoreApp()
 
 _replay_clocks: dict[str, ReplayClock] = {}
 
+# Durable state: when SONAE_S3_BUCKET is set, each invocation pulls the
+# household's store from S3 and pushes it back afterwards, so plans, watch
+# state, and the flight recorder survive container recycling. Local runs
+# (no bucket set) stay purely file-based.
+import os
+
+_S3_BUCKET = os.getenv("SONAE_S3_BUCKET", "")
+
+
+def _store_dir(hid: str) -> Path:
+    return settings.store_dir / hid
+
+
+def _s3_pull(hid: str) -> None:
+    if not _S3_BUCKET or not hid:
+        return
+    import boto3
+
+    s3 = boto3.client("s3")
+    prefix = f"store/{hid}/"
+    local = _store_dir(hid)
+    local.mkdir(parents=True, exist_ok=True)
+    for page in s3.get_paginator("list_objects_v2").paginate(Bucket=_S3_BUCKET, Prefix=prefix):
+        for obj in page.get("Contents", []):
+            name = obj["Key"][len(prefix):]
+            if name:
+                s3.download_file(_S3_BUCKET, obj["Key"], str(local / name))
+
+
+def _s3_push(hid: str) -> None:
+    if not _S3_BUCKET or not hid:
+        return
+    import boto3
+
+    s3 = boto3.client("s3")
+    local = _store_dir(hid)
+    if not local.exists():
+        return
+    for path in local.glob("*.json"):
+        s3.upload_file(str(path), _S3_BUCKET, f"store/{hid}/{path.name}")
+
 
 @app.entrypoint
 def invoke(payload: dict) -> dict:
     action = payload.get("action", "status")
+    hid = payload.get("household") or (payload.get("profile") or {}).get("household_id") or ""
+    _s3_pull(hid)
+    try:
+        return _dispatch(action, payload)
+    finally:
+        _s3_push(hid)
+
+
+def _dispatch(action: str, payload: dict) -> dict:
 
     if action == "onboard":
         from sonae.agents.onboarding import approve_plan, run_onboarding

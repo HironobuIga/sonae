@@ -216,6 +216,32 @@
   .jrow.warn .what{color:#ffb3a7}
   .jrow.big .what{color:var(--text)}
 
+  /* ---------- onboarding modal ---------- */
+  .overlay{position:fixed;inset:0;background:rgba(3,6,12,.78);backdrop-filter:blur(3px);display:none;
+           align-items:flex-start;justify-content:center;z-index:1000;overflow-y:auto;padding:40px 16px}
+  .overlay.show{display:flex}
+  .modal{width:640px;max-width:96vw;background:var(--panel);border:1px solid var(--line2);border-radius:16px;
+         padding:22px 26px;box-shadow:0 30px 80px -20px #000}
+  .modal h3{margin:0 0 2px;font-size:17px}
+  .modal .sub{color:var(--dim);font-size:11.5px;margin-bottom:16px}
+  .frow{display:flex;gap:10px;margin-bottom:10px;align-items:center;flex-wrap:wrap}
+  .frow label{font-size:11px;color:var(--dim);letter-spacing:.08em;min-width:86px}
+  .modal input[type=text],.modal input[type=number],.modal select{
+    background:var(--panel2);border:1px solid var(--line2);border-radius:8px;color:var(--text);
+    font-family:var(--sans);font-size:13px;padding:8px 10px;outline:none}
+  .modal input:focus,.modal select:focus{border-color:var(--cyan)}
+  .modal input[type=checkbox]{accent-color:var(--cyan)}
+  .memrow{display:grid;grid-template-columns:1.1fr 58px 92px 82px 2fr 24px;gap:7px;margin-bottom:7px;align-items:center}
+  .memhead{font-size:9.5px;color:var(--faint);letter-spacing:.1em}
+  .memrow .del{background:none;border:0;color:var(--faint);cursor:pointer;font-size:14px;padding:0}
+  .modal .actions{display:flex;gap:10px;margin-top:18px;align-items:center}
+  .modal .hint{font-size:10.5px;color:var(--faint);margin-left:auto;max-width:250px;text-align:right}
+  .addmem{background:none;border:1px dashed var(--line2);color:var(--dim);border-radius:8px;
+          padding:6px 12px;font-size:11px;cursor:pointer;margin-top:2px}
+  .approveBtn{display:inline-flex;align-items:center;gap:8px;margin-top:12px;background:linear-gradient(135deg,var(--green),#7ceebb);
+          color:#04321e;font-weight:700;border:0;border-radius:9px;padding:10px 16px;font-size:13px;cursor:pointer}
+  .breach-pin{font-size:20px;line-height:1;filter:drop-shadow(0 0 6px var(--l3));animation:blink 1.1s infinite}
+
   footer{padding:10px 24px 20px;font-size:10px;color:var(--faint);line-height:1.6;border-top:1px solid var(--line)}
   ::-webkit-scrollbar{width:8px;height:8px} ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:5px}
 </style>
@@ -303,6 +329,29 @@
     </div>
   </section>
 </main>
+
+<div class="overlay" id="onboardModal">
+  <div class="modal">
+    <h3>Protect a home <span style="color:var(--dim);font-weight:400">· 家を見守る</span></h3>
+    <div class="sub">One address and a few sentences about your family. The agent team reads the statutory
+      hazard maps, picks per-hazard evacuation sites, drafts the My-Timeline, and verifies every claim
+      against official data before you see it (~10 minutes).</div>
+    <div class="frow"><label>HOUSEHOLD ID</label><input type="text" id="fId" value="aoki" style="width:130px">
+      <label style="min-width:0">ADDRESS 住所</label><input type="text" id="fAddr" value="長野県長野市穂保" style="flex:1;min-width:220px"></div>
+    <div class="frow"><label>HOME</label>
+      <input type="number" id="fFloors" value="2" min="1" max="30" style="width:64px"> <span style="font-size:11px;color:var(--dim)">floors</span>
+      <label style="min-width:0;margin-left:12px;display:flex;gap:6px;align-items:center"><input type="checkbox" id="fCar"> family car available</label></div>
+    <div style="margin:14px 0 6px;font-size:11px;color:var(--dim);letter-spacing:.1em">FAMILY 家族</div>
+    <div class="memrow memhead"><span>NAME</span><span>AGE</span><span>LIVES</span><span>LANG</span><span>NEEDS (mobility, medication, …)</span><span></span></div>
+    <div id="memRows"></div>
+    <button class="addmem" onclick="addMemberRow()">＋ add family member</button>
+    <div class="actions">
+      <button class="btn primary" id="fSubmit" onclick="submitOnboard()">🛡 Protect this home</button>
+      <button class="btn secondary" onclick="$('onboardModal').classList.remove('show')">Cancel</button>
+      <span class="hint">You will review and approve the plan before Sonae is authorized to act.</span>
+    </div>
+  </div>
+</div>
 
 <footer id="disclaimer">
   Sonae relays and organizes official information (JMA · MLIT/GSI · municipalities) bound to a family-approved plan; it never
@@ -452,7 +501,9 @@ function renderPlan(s, level){
       <ul>${plan.supply_checklist.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`;
   html += plan.family_approved
     ? `<div class="approved">✍ Approved by the family — Sonae is authorized to act on this plan.</div>`
-    : `<div class="approved" style="color:var(--amber)">⏳ Awaiting family approval.</div>`;
+    : `<div class="approved" style="color:var(--amber)">⏳ This plan is verified but awaiting YOUR approval —
+         Sonae will not act until the family signs off.</div>
+       <button class="approveBtn" onclick="approvePlan()">✍ Approve — authorize Sonae to act · この計画を承認する</button>`;
   $("planBody").innerHTML = html;
 }
 
@@ -495,6 +546,19 @@ function renderPhones(s){
 
 async function sendCheckin(member, status){
   await post("/api/checkin", {household: HOUSEHOLD, member, status});
+}
+
+const _breachAdded = new Set();
+function renderBreachMarkers(replay, level){
+  if(!mapReady || !replay || !replay.map_markers) return;
+  for(const m of replay.map_markers){
+    const key = `${m.lat},${m.lon}`;
+    if(level >= (m.appear_at_level || 5) && !_breachAdded.has(key)){
+      _breachAdded.add(key);
+      L.marker([m.lat, m.lon], {icon: L.divIcon({className:"", html:'<div class="breach-pin">❌</div>',
+        iconSize:[20,20], iconAnchor:[10,10]})}).addTo(map).bindPopup(`<b>${esc(m.label)}</b>`);
+    }
+  }
 }
 
 let circleTick = 0;
@@ -561,7 +625,56 @@ async function post(url, body){
   const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body||{})});
   if(!r.ok) alert(`${url} failed: ${await r.text()}`);
 }
-$("btnOnboard").onclick = () => post("/api/onboard", {profile_path:"examples/aoki_family.json", approve:true});
+// ---------- onboarding modal ----------
+const DEMO_MEMBERS = [
+  {name:"Yoshiko", age:78, home:true,  lang:"ja", needs:"bad knees — walking to a shelter takes about 3x the usual time; no smartphone apps"},
+  {name:"Kenji",   age:52, home:false, lang:"en", needs:""},
+  {name:"Mika",    age:48, home:false, lang:"en", needs:""},
+];
+function addMemberRow(m){
+  m = m || {name:"", age:"", home:true, lang:"ja", needs:""};
+  const row = document.createElement("div");
+  row.className = "memrow";
+  row.innerHTML = `
+    <input type="text" class="mName" value="${esc(m.name)}" placeholder="name">
+    <input type="number" class="mAge" value="${m.age}" min="0" max="120">
+    <select class="mHome"><option value="1" ${m.home?"selected":""}>🏠 home</option><option value="0" ${m.home?"":"selected"}>🌏 away</option></select>
+    <select class="mLang"><option value="ja" ${m.lang==="ja"?"selected":""}>日本語</option><option value="en" ${m.lang==="en"?"selected":""}>EN</option></select>
+    <input type="text" class="mNeeds" value="${esc(m.needs)}" placeholder="none">
+    <button class="del" onclick="this.parentElement.remove()">✕</button>`;
+  $("memRows").appendChild(row);
+}
+function openOnboard(){
+  if(!$("memRows").children.length) DEMO_MEMBERS.forEach(addMemberRow);
+  $("onboardModal").classList.add("show");
+}
+async function submitOnboard(){
+  const members = [...document.querySelectorAll("#memRows .memrow")].map(r => ({
+    name: r.querySelector(".mName").value.trim(),
+    age: parseInt(r.querySelector(".mAge").value) || null,
+    lives_at_home: r.querySelector(".mHome").value === "1",
+    preferred_language: r.querySelector(".mLang").value,
+    needs: r.querySelector(".mNeeds").value.trim() ? [r.querySelector(".mNeeds").value.trim()] : [],
+  })).filter(m => m.name);
+  const hid = ($("fId").value.trim() || "home").toLowerCase().replace(/[^a-z0-9_-]/g, "");
+  const profile = {
+    household_id: hid,
+    address: $("fAddr").value.trim(),
+    home_floors: parseInt($("fFloors").value) || null,
+    has_car: $("fCar").checked,
+    members,
+  };
+  if(!profile.address || !members.length){ alert("Address and at least one family member are required."); return; }
+  $("fSubmit").disabled = true;
+  await post("/api/onboard", {profile, approve:false});
+  $("fSubmit").disabled = false;
+  $("onboardModal").classList.remove("show");
+  if(hid !== HOUSEHOLD) location.search = `?household=${hid}`;
+}
+async function approvePlan(){
+  await post("/api/approve", {household: HOUSEHOLD});
+}
+$("btnOnboard").onclick = openOnboard;
 $("btnLoad").onclick = () => post("/api/replay/load", {household:HOUSEHOLD});
 $("btnStep").onclick = () => post("/api/replay/step", {household:HOUSEHOLD});
 
@@ -576,6 +689,7 @@ async function tick(){
     renderCircle(s.circle);
     renderFeed(s.journal);
     if(s.household){ initMap(s.household, s.profile, s.plan); drawShelters(s.profile, s.plan); }
+    renderBreachMarkers(s.replay, level);
     $("busy").classList.toggle("show", !!s.busy);
     $("busyLabel").textContent = s.busy ? `${s.busy} · agents working` : "";
     $("btnStep").disabled = !!s.busy || !s.replay.loaded || !!s.replay.exhausted;

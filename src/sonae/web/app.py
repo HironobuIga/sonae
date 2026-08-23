@@ -78,6 +78,7 @@ def state(household: str) -> dict:
         "replay": {
             "loaded": clock is not None,
             "title": clock.scenario.title if clock else None,
+            "map_markers": clock.scenario.map_markers if clock else [],
             "disclaimer": clock.scenario.disclaimer if clock else None,
             "now": clock.now.isoformat() if clock and clock.now else None,
             "next": (
@@ -91,8 +92,9 @@ def state(household: str) -> dict:
 
 
 class OnboardRequest(BaseModel):
-    profile_path: str = "examples/aoki_family.json"
-    approve: bool = True
+    profile: dict | None = None  # inline household intake (same shape as examples/*.json)
+    profile_path: str | None = None
+    approve: bool = False
 
 
 @app.post("/api/onboard")
@@ -100,8 +102,13 @@ def onboard(req: OnboardRequest) -> dict:
     from sonae.agents.onboarding import approve_plan, run_onboarding
     from sonae.cli import build_household
 
-    raw = json.loads((REPO_ROOT / req.profile_path).read_text())
-    household = build_household(raw)
+    raw = req.profile if req.profile is not None else json.loads(
+        (REPO_ROOT / (req.profile_path or "examples/aoki_family.json")).read_text()
+    )
+    try:
+        household = build_household(raw)
+    except Exception as exc:
+        raise HTTPException(422, f"could not resolve household: {exc}") from exc
     hid = household.household_id
     if _busy.get(hid):
         raise HTTPException(409, f"busy: {_busy[hid]}")
@@ -121,6 +128,21 @@ def onboard(req: OnboardRequest) -> dict:
 
     threading.Thread(target=work, daemon=True).start()
     return {"started": True, "household": hid}
+
+
+class ApproveRequest(BaseModel):
+    household: str
+
+
+@app.post("/api/approve")
+def approve(req: ApproveRequest) -> dict:
+    from sonae.agents.onboarding import approve_plan
+
+    store = HouseholdStore(req.household)
+    if store.load_plan() is None:
+        raise HTTPException(404, "no plan to approve")
+    plan = approve_plan(store)
+    return {"approved": plan.family_approved}
 
 
 class ReplayLoadRequest(BaseModel):
