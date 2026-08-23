@@ -45,7 +45,47 @@
   .ribbon.show{display:flex}
 
   /* ---------- status band ---------- */
-  .band{display:grid;grid-template-columns:290px 1fr auto;gap:18px;align-items:stretch;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .band{display:grid;grid-template-columns:290px 1fr auto;gap:14px 18px;align-items:stretch;padding:12px 24px 16px;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .statusline{grid-column:1/-1;display:flex;align-items:baseline;gap:14px;padding:2px 2px 0;flex-wrap:wrap}
+  .statusline .big{font-size:17px;font-weight:700;letter-spacing:.01em}
+  .statusline .big .ja{color:var(--dim);font-weight:500;margin-left:10px;font-size:13px}
+  .statusline .meta{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--faint)}
+  .statusline.s-calm .big{color:var(--green)}
+  .statusline.s-prep .big{color:var(--l2)}
+  .statusline.s-act .big{color:#ff8f83}
+  .statusline.s-life .big{color:#ff5a5a}
+  .statusline.s-idle .big{color:var(--dim)}
+
+  /* ---------- family strip (people-first, Life360 pattern) ---------- */
+  .famstrip{display:flex;gap:12px;padding:12px 24px;border-bottom:1px solid var(--line);overflow-x:auto;background:var(--bg)}
+  .famcard{flex:1;min-width:230px;border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:10px 14px;display:flex;gap:11px;align-items:flex-start}
+  .famcard .ava{width:34px;height:34px;font-size:14px;margin-top:2px}
+  .famcard .who{font-size:13px;font-weight:700;display:flex;gap:7px;align-items:baseline;flex-wrap:wrap}
+  .famcard .who .tag{font-size:9.5px;color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:1px 5px;font-weight:400}
+  .famcard .task{font-size:11.5px;color:var(--dim);line-height:1.45;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .famcard .task b{color:var(--text);font-weight:600}
+  .famcard .ci{margin-left:auto;flex:none;font-size:9.5px;font-weight:700;border-radius:6px;padding:3px 8px;align-self:flex-start;white-space:nowrap}
+  .famcard .ci.safe{background:rgba(61,220,151,.14);color:var(--green)}
+  .famcard .ci.needs_help{background:rgba(255,90,90,.16);color:#ffb3a7;animation:blink 1.2s infinite}
+  .famcard .ci.pending{background:rgba(255,183,3,.12);color:var(--amber)}
+  .famcard .ci.ready{background:#16233c;color:var(--faint)}
+
+  /* map layer chips (Windy pattern) */
+  .maplayers{position:absolute;top:10px;right:10px;z-index:800;display:flex;gap:6px}
+  .lchip{border:1px solid var(--line2);background:rgba(7,12,22,.85);color:var(--dim);font-size:10.5px;font-weight:600;
+         border-radius:99px;padding:5px 12px;cursor:pointer;backdrop-filter:blur(4px)}
+  .lchip.on{border-color:var(--cyan);color:var(--cyan)}
+  .mapwrap{position:relative}
+
+  /* timeline progressive disclosure */
+  .stepcard.collapsed .trigger,.stepcard.collapsed .acts{display:none}
+  .stepcard{cursor:pointer}
+  .stephead .mini{font-size:10px;color:var(--faint);font-weight:400;margin-left:auto;white-space:nowrap}
+
+  /* feed filter */
+  .feedbar{display:flex;gap:8px;align-items:center;padding:8px 16px;border-bottom:1px solid var(--line)}
+  .fchip{border:1px solid var(--line);background:none;color:var(--dim);font-size:10px;border-radius:99px;padding:3px 10px;cursor:pointer}
+  .fchip.on{border-color:var(--cyan);color:var(--cyan)}
   .plate{border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:2px;
          border:1px solid var(--line2);background:var(--panel);position:relative;overflow:hidden}
   .plate .lvl{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1}
@@ -91,6 +131,8 @@
   /* ---------- layout ---------- */
   main{display:grid;grid-template-columns:minmax(430px,1.15fr) minmax(400px,1fr) minmax(360px,.95fr);gap:16px;padding:16px 24px;align-items:start}
   @media (max-width:1250px){main{grid-template-columns:1fr 1fr}}
+  @media (max-width:950px){main{grid-template-columns:1fr}.band{grid-template-columns:1fr}.deck{min-width:0}
+    .statusline .meta{margin-left:0;width:100%}.famstrip{flex-wrap:nowrap}}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
   .card > .hd{display:flex;align-items:baseline;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
   .hd .t{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--dim)}
@@ -251,7 +293,9 @@
 <header>
   <div class="mark">そ</div>
   <div class="brand"><b>SONAE</b><small>FAMILY DISASTER-READINESS AGENTS · 家族のための防災エージェント</small></div>
-  <div class="hh-chip" id="hhChip">👨‍👩‍👧 <b>—</b><span id="hhAddr">not onboarded</span></div>
+  <div class="hh-chip" id="hhChip" style="cursor:pointer" onclick="toggleHhMenu()">👨‍👩‍👧 <b>—</b><span id="hhAddr">not onboarded</span> <span style="color:var(--faint)">▾</span></div>
+  <div id="hhMenu" style="display:none;position:absolute;top:56px;left:50%;transform:translateX(-50%);z-index:1200;
+       background:var(--panel);border:1px solid var(--line2);border-radius:12px;min-width:320px;box-shadow:0 20px 50px -18px #000;overflow:hidden"></div>
   <div class="spacer"></div>
   <div class="watching" id="watching"><span class="dot"></span><span id="watchLabel">STANDBY</span></div>
 </header>
@@ -259,6 +303,10 @@
 <div class="ribbon" id="ribbon">⏮ HISTORICAL REPLAY — reconstructed from official post-event records · タイムスタンプは公式記録どおり</div>
 
 <div class="band">
+  <div class="statusline s-idle" id="statusline">
+    <span class="big" id="statusBig">…</span>
+    <span class="meta" id="statusMeta"></span>
+  </div>
   <div class="plate c0" id="plate">
     <div class="lvl" id="plateLvl">—</div>
     <div class="name" id="plateName">Standing by</div>
@@ -279,12 +327,20 @@
   </div>
 </div>
 
+<div class="famstrip" id="famStrip" style="display:none"></div>
+
 <main>
   <section>
     <div class="card">
       <div class="hd"><span class="t">HAZARD MAP</span><span class="ja">ハザードマップ</span>
-        <span class="right">flood overlay: statutory max-scale scenario</span></div>
-      <div id="map"></div>
+        <span class="right">statutory hazard layers</span></div>
+      <div class="mapwrap">
+        <div class="maplayers">
+          <button class="lchip on" id="layerFlood" onclick="toggleLayer('flood')">〜 Flood 洪水</button>
+          <button class="lchip" id="layerSlide" onclick="toggleLayer('slide')">⛰ Landslide 土砂</button>
+        </div>
+        <div id="map"></div>
+      </div>
       <div class="maplegend">
         <div class="keyrow">
           <span><span class="sw" style="background:#f7f5a9"></span>&lt;0.5m</span>
@@ -332,6 +388,10 @@
     </div>
     <div class="card">
       <div class="hd"><span class="t">AGENT ACTIVITY</span><span class="ja">フライトレコーダー</span></div>
+      <div class="feedbar">
+        <button class="fchip on" id="fDecisions">decisions & dispatch</button>
+        <button class="fchip" id="fEngine" onclick="toggleEngine()">⚙ engine detail (tool calls)</button>
+      </div>
       <div class="feed" id="feed"><div class="empty">—</div></div>
     </div>
   </section>
@@ -389,6 +449,15 @@ const J_ICON = {tool_call:"🔧", tool_result:"·", sentinel_decision:"👁", no
   plan_approved:"✍", error:"⚠"};
 
 let map, homeMarker, shelterLayer, routeLine, mapReady = false;
+let floodLayer, slideLayer, layersOn = {flood:true, slide:false};
+
+function toggleLayer(which){
+  layersOn[which] = !layersOn[which];
+  document.getElementById(which === "flood" ? "layerFlood" : "layerSlide").classList.toggle("on", layersOn[which]);
+  if(!mapReady) return;
+  const layer = which === "flood" ? floodLayer : slideLayer;
+  if(layersOn[which]) layer.addTo(map); else layer.remove();
+}
 
 function initMap(h, profile, plan){
   if(mapReady || !window.L) return;
@@ -396,8 +465,15 @@ function initMap(h, profile, plan){
         .setView([h.lat, h.lon], 14);
   L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
     {attribution:"地理院タイル", maxZoom:17, className:"tile-base"}).addTo(map);
-  L.tileLayer("https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png",
-    {attribution:"ハザードマップポータル", maxZoom:17, opacity:.45}).addTo(map);
+  floodLayer = L.tileLayer("https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png",
+    {attribution:"ハザードマップポータル", maxZoom:17, opacity:.45});
+  slideLayer = L.layerGroup([
+    L.tileLayer("https://disaportaldata.gsi.go.jp/raster/05_dosekiryukeikaikuiki/{z}/{x}/{y}.png", {maxZoom:17, opacity:.55}),
+    L.tileLayer("https://disaportaldata.gsi.go.jp/raster/05_kyukeishakeikaikuiki/{z}/{x}/{y}.png", {maxZoom:17, opacity:.55}),
+    L.tileLayer("https://disaportaldata.gsi.go.jp/raster/05_jisuberikeikaikuiki/{z}/{x}/{y}.png", {maxZoom:17, opacity:.55}),
+  ]);
+  if(layersOn.flood) floodLayer.addTo(map);
+  if(layersOn.slide) slideLayer.addTo(map);
   homeMarker = L.marker([h.lat, h.lon], {icon: L.divIcon({className:"", html:
     '<div class="home-pin"><div class="wave"></div><div class="core"></div></div>', iconSize:[14,14], iconAnchor:[7,7]})})
     .addTo(map).bindPopup(`<b>🏠 ${esc(h.address)}</b><br>${esc((h.members.find(m=>m.lives_at_home)||{}).name||"")} lives here`);
@@ -428,6 +504,89 @@ function drawShelters(profile, plan){
       map._sonaeFramed = true;
     }
   }
+}
+
+function renderStatusLine(s, level){
+  const el = $("statusline"), big = $("statusBig"), meta = $("statusMeta");
+  let cls = "s-idle", en = "", ja = "", m = [];
+  const w = s.watch || {};
+  if(!s.household){
+    en = "No home under watch"; ja = "見守り中の家がありません — 住所を登録してください";
+  } else if(!s.plan){
+    cls = "s-idle"; en = "Building the plan…"; ja = "エージェントが計画を作成中";
+  } else if(!s.plan.family_approved){
+    cls = "s-prep"; en = "Plan ready — awaiting your approval"; ja = "計画はできています。家族の承認でSonaeが動き出します";
+  } else if(level === 0){
+    cls = "s-calm"; en = "All quiet — Sonae is standing watch"; ja = "すべて平穏・そなえは見守り中";
+  } else if(level <= 2){
+    cls = "s-prep"; en = `Preparation steps running (Level ${level})`; ja = "警戒 — 準備ステップ実行中";
+  } else if(level === 3){
+    cls = "s-act"; en = "Elderly evacuation in progress (Level 3)"; ja = "高齢者等避難 — 避難を開始しています";
+  } else if(level === 4){
+    cls = "s-act"; en = "Complete the evacuation NOW (Level 4)"; ja = "避難指示相当 — 全員の退避を確認中";
+  } else {
+    cls = "s-life"; en = "LIFE-SAVING ACTION (Level 5)"; ja = "緊急安全確保 — 命を守る行動を";
+  }
+  if(w.last_checked) m.push(`last feed check ${new Date(w.last_checked).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"})}`);
+  if((s.inbox||[]).length) m.push(`${s.inbox.length} verified notification(s) delivered`);
+  if(s.plan && s.plan.family_approved) m.push("plan approved ✍");
+  el.className = `statusline ${cls}`;
+  big.innerHTML = `${esc(en)}<span class="ja">${esc(ja)}</span>`;
+  meta.textContent = m.join(" · ");
+}
+
+function stepTaskFor(plan, member, level){
+  if(!plan || !level) return null;
+  const steps = plan.steps.filter(st => st.alert_level <= level).sort((a,b)=>b.alert_level-a.alert_level);
+  for(const st of steps){
+    const act = st.actions.find(a => a.member === member);
+    if(act) return {level: st.alert_level, text: act.description};
+  }
+  return null;
+}
+
+function renderFamStrip(s, level){
+  const strip = $("famStrip");
+  const h = s.household;
+  if(!h || !s.plan){ strip.style.display = "none"; return; }
+  strip.style.display = "";
+  const ci = {}; for(const c of (s.checkins||[])) ci[c.member] = c.status;
+  strip.innerHTML = h.members.map((m,i) => {
+    const task = stepTaskFor(s.plan, m.name, level);
+    const status = ci[m.name];
+    const chip = status === "safe" ? '<span class="ci safe">✓ SAFE</span>'
+      : status === "needs_help" ? '<span class="ci needs_help">⚠ HELP</span>'
+      : status === "pending" || status === "no_response" ? '<span class="ci pending">? UNCONFIRMED</span>'
+      : `<span class="ci ready">${level ? "on task" : "ready"}</span>`;
+    return `<div class="famcard">
+      <div class="ava" style="background:${AVA_COLORS[i%AVA_COLORS.length]}">${initial(m.name)}</div>
+      <div style="min-width:0">
+        <div class="who">${esc(m.name)}${m.age?` <span style="color:var(--faint);font-weight:400">${m.age}</span>`:""}
+          <span class="tag">${m.lives_at_home?"🏠 home":"🌏 remote"}</span><span class="tag">${esc(m.preferred_language)}</span></div>
+        <div class="task">${task ? `<b>L${task.level} now:</b> ${esc(task.text)}` : (level ? "standing by" : "no active tasks · 平時")}</div>
+      </div>
+      ${chip}
+    </div>`;
+  }).join("");
+}
+
+let hhMenuLoaded = false;
+async function toggleHhMenu(){
+  const menu = $("hhMenu");
+  if(menu.style.display !== "none"){ menu.style.display = "none"; return; }
+  const data = await (await fetch("/api/households")).json();
+  menu.innerHTML = data.households.map(r => `
+    <div onclick="location.search='?household=${esc(r.id)}'"
+         style="display:flex;gap:10px;align-items:center;padding:11px 16px;cursor:pointer;font-size:12.5px;
+                border-bottom:1px solid var(--line);${r.id===HOUSEHOLD?"background:var(--panel2)":""}">
+      <b style="min-width:76px">${esc(r.id.toUpperCase())}</b>
+      <span style="color:var(--dim);flex:1">${esc(r.address)}</span>
+      <span class="badge b${Math.max(1, r.level||1)}" style="${r.level?"":"opacity:.25"}">${r.level ? "L"+r.level : "—"}</span>
+    </div>`).join("") +
+    `<div onclick="$('hhMenu').style.display='none';openOnboard()"
+         style="padding:11px 16px;cursor:pointer;font-size:12px;color:var(--cyan)">＋ Protect another home · 別の家を見守る</div>`;
+  menu.style.display = "";
+  hhMenuLoaded = true;
 }
 
 function renderBand(level, s){
@@ -477,6 +636,14 @@ function renderRisk(s){
   $("riskBody").innerHTML = html;
 }
 
+const tlManual = {};
+function tlToggle(lvl){
+  const current = (lvl in tlManual) ? tlManual[lvl] : null;
+  // flip relative to what is currently rendered
+  const card = event && event.currentTarget;
+  tlManual[lvl] = card ? card.classList.contains("collapsed") : !current;
+}
+
 function renderPlan(s, level){
   const plan = s.plan;
   if(!plan) return;
@@ -489,11 +656,17 @@ function renderPlan(s, level){
   </div>`;
   html += `<div class="tl">` + plan.steps.map(st => {
     const state = level>st.alert_level ? "done" : (level===st.alert_level ? "active" : "");
+    // Progressive disclosure: calm = review everything; during an event focus
+    // on the active step and the next one. Clicking a step overrides.
+    const auto = level === 0 || state === "active" || st.alert_level === level + 1;
+    const expanded = (st.alert_level in tlManual) ? tlManual[st.alert_level] : auto;
+    const mini = expanded ? "" :
+      `<span class="mini">${state==="done"?"✓ completed · ":""}${st.actions.length} action(s) — click to expand</span>`;
     return `<div class="node k${st.alert_level} ${state}">
       <div class="pin">L${st.alert_level}</div>
-      <div class="stepcard">
+      <div class="stepcard ${expanded?"":"collapsed"}" onclick="tlToggle(${st.alert_level})">
         <div class="stephead">${esc(st.headline)}
-          ${state==="active"?'<span class="chip act">ACTIVE</span>':""}${state==="done"?'<span class="chip done">DONE</span>':""}</div>
+          ${state==="active"?'<span class="chip act">ACTIVE</span>':""}${state==="done"&&expanded?'<span class="chip done">DONE</span>':""}${mini}</div>
         <div class="trigger">⚡ ${esc(st.trigger)}</div>
         <div class="acts">${st.actions.map(a => `
           <div class="act"><div class="ava" style="background:${avatarColor(a.member, members)}">${initial(a.member)}</div>
@@ -601,8 +774,15 @@ async function renderCircle(circleId){
   }catch(e){/* keep old render */}
 }
 
+let showEngine = false;
+function toggleEngine(){
+  showEngine = !showEngine;
+  document.getElementById("fEngine").classList.toggle("on", showEngine);
+}
+
 function renderFeed(journal){
-  $("feed").innerHTML = (journal||[]).slice().reverse().map(j => {
+  const rows = (journal||[]).filter(j => showEngine || (j.kind !== "tool_call" && j.kind !== "tool_result"));
+  $("feed").innerHTML = rows.slice().reverse().map(j => {
     let who = j.agent || "", what = "", cls = "";
     switch(j.kind){
       case "tool_call": what = `→ ${j.tool} ${esc((j.input||"").slice(0,60))}`; break;
@@ -689,6 +869,8 @@ async function tick(){
   try{
     const s = await (await fetch(`/api/state?household=${HOUSEHOLD}`)).json();
     const level = (s.watch && s.watch.activated_level) || 0;
+    renderStatusLine(s, level);
+    renderFamStrip(s, level);
     renderBand(level, s);
     renderRisk(s);
     renderPlan(s, level);

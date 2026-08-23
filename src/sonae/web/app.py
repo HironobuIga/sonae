@@ -48,6 +48,27 @@ def index() -> str:
     return _TEMPLATE.read_text()
 
 
+@app.get("/api/households")
+def households() -> dict:
+    """Protected homes (those with a generated plan), for the header switcher."""
+    rows = []
+    for hid in HouseholdStore.list_households():
+        store = HouseholdStore(hid)
+        plan = store.load_plan()
+        if plan is None:
+            continue  # circle-member fixtures without plans are not 'protected homes'
+        h = store.load_household()
+        rows.append(
+            {
+                "id": hid,
+                "address": h.address if h else hid,
+                "approved": plan.family_approved,
+                "level": store.load_watch().activated_level,
+            }
+        )
+    return {"households": rows}
+
+
 def _find_circle(household: str):
     for cid in circles.list_circles():
         c = circles.load_circle(cid)
