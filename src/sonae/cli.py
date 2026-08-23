@@ -92,7 +92,6 @@ def cmd_status(args: argparse.Namespace) -> int:
 
 def cmd_replay(args: argparse.Namespace) -> int:
     from sonae.agents.watch import process_events
-
     from sonae.channels.inbox import InboxChannel
     from sonae.channels.multi import MultiChannel
 
