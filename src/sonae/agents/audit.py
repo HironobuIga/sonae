@@ -9,7 +9,7 @@ apply to municipal decisions, applied to the agents themselves.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from typing import Any
 
 from strands.hooks.events import AfterToolCallEvent, BeforeToolCallEvent
@@ -44,7 +44,7 @@ class AuditHook(HookProvider):
                 "agent": getattr(event.agent, "name", self.agent_label),
                 "tool": event.tool_use.get("name"),
                 "input": _compact(event.tool_use.get("input", {})),
-                "at": datetime.now(timezone.utc).isoformat(),
+                "at": datetime.now(UTC).isoformat(),
             },
         )
 

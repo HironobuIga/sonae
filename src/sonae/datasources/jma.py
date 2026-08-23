@@ -10,7 +10,7 @@ every event carries the raw source URL as its citation.
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sonae.datasources.http import fetch_json
 from sonae.schemas import FeedEvent, FeedEventKind, Source
@@ -97,7 +97,7 @@ def fetch_active_warnings(office_code: str, class20_code: str | None = None) -> 
                         f"Active JMA notices for area {code}: {title_en}. "
                         f"Highest equivalence: alert level {level}. Headline: {headline or 'n/a'}"
                     ),
-                    source=Source(name="JMA warning feed", url=url, retrieved_at=datetime.now(timezone.utc)),
+                    source=Source(name="JMA warning feed", url=url, retrieved_at=datetime.now(UTC)),
                 )
             )
     return events
@@ -113,27 +113,27 @@ def fetch_forecast_summary(office_code: str) -> FeedEvent:
         times = series.get("timeDefines", [])
         area = series["areas"][0]
         weathers = area.get("weathers", [])
-        for t, w in zip(times, weathers):
+        for t, w in zip(times, weathers, strict=False):
             lines.append(f"{t}: {w}")
         area_name = area.get("area", {}).get("name", "")
     except (KeyError, IndexError, TypeError):
         area_name = ""
         lines.append("forecast structure not recognized; see source URL")
     return FeedEvent(
-        ts=datetime.now(timezone.utc),
+        ts=datetime.now(UTC),
         kind=FeedEventKind.jma_forecast,
         area_code=office_code,
         area_name=area_name,
         title=f"JMA 3-day forecast ({area_name})",
         body="\n".join(lines),
-        source=Source(name="JMA forecast feed", url=url, retrieved_at=datetime.now(timezone.utc)),
+        source=Source(name="JMA forecast feed", url=url, retrieved_at=datetime.now(UTC)),
     )
 
 
 def _parse_dt(value: str | None) -> datetime:
     if not value:
-        return datetime.now(timezone.utc)
+        return datetime.now(UTC)
     try:
         return datetime.fromisoformat(value)
     except ValueError:
-        return datetime.now(timezone.utc)
+        return datetime.now(UTC)

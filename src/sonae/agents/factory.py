@@ -24,8 +24,6 @@ from sonae.tools.gov_data_tools import (
     assess_hazards_at_point,
     find_evacuation_sites,
     geocode_address,
-    get_active_warnings,
-    get_forecast,
 )
 
 _GOV_TOOLS = [geocode_address, assess_hazards_at_point, find_evacuation_sites]

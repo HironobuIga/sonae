@@ -41,11 +41,13 @@ build-backend = "hatchling.build"
 packages = ["src/sonae"]
 
 [tool.ruff]
-line-length = 110
+line-length = 125
 target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
+# UP042/UP047: keep (str, Enum) and TypeVar style for Pydantic/py312 compatibility
+ignore = ["UP042", "UP047"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

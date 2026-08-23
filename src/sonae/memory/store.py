@@ -14,7 +14,7 @@ where state lives. One directory per household:
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypeVar
 
@@ -77,7 +77,7 @@ class HouseholdStore:
 
     def log_event(self, kind: str, detail: dict) -> None:
         w = self.load_watch()
-        w.history.append({"ts": datetime.now(timezone.utc).isoformat(), "kind": kind, **detail})
+        w.history.append({"ts": datetime.now(UTC).isoformat(), "kind": kind, **detail})
         self.save_watch(w)
 
     # -- check-ins ---------------------------------------------------------

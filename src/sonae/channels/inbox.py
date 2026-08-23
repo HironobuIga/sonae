@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from sonae.memory.store import HouseholdStore
 from sonae.schemas import Household, Notification
@@ -18,7 +18,7 @@ class InboxChannel:
         inbox = json.loads(path.read_text()) if path.exists() else []
         inbox.append(
             {
-                "ts": datetime.now(timezone.utc).isoformat(),
+                "ts": datetime.now(UTC).isoformat(),
                 "to_member": notification.to_member,
                 "subject": notification.subject,
                 "body": notification.body,

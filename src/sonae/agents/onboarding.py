@@ -18,7 +18,7 @@ becomes false) or when the node-execution cap is hit.
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from strands.multiagent.graph import GraphState
 
@@ -67,7 +67,7 @@ def _task(household: Household) -> str:
         "(if a verification report with a revision_request is present in your "
         "input, apply it). Verifier: audit the plan against official data.\n\n"
         f"Household JSON:\n{household.model_dump_json(indent=1)}\n\n"
-        f"Current date: {datetime.now(timezone.utc).date().isoformat()}"
+        f"Current date: {datetime.now(UTC).date().isoformat()}"
     )
 
 

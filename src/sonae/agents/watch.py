@@ -16,7 +16,7 @@ Safety posture:
 
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 
 from pydantic import BaseModel
 
@@ -95,7 +95,7 @@ def _fallback_notifications(events: list[FeedEvent], store: HouseholdStore) -> N
             )
             for m in members
         ],
-        composed_at=datetime.now(timezone.utc),
+        composed_at=datetime.now(UTC),
     )
 
 
@@ -111,7 +111,7 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
     watch = store.load_watch()
     fresh = [e for e in events if _event_key(e) not in watch.seen_event_keys]
     if not fresh:
-        watch.last_checked = datetime.now(timezone.utc)
+        watch.last_checked = datetime.now(UTC)
         store.save_watch(watch)
         return WatchOutcome(processed_events=0, note="no new events")
 
@@ -129,7 +129,7 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
     )
 
     watch.seen_event_keys.extend(_event_key(e) for e in fresh)
-    watch.last_checked = datetime.now(timezone.utc)
+    watch.last_checked = datetime.now(UTC)
     store.save_watch(watch)
     store.log_event(
         "sentinel_decision",
@@ -157,7 +157,7 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
         f"Triggering events:\n{_events_block(fresh)}"
     )
     batch = _invoke_json(messenger, compose_prompt, NotificationBatch)
-    batch.composed_at = datetime.now(timezone.utc)
+    batch.composed_at = datetime.now(UTC)
     batch.alert_level = decision.alert_level
 
     verifier = factory.make_verifier(audit, with_tools=False)
@@ -181,7 +181,7 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
             "Fix exactly that and re-emit the JSON.",
             NotificationBatch,
         )
-        batch.composed_at = datetime.now(timezone.utc)
+        batch.composed_at = datetime.now(UTC)
         batch.alert_level = decision.alert_level
         report = _invoke_json(
             verifier,
