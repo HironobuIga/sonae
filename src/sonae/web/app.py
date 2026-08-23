@@ -232,7 +232,7 @@ def checkin(req: CheckInRequest) -> dict:
 
 
 def _report_path(circle_id: str):
-    return settings.store_dir / "_circles" / f"{circle_id}_report.json"
+    return settings.store_dir / "_circles" / f"{circle_id}.report.json"
 
 
 @app.get("/api/circle/{circle_id}")

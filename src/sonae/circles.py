@@ -32,11 +32,16 @@ def load_circle(circle_id: str) -> Circle | None:
     path = _circles_dir() / f"{circle_id}.json"
     if not path.exists():
         return None
-    return Circle.model_validate_json(path.read_text())
+    try:
+        return Circle.model_validate_json(path.read_text())
+    except Exception:
+        return None  # not a circle definition (e.g. a stored report)
 
 
 def list_circles() -> list[str]:
-    return sorted(p.stem for p in _circles_dir().glob("*.json"))
+    return sorted(
+        p.stem for p in _circles_dir().glob("*.json") if not p.name.endswith(".report.json")
+    )
 
 
 def circle_board(circle: Circle) -> list[dict]:
