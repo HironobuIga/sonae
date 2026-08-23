@@ -58,8 +58,10 @@ decisions.
   national designated-evacuation-site registry (per-hazard suitability flags under the Disaster
   Countermeasures Basic Act); and the statutory hazard-map raster tiles, which we sample at the
   home's coordinates and decode against the official depth legend.
-- **Amazon Bedrock** (Claude Sonnet 4.5) for all agents; **Amazon Bedrock AgentCore Runtime** for
-  cloud deployment with an EventBridge Scheduler heartbeat making the Sentinel ambient.
+- **Amazon Bedrock** (Claude Sonnet 4.5) for all agents; **Amazon Bedrock AgentCore Runtime** hosts
+  the team in production — deployed with the AgentCore CLI (CDK) as a bring-your-own container, with
+  an EventBridge Scheduler heartbeat making the Sentinel ambient. The same payload-selected
+  entrypoint serves onboarding, watch cycles, and replay.
 - **The replay engine** — our demo replays Typhoon Hagibis minute-by-minute from the official
   chronology in Nagano City's disaster-response verification report (15 river flood-forecast
   bulletins and every municipal evacuation order, pp. 24–28), driving the identical pipeline that
@@ -67,11 +69,15 @@ decisions.
 
 ## Challenges
 
-- **An agent must not hallucinate in this domain.** Our first live run proved the point: the
-  Planner invented a plausible city phone number, and the Verifier caught it before it shipped.
-  We kept that behavior and hardened the loop: the verifier accepts the official alert-level
-  equivalence table as ground truth, rejects only contradictions or unsupported safety-critical
-  specifics, and must phrase rejections as mechanical edits.
+- **An agent must not hallucinate in this domain.** Our live runs proved the point twice. First,
+  the Planner invented a plausible city phone number — the Verifier caught it before it shipped.
+  Later, at the replay's pivotal moment (the 15:30 emergency warning), the Messenger's draft
+  subject line claimed an "evacuation order" that no municipality had issued yet — the Verifier
+  rejected it, demanded a mechanical fix, and the corrected message went out verified, minutes
+  later, still hours ahead of the real order. We hardened the loop from these failures: the
+  verifier accepts the official alert-level equivalence table as ground truth, rejects only
+  contradictions or unsupported safety-critical specifics, and must phrase rejections as
+  mechanical edits.
 - **Point-querying hazard maps.** There is no API for "flood depth at this coordinate" — we
   sample the national hazard-tile rasters and decode the official legend colors, validated
   against the 2020 Kuma River flood zone.
