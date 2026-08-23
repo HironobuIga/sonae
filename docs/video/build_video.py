@@ -92,10 +92,16 @@ def main() -> None:
             if not img.exists():
                 raise SystemExit(f"missing frame: {img}")
             part = WORK / f"{seg['id']}_{i}.mp4"
-            vf = (
-                "crop=3200:1800:0:0,scale=1920:1080" if vis.startswith("cap_")
-                else "scale=1920:1080"
-            )
+            import struct
+
+            with open(img, "rb") as fh:
+                w, h = struct.unpack(">II", fh.read(33)[16:24])
+            if (w, h) == (1920, 1080) or abs(w / h - 16 / 9) < 0.01:
+                vf = "scale=1920:1080"
+            elif w >= 3200 and h >= 1800:
+                vf = "crop=3200:1800:0:0,scale=1920:1080"  # raw UI capture, top-anchored 16:9
+            else:
+                vf = "scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:color=#05080f"
             run(["ffmpeg", "-y", "-loop", "1", "-t", f"{per:.3f}", "-i", str(img),
                  "-vf", vf + ",format=yuv420p", "-r", str(FPS),
                  "-c:v", "libx264", "-preset", "medium", "-crf", "18", str(part)])
