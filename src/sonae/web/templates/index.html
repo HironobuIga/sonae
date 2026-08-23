@@ -540,6 +540,11 @@ function renderFeed(journal){
         what = j.triggered ? `ACTIVATE L${j.level} — ${esc((j.reasoning||"").slice(0,110))}` : `stand by — ${esc((j.reasoning||"").slice(0,90))}`; break;
       case "notifications_sent": who="dispatch"; cls="big";
         what = `${j.count} notification(s) at L${j.level} ${j.verified?"[verified ✓]":"[fallback relay]"}`; break;
+      case "verification": who="verifier"; cls = j.approved ? "" : "big";
+        what = j.approved ? `pass ${j.attempt}: APPROVED (${j.checks} claims)`
+          : `pass ${j.attempt}: REJECTED — ${esc(((j.unsupported||[])[0]||j.revision_request||"").slice(0,90))}`; break;
+      case "checkins_opened": who="dispatch"; cls="big"; what = `safety check-ins opened for ${j.members} member(s) at L${j.level}`; break;
+      case "checkin": who="checkin"; what = `${esc(j.member)} → ${esc(j.status)}${j.note?` (${esc(j.note.slice(0,50))})`:""}`; break;
       case "replay_moment": who="replay"; what = `${(j.sim_time||"").slice(5,16)} · ${(j.events||[]).join("; ").slice(0,90)}`; break;
       case "replay_outcome": who="replay"; what = esc(j.note||""); break;
       case "onboarding_started": who="graph"; cls="big"; what = `onboarding started for ${esc(j.address||"")}`; break;

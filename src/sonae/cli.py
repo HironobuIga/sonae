@@ -93,9 +93,12 @@ def cmd_status(args: argparse.Namespace) -> int:
 def cmd_replay(args: argparse.Namespace) -> int:
     from sonae.agents.watch import process_events
 
+    from sonae.channels.inbox import InboxChannel
+    from sonae.channels.multi import MultiChannel
+
     store = HouseholdStore(args.household)
     scenario = load_scenario(args.scenario)
-    channel = ConsoleChannel()
+    channel = MultiChannel([ConsoleChannel(), InboxChannel(store)])
     print("=" * 72)
     print(f"REPLAY: {scenario.title}")
     print(scenario.disclaimer)
@@ -128,7 +131,10 @@ def cmd_watch(args: argparse.Namespace) -> int:
     if household is None:
         print("unknown household; run onboarding first", file=sys.stderr)
         return 1
-    channel = ConsoleChannel()
+    from sonae.channels.inbox import InboxChannel
+    from sonae.channels.multi import MultiChannel
+
+    channel = MultiChannel([ConsoleChannel(), InboxChannel(store)])
     print(f"Watching JMA feeds for {household.pref_name}{household.muni_name} "
           f"(office {household.jma_office_code}) every {args.interval}s. Ctrl-C to stop.")
     while True:
