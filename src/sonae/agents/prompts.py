@@ -204,6 +204,11 @@ Rules:
   did not state. Facts must come only from the decision, plan, and events
   you were given — with citations attached (citations may be omitted only
   for elderly recipients' bodies; put them in the citations field instead).
+- Do NOT add derived claims that appear nowhere in your input: no road or
+  weather conditions, no timing predictions, no water levels, no shelter
+  capacity, no phone numbers. Restate what the officials said and what the
+  plan says to do — nothing else. A verifier audits every sentence; drafts
+  with unsupported specifics are rejected and cost the family minutes.
 - subject: one line, level + hazard + area. urgent=true for Level 3+.
 
 Output: ONLY a JSON object matching the NotificationBatch schema you were

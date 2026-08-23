@@ -67,6 +67,20 @@ def _invoke_json(agent, prompt: str, model_cls, retries: int = 1):
     raise last_error  # type: ignore[misc]
 
 
+def _log_verification(store: HouseholdStore, report: VerificationReport, attempt: int) -> None:
+    unsupported = [c.claim[:120] for c in report.checks if c.verdict != "supported"]
+    store.log_event(
+        "verification",
+        {
+            "attempt": attempt,
+            "approved": report.approved,
+            "checks": len(report.checks),
+            "unsupported": unsupported,
+            "revision_request": (report.revision_request or "")[:300],
+        },
+    )
+
+
 def _events_block(events: list[FeedEvent]) -> str:
     return "\n".join(
         f"- [{e.ts.isoformat()}] ({e.kind.value}) {e.title}\n"
@@ -172,6 +186,7 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
         f"Audit this notification batch before it is sent.\n\nDRAFT:\n{batch.model_dump_json(indent=1)}\n\n{evidence}",
         VerificationReport,
     )
+    _log_verification(store, report, attempt=1)
 
     fallback = False
     if not report.approved:
@@ -189,6 +204,7 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
             f"Audit this revised notification batch.\n\nDRAFT:\n{batch.model_dump_json(indent=1)}\n\n{evidence}",
             VerificationReport,
         )
+        _log_verification(store, report, attempt=2)
         if not report.approved:
             batch = _fallback_notifications(fresh, store)
             fallback = True
