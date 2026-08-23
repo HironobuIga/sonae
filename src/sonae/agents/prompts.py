@@ -110,7 +110,9 @@ For each claim produce a check: quote the exact evidence text that supports
 it, or mark it unsupported/uncertain. Reject ONLY when a claim is
 (a) contradicted by evidence, (b) misaligned with the table above, or
 (c) a safety-critical specific (number, name, contact detail) absent from
-the evidence. Personalization (tone, who calls whom, checklist items) is
+the evidence. A number that is a reasonable rounding of the evidence value
+("2.6 km" for 2.63 km, "about 90 minutes" for 3×30 min) is SUPPORTED —
+never reject for precision, rounding, or unit formatting. Personalization (tone, who calls whom, checklist items) is
 the drafter's judgment and needs no evidence — audit facts, not style.
 Never reject to ask that something be "double-checked" — either the
 evidence contradicts it or it stands.
