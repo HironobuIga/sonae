@@ -19,8 +19,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
+from sonae import circles
 from sonae.channels.inbox import InboxChannel
-from sonae.config import REPO_ROOT
+from sonae.config import REPO_ROOT, settings
 from sonae.datasources.replay import ReplayClock, load_scenario
 from sonae.memory.store import HouseholdStore
 
@@ -47,6 +48,14 @@ def index() -> str:
     return _TEMPLATE.read_text()
 
 
+def _find_circle(household: str):
+    for cid in circles.list_circles():
+        c = circles.load_circle(cid)
+        if c and household in c.household_ids:
+            return c
+    return None
+
+
 @app.get("/api/state")
 def state(household: str) -> dict:
     store = HouseholdStore(household)
@@ -55,7 +64,10 @@ def state(household: str) -> dict:
     profile = store.load_hazard_profile()
     watch = store.load_watch()
     clock = _replay_clocks.get(household)
+    circle = _find_circle(household)
     return {
+        "checkins": [json.loads(c.model_dump_json()) for c in store.load_checkins()],
+        "circle": circle.circle_id if circle else None,
         "household": json.loads(h.model_dump_json()) if h else None,
         "profile": json.loads(profile.model_dump_json()) if profile else None,
         "plan": json.loads(plan.model_dump_json()) if plan else None,
@@ -178,3 +190,76 @@ def replay_step(req: ReplayStepRequest) -> dict:
 
     threading.Thread(target=work, daemon=True).start()
     return {"stepped": True, "sim_time": batch[0].ts.isoformat(), "events": [e.title for e in batch]}
+
+# ---------------------------------------------------------------------------
+# Safety check-ins & neighborhood circle mode
+# ---------------------------------------------------------------------------
+
+
+class CheckInRequest(BaseModel):
+    household: str
+    member: str
+    status: str  # safe | needs_help
+    note: str | None = None
+
+
+@app.post("/api/checkin")
+def checkin(req: CheckInRequest) -> dict:
+    board = circles.record_checkin(req.household, req.member, req.status, req.note)
+    return {"checkins": [json.loads(c.model_dump_json()) for c in board]}
+
+
+def _report_path(circle_id: str):
+    return settings.store_dir / "_circles" / f"{circle_id}_report.json"
+
+
+@app.get("/api/circle/{circle_id}")
+def circle_state(circle_id: str) -> dict:
+    circle = circles.load_circle(circle_id)
+    if circle is None:
+        raise HTTPException(404, "unknown circle")
+    board = circles.circle_board(circle)
+    report_path = _report_path(circle_id)
+    report = json.loads(report_path.read_text()) if report_path.exists() else None
+    return {
+        "circle": json.loads(circle.model_dump_json()),
+        "board": board,
+        "counts": circles.board_counts(board),
+        "report": report,
+        "busy": _busy.get(f"circle:{circle_id}"),
+    }
+
+
+class CircleReportRequest(BaseModel):
+    circle_id: str
+
+
+@app.post("/api/circle/report")
+def circle_report(req: CircleReportRequest) -> dict:
+    circle = circles.load_circle(req.circle_id)
+    if circle is None:
+        raise HTTPException(404, "unknown circle")
+    key = f"circle:{req.circle_id}"
+    if _busy.get(key):
+        raise HTTPException(409, "report already being composed")
+
+    def work() -> None:
+        _set_busy(key, "coordinator-report")
+        try:
+            from datetime import UTC, datetime
+
+            report = circles.compose_report(circle)
+            _report_path(req.circle_id).write_text(
+                json.dumps(
+                    {"composed_at": datetime.now(UTC).isoformat(), **json.loads(report.model_dump_json())},
+                    ensure_ascii=False,
+                    indent=1,
+                )
+            )
+        except Exception:
+            pass  # visible via missing report; coordinator retries are manual
+        finally:
+            _set_busy(key, None)
+
+    threading.Thread(target=work, daemon=True).start()
+    return {"started": True}

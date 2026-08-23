@@ -183,6 +183,29 @@
   .bubble .when{position:absolute;top:7px;right:9px;font-family:var(--mono);font-size:8px;color:var(--faint)}
   @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
   .phone .empty{min-height:200px;display:grid;place-items:center}
+  .ciBtns{display:flex;gap:6px;padding:8px}
+  .ciBtn{flex:1;border:1px solid var(--line2);border-radius:9px;background:var(--panel2);color:var(--text);
+         font-family:var(--sans);font-size:10px;font-weight:700;padding:7px 4px;cursor:pointer}
+  .ciBtn.safe{border-color:var(--green);color:var(--green)}
+  .ciBtn.help{border-color:var(--red);color:#ffb3a7}
+  .ciStatus{margin:4px 8px;text-align:center;font-size:10px;font-weight:700;border-radius:8px;padding:6px}
+  .ciStatus.safe{background:rgba(61,220,151,.12);color:var(--green)}
+  .ciStatus.needs_help{background:rgba(255,90,90,.15);color:#ffb3a7}
+
+  /* ---------- neighborhood circle ---------- */
+  .counts{display:flex;gap:8px;margin-bottom:12px;font-size:11px}
+  .cnt{flex:1;text-align:center;border:1px solid var(--line);border-radius:9px;padding:7px 4px;background:var(--panel2)}
+  .cnt b{display:block;font-family:var(--mono);font-size:16px}
+  .cnt.safe b{color:var(--green)} .cnt.help b{color:var(--red)} .cnt.wait b{color:var(--amber)}
+  .hhrow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px dashed #14203a;font-size:11.5px}
+  .hhrow .addr{color:var(--dim);font-size:10px;margin-left:auto;text-align:right}
+  .pdot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-left:3px;vertical-align:-1px}
+  .pdot.safe{background:var(--green)} .pdot.needs_help{background:var(--red);animation:blink 1s infinite}
+  .pdot.pending{background:#2b3c60} .pdot.no_response{background:var(--amber)}
+  .report{border:1px solid var(--line2);border-radius:10px;background:var(--panel2);padding:10px 12px;margin-top:10px;font-size:11.5px;line-height:1.6}
+  .report b.head{display:block;font-size:12.5px;margin-bottom:4px;color:var(--cyan)}
+  .report .sec{margin-top:6px;color:var(--dim);font-size:10px;letter-spacing:.1em}
+  .report li{margin:2px 0}
 
   /* ---------- activity ---------- */
   .feed{max-height:300px;overflow-y:auto;font-family:var(--mono);font-size:10.5px}
@@ -268,6 +291,11 @@
       <div class="hd"><span class="t">FAMILY PHONES</span><span class="ja">家族への通知</span>
         <span class="right">verified before send</span></div>
       <div class="bd"><div class="phones" id="phones"></div></div>
+    </div>
+    <div class="card" id="circleCard" style="display:none">
+      <div class="hd"><span class="t">NEIGHBORHOOD</span><span class="ja">自主防災会</span>
+        <span class="right" id="circleName"></span></div>
+      <div class="bd" id="circleBody"></div>
     </div>
     <div class="card">
       <div class="hd"><span class="t">AGENT ACTIVITY</span><span class="ja">フライトレコーダー</span></div>
@@ -434,8 +462,21 @@ function renderPhones(s){
   const inbox = s.inbox || [];
   const byMember = {};
   for(const n of inbox) (byMember[n.to_member] = byMember[n.to_member] || []).push(n);
+  const ci = {};
+  for(const c of (s.checkins||[])) ci[c.member] = c;
   $("phones").innerHTML = h.members.map((m,i) => {
     const msgs = (byMember[m.name]||[]).slice(-2);
+    const c = ci[m.name];
+    let ciHtml = "";
+    if(c && c.status === "pending"){
+      const jp = m.preferred_language === "ja";
+      ciHtml = `<div class="ciBtns">
+        <button class="ciBtn safe" onclick="sendCheckin('${esc(m.name)}','safe')">${jp?"✓ 無事です":"✓ I'm safe"}</button>
+        <button class="ciBtn help" onclick="sendCheckin('${esc(m.name)}','needs_help')">${jp?"⚠ 助けが必要":"⚠ Need help"}</button>
+      </div>`;
+    } else if(c && (c.status === "safe" || c.status === "needs_help")){
+      ciHtml = `<div class="ciStatus ${c.status}">${c.status==="safe"?"✓ SAFE · 無事":"⚠ NEEDS HELP · 要支援"}</div>`;
+    }
     return `<div class="phone"><div class="screen">
       <div class="notch"></div>
       <div class="statusbar"><span>${new Date().toTimeString().slice(0,5)}</span><span>📶 ▂▄▆</span></div>
@@ -447,8 +488,46 @@ function renderPhones(s){
           ${n.citations&&n.citations.length?`<div class="cite">📎 ${n.citations.map(c=>esc(c.name)).join(" · ")}</div>`:""}
         </div>`).join("") || '<div class="empty">quiet ·<br>そなえは見守り中</div>'}
       </div>
+      ${ciHtml}
     </div></div>`;
   }).join("");
+}
+
+async function sendCheckin(member, status){
+  await post("/api/checkin", {household: HOUSEHOLD, member, status});
+}
+
+let circleTick = 0;
+async function renderCircle(circleId){
+  const card = $("circleCard");
+  if(!circleId){ card.style.display = "none"; return; }
+  card.style.display = "";
+  if(circleTick++ % 2 !== 0) return;  // poll circle at half rate
+  try{
+    const c = await (await fetch(`/api/circle/${circleId}`)).json();
+    $("circleName").textContent = `${c.circle.name} · coord: ${c.circle.coordinator}`;
+    const k = c.counts;
+    let html = `<div class="counts">
+      <div class="cnt safe"><b>${k.safe||0}</b>safe</div>
+      <div class="cnt help"><b>${k.needs_help||0}</b>needs help</div>
+      <div class="cnt wait"><b>${(k.pending||0)+(k.no_response||0)}</b>unconfirmed</div>
+      <div class="cnt"><b>${k.total||0}</b>members</div>
+    </div>`;
+    html += c.board.map(row => `<div class="hhrow"><b>${esc(row.household_id)}</b>
+      ${row.members.map(m=>`<span class="pdot ${m.status}" title="${esc(m.member)}: ${m.status}"></span>`).join("")}
+      <span class="addr">${esc(row.address.replace("長野県長野市",""))}</span></div>`).join("");
+    html += `<div style="margin-top:10px;display:flex;gap:8px;align-items:center">
+      <button class="btn" onclick="post('/api/circle/report',{circle_id:'${circleId}'})" ${c.busy?"disabled":""}>
+        ${c.busy?"⏳ composing…":"📋 Compose coordinator report"}</button></div>`;
+    if(c.report){
+      html += `<div class="report"><b class="head">${esc(c.report.headline)}</b>${esc(c.report.summary)}
+        ${c.report.needs_help&&c.report.needs_help.length?`<div class="sec">NEEDS HELP</div><ul>${c.report.needs_help.map(x=>`<li>⚠ ${esc(x)}</li>`).join("")}</ul>`:""}
+        ${c.report.unresponsive&&c.report.unresponsive.length?`<div class="sec">VISIT / CALL</div><ul>${c.report.unresponsive.map(x=>`<li>👣 ${esc(x)}</li>`).join("")}</ul>`:""}
+        ${c.report.next_actions&&c.report.next_actions.length?`<div class="sec">NEXT ACTIONS</div><ol>${c.report.next_actions.map(x=>`<li>${esc(x)}</li>`).join("")}</ol>`:""}
+      </div>`;
+    }
+    $("circleBody").innerHTML = html;
+  }catch(e){/* keep old render */}
 }
 
 function renderFeed(journal){
@@ -489,6 +568,7 @@ async function tick(){
     renderRisk(s);
     renderPlan(s, level);
     renderPhones(s);
+    renderCircle(s.circle);
     renderFeed(s.journal);
     if(s.household){ initMap(s.household, s.profile, s.plan); drawShelters(s.profile, s.plan); }
     $("busy").classList.toggle("show", !!s.busy);

@@ -14,6 +14,7 @@ from sonae.agents.audit import AuditHook
 from sonae.agents.jsonio import schema_block
 from sonae.config import make_model
 from sonae.schemas import (
+    CircleReport,
     HazardProfile,
     NotificationBatch,
     SentinelDecision,
@@ -79,6 +80,17 @@ def make_sentinel(audit: AuditHook | None = None) -> Agent:
         description="Watch officer; decides if official feed events activate the family plan",
         model=make_model(),
         system_prompt=_with_schema(prompts.SENTINEL, SentinelDecision),
+        hooks=[audit] if audit else None,
+        callback_handler=None,
+    )
+
+
+def make_coordinator(audit: AuditHook | None = None) -> Agent:
+    return Agent(
+        name="coordinator",
+        description="Consolidates neighborhood safety check-ins into an actionable coordinator report",
+        model=make_model(),
+        system_prompt=_with_schema(prompts.COORDINATOR, CircleReport),
         hooks=[audit] if audit else None,
         callback_handler=None,
     )

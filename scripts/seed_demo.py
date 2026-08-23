@@ -1,14 +1,18 @@
-"""Seed a realistic household store for UI development and screenshots.
+"""Seed demo fixtures for UI development and the neighborhood-circle demo.
 
-Uses the real data layer (geocoding, hazard tiles, shelter data) for every
-fact; the plan/notification texts are handcrafted fixtures standing in for
-agent output until a model provider is configured. Clearly labeled — the
-live pipeline overwrites all of this.
+SAFETY: this script NEVER overwrites a real (agent-generated) plan unless
+--force is passed. With a real plan present, only the additive parts run
+(neighborhood circle fixtures).
 
-    uv run python scripts/seed_demo.py [--mid-storm]
+    uv run python scripts/seed_demo.py [--mid-storm] [--circle] [--force]
 
---mid-storm additionally sets the watch to Level 3 with notifications in
-each phone, replicating the state mid-replay (for design work).
+--mid-storm  set watch to Level 3 with sample notifications (UI design work;
+             requires no real plan, or --force)
+--circle     create the Naganuma neighborhood circle: 5 fixture neighbor
+             households with mixed check-in states (additive; the Coordinator
+             agent composes its report from this board — board data is demo
+             input, the report is real agent output)
+--force      allow overwriting a real plan with fixtures
 """
 
 from __future__ import annotations
@@ -23,9 +27,14 @@ from sonae.cli import build_household  # noqa: E402
 from sonae.datasources import gsi_hazard, gsi_shelters  # noqa: E402
 from sonae.memory.store import HouseholdStore  # noqa: E402
 from sonae.schemas import (  # noqa: E402
+    CheckIn,
+    CheckInStatus,
+    Circle,
+    FamilyMember,
     HazardAssessment,
     HazardProfile,
     HazardType,
+    Household,
     Notification,
     Source,
     TimelineAction,
@@ -33,155 +42,186 @@ from sonae.schemas import (  # noqa: E402
     TimelineStep,
 )
 
-MID_STORM = "--mid-storm" in sys.argv
 
-raw = json.loads(open("examples/aoki_family.json").read())
-household = build_household(raw)
-store = HouseholdStore(household.household_id)
-store.save_household(household)
-print(f"household: {household.address} -> {household.lat},{household.lon}")
-
-# --- hazard profile from the real data layer --------------------------------
-depth = gsi_hazard.lookup_depth(HazardType.flood, household.lat, household.lon)
-landslide = gsi_hazard.lookup_landslide(household.lat, household.lon)
-muni = household.pref_name + household.muni_name
-flood_sites = gsi_shelters.nearest_shelters(household.lat, household.lon, muni, hazard=HazardType.flood, limit=5)
-quake_sites = gsi_shelters.nearest_shelters(household.lat, household.lon, muni, hazard=HazardType.earthquake, limit=3)
-
-hazard_src = gsi_hazard.hazard_source()
-assessments = [
-    HazardAssessment(
-        hazard=HazardType.flood,
-        at_risk=depth is not None,
-        severity=f"expected flood depth {depth.label_en} ({depth.label_ja})" if depth else None,
-        detail="Largest-scale statutory inundation scenario for the Chikuma River system.",
+def seed_fixture_plan(store: HouseholdStore, household: Household) -> None:
+    """Fixture hazard profile + plan (real data facts, handcrafted plan text)."""
+    depth = gsi_hazard.lookup_depth(HazardType.flood, household.lat, household.lon)
+    landslide = gsi_hazard.lookup_landslide(household.lat, household.lon)
+    muni = household.pref_name + household.muni_name
+    flood_sites = gsi_shelters.nearest_shelters(
+        household.lat, household.lon, muni, hazard=HazardType.flood, limit=5
+    )
+    quake_sites = gsi_shelters.nearest_shelters(
+        household.lat, household.lon, muni, hazard=HazardType.earthquake, limit=3
+    )
+    hazard_src = gsi_hazard.hazard_source()
+    profile = HazardProfile(
+        household_id=household.household_id,
+        assessments=[
+            HazardAssessment(
+                hazard=HazardType.flood,
+                at_risk=depth is not None,
+                severity=f"expected flood depth {depth.label_en} ({depth.label_ja})" if depth else None,
+                sources=[hazard_src],
+            ),
+            HazardAssessment(
+                hazard=HazardType.landslide,
+                at_risk=bool(landslide),
+                severity="; ".join(landslide) if landslide else None,
+                sources=[hazard_src],
+            ),
+            HazardAssessment(
+                hazard=HazardType.earthquake,
+                at_risk=True,
+                severity="baseline seismic risk; earthquake-suitable sites differ from flood sites",
+                sources=[Source(name="GSI designated evacuation site data", url="https://hinanmap.gsi.go.jp/")],
+            ),
+        ],
+        nearest_shelters=flood_sites
+        + [s for s in quake_sites if s.name not in {x.name for x in flood_sites}],
+        river_names=["千曲川 (Chikuma River)"],
+        summary=(
+            "FIXTURE (UI preview): home in the Chikuma River inundation zone, expected depth "
+            f"{depth.label_en if depth else 'n/a'}. Horizontal evacuation only; nearest flood-safe site "
+            f"{flood_sites[0].name} ({flood_sites[0].distance_km} km)."
+        ),
+        assessed_at=datetime.now(UTC),
+        caveats=[gsi_shelters.DATA_CAVEAT],
+    )
+    store.save_hazard_profile(profile)
+    plan = TimelinePlan(
+        household_id=household.household_id,
+        hazard_focus=[HazardType.flood],
+        steps=[
+            TimelineStep(
+                alert_level=level,
+                trigger=trigger,
+                headline=headline,
+                actions=[TimelineAction(member=m, description=d, estimated_minutes=e) for m, d, e in actions],
+            )
+            for level, trigger, headline, actions in [
+                (1, "早期注意情報 issued", "Get ready while the sky is clear",
+                 [("Yoshiko", "Charge phone; put medication in the go-bag", 15),
+                  ("Kenji", "Call Mom, confirm the go-bag is by the door", 10)]),
+                (2, "大雨・洪水注意報 / 氾濫注意情報", "Prepare to move early",
+                 [("Yoshiko", "Valuables upstairs; shoes and raincoat at the entrance", 20),
+                  ("Mika", "Check transport options to the evacuation site", 15)]),
+                (3, "氾濫警戒情報 / 高齢者等避難", "Yoshiko starts evacuating NOW",
+                 [("Yoshiko", "Leave for 北部スポーツ・レクリエーションパーク (allow 45 min)", 45),
+                  ("Kenji", "Call Mom, stay on the line until she is out the door", 20)]),
+                (4, "避難指示 / 氾濫危険情報", "Everyone confirms Yoshiko is OUT",
+                 [("Kenji", "Verify Mom is at the site; else call the city disaster line", 10)]),
+                (5, "氾濫発生情報 / 特別警報", "Life-saving action only",
+                 [("Yoshiko", "If not evacuated: highest nearby building immediately", 5)]),
+            ]
+        ],
+        primary_shelter=flood_sites[0],
+        backup_shelter=flood_sites[1] if len(flood_sites) > 1 else None,
+        vertical_evacuation_ok=False,
+        supply_checklist=["Water 3 days", "Medication", "Charger", "Cash", "Flashlight"],
         sources=[hazard_src],
-    ),
-    HazardAssessment(
-        hazard=HazardType.landslide,
-        at_risk=bool(landslide),
-        severity="; ".join(landslide) if landslide else None,
-        sources=[hazard_src],
-    ),
-    HazardAssessment(
-        hazard=HazardType.earthquake,
-        at_risk=True,
-        severity="baseline seismic risk; earthquake-suitable evacuation sites differ from flood sites",
-        sources=[Source(name="GSI designated evacuation site data", url="https://hinanmap.gsi.go.jp/")],
-    ),
-]
+        created_at=datetime.now(UTC),
+        family_approved=True,
+    )
+    store.save_plan(plan)
+    print(f"fixture plan: {len(plan.steps)} steps, primary={plan.primary_shelter.name}")
 
-profile = HazardProfile(
-    household_id=household.household_id,
-    assessments=assessments,
-    nearest_shelters=flood_sites + [s for s in quake_sites if s.name not in {x.name for x in flood_sites}],
-    river_names=["千曲川 (Chikuma River)"],
-    summary=(
-        "This home sits in the Chikuma River inundation zone with an expected flood depth of "
-        f"{depth.label_en if depth else 'n/a'} — deeper than a two-story house. Upper floors are NOT a refuge here; "
-        "horizontal evacuation before roads flood is the only safe plan. Nearest flood-safe site: "
-        f"{flood_sites[0].name} ({flood_sites[0].distance_km} km)."
-    ),
-    assessed_at=datetime.now(UTC),
-    caveats=[gsi_shelters.DATA_CAVEAT],
-)
-store.save_hazard_profile(profile)
-print(f"profile: flood={profile.assessments[0].severity}, {len(profile.nearest_shelters)} shelters")
 
-# --- fixture plan (stands in for Planner output until a model is wired) ------
-jma_src = Source(name="JMA warning feed", url="https://www.jma.go.jp/bosai/")
-plan = TimelinePlan(
-    household_id=household.household_id,
-    hazard_focus=[HazardType.flood],
-    steps=[
-        TimelineStep(
-            alert_level=1, trigger="Typhoon/heavy-rain outlook announced for Nagano (早期注意情報)",
-            headline="Get ready while the sky is clear",
-            actions=[
-                TimelineAction(member="Yoshiko", description="Charge phone; put medication and insurance card in the go-bag", estimated_minutes=15),
-                TimelineAction(member="Kenji", description="Call Mom, confirm the go-bag is packed and by the door", estimated_minutes=10),
-            ],
-        ),
-        TimelineStep(
-            alert_level=2, trigger="Heavy rain / flood advisory for Nagano City (大雨・洪水注意報)",
-            headline="Prepare to move early",
-            actions=[
-                TimelineAction(member="Yoshiko", description="Put valuables upstairs; set shoes and raincoat at the entrance", estimated_minutes=20),
-                TimelineAction(member="Mika", description="Check bus/taxi options to the evacuation site; brief the neighbor", estimated_minutes=15),
-            ],
-        ),
-        TimelineStep(
-            alert_level=3, trigger="氾濫警戒情報 for the Chikuma River OR 高齢者等避難 for Nagano City",
-            headline="Yoshiko starts evacuating NOW — this level exists for her",
-            actions=[
-                TimelineAction(member="Yoshiko", description="Leave for 北部スポーツ・レクリエーションパーク with the go-bag (allow 45 min for the walk — knees)", estimated_minutes=45),
-                TimelineAction(member="Kenji", description="Call Mom and stay on the line until she is out the door; arrange the neighbor's car if it is raining hard", estimated_minutes=20),
-                TimelineAction(member="Mika", description="Confirm arrival at the site; report status in the family chat", estimated_minutes=10),
-            ],
-        ),
-        TimelineStep(
-            alert_level=4, trigger="避難指示 for Naganuma/Hoyasu OR 氾濫危険情報 (Tategahana gauge)",
-            headline="Everyone confirms Yoshiko is OUT — no one enters the zone",
-            actions=[
-                TimelineAction(member="Kenji", description="Verify Mom is at the evacuation site; if not, call 026-xxx and the neighbor immediately", estimated_minutes=10),
-                TimelineAction(member="Mika", description="Stop any plan to drive toward Naganuma; monitor official updates only", estimated_minutes=5),
-            ],
-        ),
-        TimelineStep(
-            alert_level=5, trigger="氾濫発生情報 / 大雨特別警報 (life-threatening situation)",
-            headline="Life-saving action only",
-            actions=[
-                TimelineAction(member="Yoshiko", description="If NOT yet evacuated: do not travel far — go to the highest nearby building immediately", estimated_minutes=5),
-                TimelineAction(member="Kenji", description="Call 119 only for life-threatening emergency; keep the line free otherwise", estimated_minutes=5),
-            ],
-        ),
-    ],
-    primary_shelter=flood_sites[0],
-    backup_shelter=flood_sites[1] if len(flood_sites) > 1 else None,
-    vertical_evacuation_ok=False,
-    supply_checklist=[
-        "Drinking water 3 days (9 L)", "Yoshiko's knee & blood-pressure medication (1 week)",
-        "Phone charger + battery", "Cash (small bills)", "Insurance/ID copies in waterproof bag",
-        "Flashlight + spare batteries", "Warm layer and rain poncho",
-    ],
-    sources=[hazard_src, jma_src, Source(name="Cabinet Office: My-Timeline guidance", url="https://www.bousai.go.jp/")],
-    created_at=datetime.now(UTC),
-    family_approved=True,
-)
-store.save_plan(plan)
-print(f"plan: {len(plan.steps)} steps, primary={plan.primary_shelter.name}")
-
-# --- journal + optional mid-storm state --------------------------------------
-store.log_event("onboarding_complete", {"nodes_executed": ["cartographer", "planner", "verifier"], "hazards_at_risk": ["flood"], "checks": 9})
-store.log_event("plan_approved", {"by": "family"})
-
-if MID_STORM:
+def seed_mid_storm(store: HouseholdStore, household: Household) -> None:
     from sonae.channels.inbox import InboxChannel
-    from sonae.schemas import Household  # noqa: F401
 
     inbox = InboxChannel(store)
     inbox.clear()
     watch = store.load_watch()
     watch.activated_level = 3
     store.save_watch(watch)
-    store.log_event("replay_moment", {"sim_time": "2019-10-12T17:30:00+09:00", "events": ["Chikuma River flood forecast #3: flood WARNING (氾濫警戒情報)"]})
-    store.log_event("sentinel_decision", {"triggered": True, "level": 3, "reasoning": "氾濫警戒情報 for the Kuisege gauge is a Level-3-equivalent signal for the Chikuma riverside; the plan's L3 step names this exact trigger for Yoshiko's early evacuation.", "events": ["Chikuma River flood forecast #3"]})
+    src = Source(name="千曲川洪水予報第3号 (JMA/MLIT)", url="https://www.jma.go.jp/bosai/")
     inbox.send(Notification(
         to_member="Yoshiko",
         subject="【そなえ】警戒レベル3・そろそろ避難を始めましょう",
-        body="よしこさん、千曲川に氾濫警戒情報が出ました。\n\n1. 玄関のリュックを持つ\n2. 北部スポーツ・レクリエーションパークへ出発(歩いて45分)\n3. 着いたら賢治さんに電話\n\nまだ明るいうちに、ゆっくりで大丈夫です。",
-        citations=[Source(name="千曲川洪水予報第3号 (JMA/MLIT)", url="https://www.jma.go.jp/bosai/")], urgent=True), household)
+        body=(
+            "よしこさん、千曲川に氾濫警戒情報が出ました。\n\n1. 玄関のリュックを持つ\n"
+            "2. 北部スポーツ・レクリエーションパークへ出発\n3. 着いたら賢治さんに電話\n\n"
+            "まだ明るいうちに、ゆっくりで大丈夫です。"
+        ),
+        citations=[src], urgent=True), household)
     inbox.send(Notification(
         to_member="Kenji",
         subject="[Sonae] L3 activated — call your mother now",
-        body="17:30 JST: Flood WARNING (氾濫警戒情報) issued for the Chikuma River — the Kuisege gauge is forecast to reach danger level around 19:00.\n\nYour tasks:\n• Call Mom now, stay on the line until she leaves\n• If rain is heavy, call the Satos about their car\n• Report back when she is en route",
-        citations=[Source(name="Chikuma River flood forecast #3 (JMA/MLIT)", url="https://www.jma.go.jp/bosai/")], urgent=True), household)
-    inbox.send(Notification(
-        to_member="Mika",
-        subject="[Sonae] L3 activated — confirm arrival",
-        body="Yoshiko is starting her evacuation to 北部スポーツ・レクリエーションパーク (2.6 km). Confirm her arrival by phone and post status in the family chat. Do not travel toward Naganuma tonight.",
-        citations=[Source(name="Chikuma River flood forecast #3 (JMA/MLIT)", url="https://www.jma.go.jp/bosai/")], urgent=False), household)
-    store.log_event("notifications_sent", {"level": 3, "count": 3, "verified": True, "fallback_relay": False})
-    print("mid-storm state: L3 + 3 notifications")
+        body=(
+            "17:30 JST: Flood WARNING issued for the Chikuma River.\n"
+            "• Call Mom now, stay on the line\n• Report back when she is en route"
+        ),
+        citations=[src], urgent=True), household)
+    print("mid-storm fixture state: L3 + notifications")
 
-print("seeded. Run: uv run uvicorn sonae.web.app:app --port 8000")
+
+def seed_circle(store: HouseholdStore, household: Household) -> None:
+    from sonae.circles import save_circle
+
+    neighbors = [
+        ("sato", "佐藤", [("Hiroshi", 81, "safe", None), ("Fumiko", 79, "safe", None)]),
+        ("tanaka", "田中", [("Kazuo", 74, "needs_help", "knee injury, cannot walk to shelter")]),
+        ("suzuki", "鈴木", [("Megumi", 45, "safe", None), ("Ren", 12, "safe", None)]),
+        ("takahashi", "高橋", [("Isamu", 88, "pending", None)]),
+        ("watanabe", "渡辺", [("Sachi", 70, "no_response", None), ("Goro", 72, "no_response", None)]),
+    ]
+    ids = [household.household_id]
+    for i, (hid, name_ja, members) in enumerate(neighbors):
+        n_store = HouseholdStore(hid)
+        n_store.save_household(Household(
+            household_id=hid,
+            address=f"長野県長野市穂保 {name_ja}宅",
+            lat=household.lat + (i - 2) * 0.0016,
+            lon=household.lon + (i - 2) * 0.0011,
+            muni_code=household.muni_code, muni_name=household.muni_name,
+            pref_name=household.pref_name, jma_office_code=household.jma_office_code,
+            jma_class20_code=household.jma_class20_code,
+            members=[FamilyMember(name=n, age=a, needs=(["mobility-limited"] if a >= 80 else []))
+                     for n, a, _, _ in members],
+        ))
+        n_store.save_checkins([
+            CheckIn(member=n, status=CheckInStatus(s), note=note, updated_at=datetime.now(UTC))
+            for n, _, s, note in members
+        ])
+        w = n_store.load_watch()
+        w.activated_level = 4
+        n_store.save_watch(w)
+        ids.append(hid)
+    save_circle(Circle(
+        circle_id="naganuma",
+        name="長沼地区自主防災会 (Naganuma District Disaster-Prevention Circle)",
+        coordinator="田村会長 (Chairman Tamura)",
+        household_ids=ids,
+    ))
+    print(f"circle 'naganuma' seeded with {len(ids)} households")
+
+
+def main() -> None:
+    raw = json.loads(open("examples/aoki_family.json").read())
+    household = build_household(raw)
+    store = HouseholdStore(household.household_id)
+
+    profile = store.load_hazard_profile()
+    real_plan_present = store.load_plan() is not None and "FIXTURE" not in ((profile.summary if profile else "") or "")
+    allow_fixtures = "--force" in sys.argv or not real_plan_present
+
+    if store.load_household() is None:
+        store.save_household(household)
+        print(f"household: {household.address} -> {household.lat},{household.lon}")
+
+    if allow_fixtures:
+        seed_fixture_plan(store, household)
+        if "--mid-storm" in sys.argv:
+            seed_mid_storm(store, household)
+    else:
+        print("REAL plan present for 'aoki' — fixture/mid-storm sections SKIPPED (use --force to overwrite).")
+
+    if "--circle" in sys.argv:
+        seed_circle(store, household)
+
+    print("done.")
+
+
+if __name__ == "__main__":
+    main()

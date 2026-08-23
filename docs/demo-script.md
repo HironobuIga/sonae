@@ -59,25 +59,36 @@ through the moments. Pace: linger where it matters.
   step one — charge the phone, pack the medication, while the sky is clear."
 - **10/12 13:40, 14:55** (quick): "Saturday afternoon: the river reaches advisory levels. Level 2.
   Valuables go upstairs."
-- **10/12 15:30** — 大雨特別警報 (pause): "3:30 PM: an emergency heavy-rain warning — the first in
-  Nagano's history. Watch the Sentinel: it doesn't panic, it maps the signal to the family's plan."
-- **10/12 17:30** — 氾濫警戒情報 (THE moment — slow down): "5:30 PM. The Chikuma River is forecast
-  to hit danger level by 7 PM. Level 3 equivalent. **This is the moment.**" — show the phones:
-  Yoshiko's message in Japanese, big simple steps; Kenji's in English: *call your mother now, stay
-  on the line.* Point at the citation footer. "Every sentence carries its official source, and a
-  Verifier signed off before it was sent. **It is still daylight.**"
-- **10/12 18:00–18:40** (advance): "By the time the city's blanket advisory arrives, Yoshiko is
-  already at the evacuation site — the one designated for floods, outside the inundation zone."
+- **10/12 15:30** — 大雨特別警報 (THE moment — slow down): "3:30 PM: an emergency heavy-rain
+  warning, the first in Nagano's history. Formally that's 'Level 5 equivalent' — but Sonae's
+  Sentinel knows what it operationally means: the roads are still dry, so this is the last, most
+  urgent push to finish evacuating. It activates Level 4: *complete the evacuation now.*" — show
+  the phones: Yoshiko's message in Japanese, big simple steps — すぐ避難; Kenji's in English:
+  *call your mother now, stay on the line.* Point at the citation footer. "Every sentence carries
+  its official source, and a Verifier signed off before it was sent. **It is still daylight.**"
+- **10/12 16:00 → 18:40** (advance briskly): "Then watch the discipline: landslide advisories for
+  other districts, river bulletins the plan already covers — the Sentinel stands by through all of
+  them. No spam. A family that trusts its agent is a family that acts when it speaks."
+- **10/12 20:50** — 氾濫発生情報 upstream (pause): "8:50 PM: the river starts coming over its
+  banks upstream. Level 5 — final confirmation that everyone is out, and no one goes back."
 - **10/12 23:40** (pause, let it land): "23:40. The official evacuation order. Darkness, driving
-  rain. This is when the real residents of Hoyasu were told to leave. Sonae's family had a
-  six-hour head start — from the same public information."
-- **10/13 01:15 → 02:12** (advance, quiet): "At 1:08 the river came over the levee at Hoyasu. By
-  dawn the neighborhood was under water to the rooftops. The plan's last step isn't evacuation —
-  it's making sure no one goes back in."
+  rain. This is when the real residents of Hoyasu were told to leave. Sonae's family had been
+  safe for **eight hours** — from the same public information."
+- **10/13 01:15 → 02:12** (advance, quiet): "At 1:08 the river came over the levee at Hoyasu
+  itself. By dawn the neighborhood was under water to the rooftops. The journal's last entries
+  read: *stand by — nothing left for Sonae to do.* The family was long safe."
 
-## 3:20–3:50 — Always on watch (live mode + memory)
+## 3:20–3:50 — The neighborhood, and always on watch
 
-Action: terminal split — `uv run sonae watch aoki --once` against today's real JMA feed; then show
+Action: scroll to the NEIGHBORHOOD card. Click a check-in button on Yoshiko's phone ("無事です"),
+watch the circle counts update; click "Compose coordinator report".
+
+> After the water, Japanese neighborhoods confirm safety with paper name lists carried door to
+> door. Sonae's circle mode replaces the paper, not the neighbors: live check-ins across member
+> households, and a Coordinator agent that tells the chairman exactly which door to knock on
+> first.
+
+Then: terminal split — `uv run sonae watch aoki --once` against today's real JMA feed; then show
 the flight-recorder journal.
 
 > This isn't a replay toy. The same pipeline watches the real JMA feeds for this exact warning

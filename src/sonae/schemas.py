@@ -245,3 +245,27 @@ class CheckIn(BaseModel):
     status: CheckInStatus = CheckInStatus.pending
     note: str | None = None
     updated_at: datetime | None = None
+
+
+# ---------------------------------------------------------------------------
+# Neighborhood circle (自主防災会 / neighborhood association mode)
+# ---------------------------------------------------------------------------
+
+
+class Circle(BaseModel):
+    """A neighborhood disaster-prevention circle: households watched together."""
+
+    circle_id: str
+    name: str
+    coordinator: str = Field(description="Name of the coordinator (会長/班長)")
+    household_ids: list[str]
+
+
+class CircleReport(BaseModel):
+    """Coordinator agent's consolidated safety report for the circle."""
+
+    headline: str = Field(description="One-line status, e.g. '14 of 17 confirmed safe'")
+    summary: str = Field(description="3–6 plain sentences for the coordinator")
+    needs_help: list[str] = Field(default_factory=list, description="'household/member — note' entries")
+    unresponsive: list[str] = Field(default_factory=list, description="'household/member' entries to visit/call")
+    next_actions: list[str] = Field(default_factory=list, description="Concrete ordered actions for the coordinator")

@@ -26,6 +26,7 @@ from sonae.agents.jsonio import AgentOutputError, parse_as
 from sonae.channels.base import Channel
 from sonae.memory.store import HouseholdStore
 from sonae.schemas import (
+    CheckIn,
     FeedEvent,
     Notification,
     NotificationBatch,
@@ -196,6 +197,13 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
     for notification in batch.notifications:
         channel.send(notification, household)
         dispatched += 1
+
+    # At Level 4+ the question changes from "did they get the message" to
+    # "is everyone accounted for" — open a safety check-in board (deterministic,
+    # no model involved; members respond via UI/CLI).
+    if (decision.alert_level or 0) >= 4 and not store.load_checkins():
+        store.save_checkins([CheckIn(member=m.name) for m in household.members])
+        store.log_event("checkins_opened", {"level": decision.alert_level, "members": len(household.members)})
 
     watch = store.load_watch()
     watch.activated_level = max(watch.activated_level, decision.alert_level or 0)

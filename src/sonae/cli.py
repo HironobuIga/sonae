@@ -141,6 +141,39 @@ def cmd_watch(args: argparse.Namespace) -> int:
         time.sleep(args.interval)
 
 
+def cmd_checkin(args: argparse.Namespace) -> int:
+    from sonae import circles
+
+    board = circles.record_checkin(args.household, args.member, args.status, args.note)
+    for c in board:
+        print(f"  {c.member}: {c.status.value}" + (f" — {c.note}" if c.note else ""))
+    return 0
+
+
+def cmd_circle_report(args: argparse.Namespace) -> int:
+    from sonae import circles
+
+    circle = circles.load_circle(args.circle_id)
+    if circle is None:
+        print("unknown circle", file=sys.stderr)
+        return 1
+    report = circles.compose_report(circle)
+    print(f"# {report.headline}\n\n{report.summary}")
+    if report.needs_help:
+        print("\nNEEDS HELP:")
+        for x in report.needs_help:
+            print(f"  ⚠ {x}")
+    if report.unresponsive:
+        print("\nVISIT / CALL:")
+        for x in report.unresponsive:
+            print(f"  👣 {x}")
+    if report.next_actions:
+        print("\nNEXT ACTIONS:")
+        for i, x in enumerate(report.next_actions, 1):
+            print(f"  {i}. {x}")
+    return 0
+
+
 def cmd_journal(args: argparse.Namespace) -> int:
     store = HouseholdStore(args.household)
     watch = store.load_watch()
@@ -177,6 +210,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--interval", type=int, default=300)
     p.add_argument("--once", action="store_true")
     p.set_defaults(func=cmd_watch)
+
+    p = sub.add_parser("checkin", help="record a family member's safety check-in")
+    p.add_argument("household")
+    p.add_argument("member")
+    p.add_argument("status", choices=["safe", "needs_help", "no_response"])
+    p.add_argument("--note")
+    p.set_defaults(func=cmd_checkin)
+
+    p = sub.add_parser("circle-report", help="compose the neighborhood coordinator's safety report")
+    p.add_argument("circle_id")
+    p.set_defaults(func=cmd_circle_report)
 
     p = sub.add_parser("journal", help="print the household's agent flight-recorder journal")
     p.add_argument("household")
