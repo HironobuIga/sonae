@@ -1,0 +1,119 @@
+<mxfile host="app.diagrams.net" modified="2026-08-23T12:00:00.000Z" agent="sonae" version="24.0.0" type="device">
+  <diagram id="sonae-aws" name="Sonae on AWS">
+    <mxGraphModel dx="1520" dy="980" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1520" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <mxCell id="title" value="Sonae (そなえ) — AWS architecture&#10;Family disaster-readiness agent team · Strands Agents SDK on Amazon Bedrock AgentCore" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=top;fontSize=20;fontStyle=1;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="980" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Users (left) -->
+        <mxCell id="family" value="Family&#10;(grandmother · remote watchers)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.users;" vertex="1" parent="1">
+          <mxGeometry x="90" y="150" width="70" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="dashboard" value="Web dashboard / CLI&#10;(FastAPI · Leaflet hazard map)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#232F3E;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.client;" vertex="1" parent="1">
+          <mxGeometry x="90" y="360" width="70" height="70" as="geometry" />
+        </mxCell>
+
+        <!-- Gov open data group -->
+        <mxCell id="govgroup" value="Japan government open data (keyless public endpoints)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#7AA116;dashed=1;verticalAlign=top;fontSize=13;fontStyle=1;fontColor=#7AA116;align=left;spacingLeft=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="580" width="430" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="jma" value="JMA bosai feeds&#10;warnings · forecasts (JSON)" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_alt2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="630" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gsitiles" value="GSI hazard-map tiles&#10;flood / tsunami / landslide" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_alt2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="630" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gsishelter" value="GSI evacuation-site registry&#10;per-hazard suitability CSV" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_alt2;" vertex="1" parent="1">
+          <mxGeometry x="90" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="geocoder" value="GSI geocoders&#10;address → coords → muni" style="sketch=0;outlineConnect=0;fontColor=#232F3E;fillColor=#7AA116;strokeColor=none;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.internet_alt2;" vertex="1" parent="1">
+          <mxGeometry x="250" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- AWS Cloud -->
+        <mxCell id="awscloud" value="AWS Cloud (us-west-2)" style="points=[[0,0],[0.25,0],[0.5,0],[0.75,0],[1,0],[1,0.25],[1,0.5],[1,0.75],[1,1],[0.75,1],[0.5,1],[0.25,1],[0,1],[0,0.75],[0,0.5],[0,0.25]];outlineConnect=0;gradientColor=none;html=1;whiteSpace=wrap;fontSize=14;fontStyle=1;container=0;pointerEvents=0;collapsible=0;recursiveResize=0;shape=mxgraph.aws4.group;grIcon=mxgraph.aws4.group_aws_cloud_alt;strokeColor=#232F3E;fillColor=none;verticalAlign=top;align=left;spacingLeft=40;fontColor=#232F3E;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="540" y="110" width="940" height="850" as="geometry" />
+        </mxCell>
+
+        <!-- AgentCore group -->
+        <mxCell id="acgroup" value="Amazon Bedrock AgentCore" style="rounded=1;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#01A88D;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#01A88D;align=left;spacingLeft=10;dashed=0;" vertex="1" parent="1">
+          <mxGeometry x="580" y="170" width="590" height="490" as="geometry" />
+        </mxCell>
+
+        <mxCell id="runtime" value="AgentCore Runtime&#10;Sonae agent team" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#01A88D;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" vertex="1" parent="1">
+          <mxGeometry x="640" y="235" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="agents" value="PREPARE (Strands Graph, self-correcting)&#10;  Cartographer → Planner → Verifier ⟲&#10;&#10;WATCH &amp; ACT (verified pipeline)&#10;  Sentinel → Messenger → Verifier → dispatch&#10;&#10;NEIGHBORHOOD&#10;  Coordinator (安否確認 consolidation)&#10;&#10;Typed JSON protocol (Pydantic)&#10;BeforeToolCall / AfterToolCall flight recorder" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F2FBF9;strokeColor=#01A88D;align=left;verticalAlign=top;spacing=10;fontSize=11;fontFamily=Courier New;" vertex="1" parent="1">
+          <mxGeometry x="820" y="210" width="325" height="215" as="geometry" />
+        </mxCell>
+
+        <mxCell id="memory" value="AgentCore Memory&#10;plans · watch state · journal" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#01A88D;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.documentdb_with_mongodb_compatibility;" vertex="1" parent="1">
+          <mxGeometry x="700" y="510" width="70" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="obs" value="AgentCore Observability&#10;OpenTelemetry traces" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" vertex="1" parent="1">
+          <mxGeometry x="950" y="510" width="70" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="bedrock" value="Amazon Bedrock&#10;Claude Sonnet 4.5" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#01A88D;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;fontStyle=1;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.bedrock;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="235" width="78" height="78" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eventbridge" value="EventBridge Scheduler&#10;rate(5 min) heartbeat" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=12;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.eventbridge;" vertex="1" parent="1">
+          <mxGeometry x="1215" y="450" width="70" height="70" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ecr" value="Amazon ECR&#10;agent container image" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#ED7100;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.elastic_container_registry;" vertex="1" parent="1">
+          <mxGeometry x="1220" y="640" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cw" value="Amazon CloudWatch&#10;logs · metrics · alarms" style="sketch=0;outlineConnect=0;fontColor=#232F3E;gradientColor=none;fillColor=#E7157B;strokeColor=none;dashed=0;verticalLabelPosition=bottom;verticalAlign=top;align=center;html=1;fontSize=11;aspect=fixed;shape=mxgraph.aws4.resourceIcon;resIcon=mxgraph.aws4.cloudwatch_2;" vertex="1" parent="1">
+          <mxGeometry x="955" y="790" width="60" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="safety" value="Trust layer — family-approved plan is the authorization boundary · every claim verified against official data before dispatch · AI prose fails CLOSED, the official signal fails OPEN (verbatim relay)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF7E6;strokeColor=#ED7100;align=left;verticalAlign=middle;spacing=10;fontSize=11;fontColor=#232F3E;" vertex="1" parent="1">
+          <mxGeometry x="580" y="780" width="300" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Edges -->
+        <mxCell id="e1" value="onboard · replay · status&#10;(HTTPS invoke)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#232F3E;strokeWidth=1.5;exitX=1;exitY=0.5;entryX=0;entryY=0.7;" edge="1" parent="1" source="dashboard" target="runtime">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="verified notifications (web inbox · console · LINE roadmap)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#01A88D;strokeWidth=2;exitX=0;exitY=0.25;entryX=1;entryY=0.5;" edge="1" parent="1" source="runtime" target="family">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points"><mxPoint x="380" y="185" /></Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="plan review&#10;check-ins" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#232F3E;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="family" target="dashboard">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="ConverseStream&#10;(all agents)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#01A88D;strokeWidth=2;exitX=1;exitY=0.25;entryX=0;entryY=0.5;" edge="1" parent="1" source="agents" target="bedrock">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="invoke watch_cycle" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#E7157B;strokeWidth=2;exitX=0;exitY=0.5;entryX=1;entryY=0.55;" edge="1" parent="1" source="eventbridge" target="acgroup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#01A88D;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="runtime" target="memory">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" value="OTel spans" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#E7157B;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="agents" target="obs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#E7157B;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="obs" target="cw">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" value="Strands tools (HTTPS): geocode · hazard depth · sites · warnings" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=11;strokeColor=#7AA116;strokeWidth=2;exitX=0;exitY=0.95;entryX=1;entryY=0.15;labelBackgroundColor=#FFFFFF;" edge="1" parent="1" source="acgroup" target="govgroup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e10" value="image pull" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;fontSize=10;strokeColor=#ED7100;dashed=1;exitX=0;exitY=0.5;entryX=1;entryY=0.85;" edge="1" parent="1" source="ecr" target="acgroup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

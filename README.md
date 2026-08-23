@@ -60,6 +60,10 @@ Yahoo! Bosai and NERV broadcast alerts — one message, everyone, no memory. Son
 
 ![Sonae architecture](docs/architecture.png)
 
+**AWS deployment view** ([editable draw.io source](docs/architecture-aws.drawio)):
+
+![Sonae on AWS](docs/architecture-aws.png)
+
 <details>
 <summary>Same architecture as mermaid (text)</summary>
 
