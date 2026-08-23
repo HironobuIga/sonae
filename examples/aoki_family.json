@@ -1,0 +1,31 @@
+{
+  "household_id": "aoki",
+  "address": "長野県長野市穂保",
+  "home_floors": 2,
+  "has_car": false,
+  "pets": [],
+  "notes": "Grandmother lives alone in the family home by the Chikuma River. Son and daughter live far away and worry every typhoon season.",
+  "members": [
+    {
+      "name": "Yoshiko",
+      "age": 78,
+      "lives_at_home": true,
+      "needs": ["bad knees — walking to a shelter takes about 3x the usual time", "no smartphone apps; reads simple text messages"],
+      "preferred_language": "ja"
+    },
+    {
+      "name": "Kenji",
+      "age": 52,
+      "lives_at_home": false,
+      "needs": [],
+      "preferred_language": "en"
+    },
+    {
+      "name": "Mika",
+      "age": 48,
+      "lives_at_home": false,
+      "needs": [],
+      "preferred_language": "en"
+    }
+  ]
+}
