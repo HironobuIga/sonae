@@ -88,8 +88,17 @@ watch the circle counts update; click "Compose coordinator report".
 > households, and a Coordinator agent that tells the chairman exactly which door to knock on
 > first.
 
-Then: terminal split — `uv run sonae watch aoki --once` against today's real JMA feed; then show
-the flight-recorder journal.
+Then: terminal split — `uv run sonae watch aoki --once` against today's real JMA feed, and the same
+pipeline running in the cloud:
+
+```bash
+aws bedrock-agentcore invoke-agent-runtime --agent-runtime-arn $SONAE_ARN \
+  --payload "$(echo -n '{"action":"watch_cycle","household":"aoki"}' | base64)" \
+  --content-type application/json --accept application/json out.json && cat out.json
+```
+
+> Deployed on Amazon Bedrock AgentCore, an EventBridge heartbeat runs this cycle every five
+> minutes. On a calm day like today it costs nothing — zero model tokens. Boring is the job.
 
 > This isn't a replay toy. The same pipeline watches the real JMA feeds for this exact warning
 > area, around the clock, on Amazon Bedrock AgentCore. Quiet days cost almost nothing. And
