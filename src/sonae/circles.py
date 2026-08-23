@@ -47,16 +47,21 @@ def circle_board(circle: Circle) -> list[dict]:
         household = store.load_household()
         checkins = store.load_checkins()
         watch = store.load_watch()
+        roster = {m.name: m for m in (household.members if household else [])}
+        members = [json.loads(c.model_dump_json()) for c in checkins] or [
+            {"member": m.name, "status": "pending", "note": None, "updated_at": None} for m in roster.values()
+        ]
+        for m in members:
+            person = roster.get(m["member"])
+            if person:
+                m["age"] = person.age
+                m["needs"] = person.needs
         board.append(
             {
                 "household_id": hid,
                 "address": household.address if household else "(unknown)",
                 "activated_level": watch.activated_level,
-                "members": [json.loads(c.model_dump_json()) for c in checkins]
-                or [
-                    {"member": m.name, "status": "pending", "note": None, "updated_at": None}
-                    for m in (household.members if household else [])
-                ],
+                "members": members,
             }
         )
     return board
