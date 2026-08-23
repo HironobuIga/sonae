@@ -10,6 +10,11 @@ Built for the **AWS Agents for Humans Hackathon** (Good Neighbor track) with the
 
 **Demo video:** _(link)_ · **Live demo:** _(link)_
 
+![Sonae dashboard during the Typhoon Hagibis replay — Level 3 active, grandmother evacuating](docs/screenshots/dashboard-l3.png)
+*The dashboard mid-replay: the home (amber) sits in the Chikuma River's 10–20 m statutory inundation
+zone; the plan's Level 3 step is active; each family member's phone has received their verified,
+cited instructions — Japanese for grandmother, English for her son in Tokyo.*
+
 ---
 
 ## The problem
@@ -53,6 +58,11 @@ Yahoo! Bosai and NERV broadcast alerts — one message, everyone, no memory. Son
 
 ## Architecture
 
+![Sonae architecture](docs/architecture.png)
+
+<details>
+<summary>Same architecture as mermaid (text)</summary>
+
 ```mermaid
 flowchart TB
   subgraph prepare["PREPARE — Strands Graph (self-correcting)"]
@@ -82,6 +92,8 @@ flowchart TB
   prepare --> ST
   ST --> S
 ```
+
+</details>
 
 **Strands features used:** multi-agent `Graph` with a conditional revision edge (the verification loop),
 tool use over government open data, hook providers (`BeforeToolCall`/`AfterToolCall` flight recorder),
