@@ -64,6 +64,24 @@ aws bedrock-agentcore invoke-agent-runtime --agent-runtime-arn "$ARN" \
   --content-type application/json --accept application/json out.json && cat out.json
 ```
 
+## Verified cloud run (2026-08-23)
+
+Actual responses from our deployed runtime (`sonae_sonae-OBwRHO2xdW`, us-west-2):
+
+```jsonc
+// onboard (full self-correcting graph ran in the cloud, ~9 min;
+// note the revision loop converging: planner↔verifier twice)
+{"household": "aoki", "hazards_at_risk": ["flood", "earthquake"], "steps": 5,
+ "verified": true,
+ "agent_path": ["cartographer", "planner", "verifier", "planner", "verifier", "planner", "verifier"]}
+
+// watch_cycle, same session — live JMA feed, calm day: the zero-token ambient path
+{"processed_events": 0, "dispatched": 0, "note": "no new events"}
+
+// status, same session — state persisted across invocations
+{"activated_level": 0, "plan_approved": true, "last_checked": "2026-08-23T09:46:26Z"}
+```
+
 ## Making the watch ambient
 
 Create a schedule that invokes the runtime every 5 minutes:

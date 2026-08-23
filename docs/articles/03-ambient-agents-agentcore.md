@@ -1,8 +1,7 @@
 # An agent whose job is to do nothing (almost always): ambient watch loops on Bedrock AgentCore
 
 *Draft for builder.aws — article 3 of 3 for the Agents for Humans Hackathon (Sonae project).
-Deployment specifics to be finalized after our production deploy — commands below reflect the
-current AgentCore CLI (`npm i -g @aws/agentcore`).*
+Commands below are the ones we ran for our deployed runtime (AgentCore CLI, `npm i -g @aws/agentcore`).*
 
 Most agent demos are conversations: a human asks, an agent answers. Sonae's most important agent
 never gets asked anything. The Sentinel watches Japan Meteorological Agency feeds for one family's
