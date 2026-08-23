@@ -11,7 +11,7 @@
     {
       "name": "MLIT Hokuriku Regional Development Bureau: Typhoon 19 damage report",
       "url": "https://www.hrr.mlit.go.jp/saigai/taihuu1901/taihuu1901.pdf",
-      "note": "Emergency heavy rain warning for Nagano 12th 15:30; Tateganahana gauge danger level 9.60 m; Hoyasu levee breach L≈70 m"
+      "note": "Emergency heavy rain warning for Nagano 12th 15:30; Tategahana gauge danger level 9.60 m; Hoyasu levee breach L≈70 m"
     },
     {
       "name": "JMA Nagano Local Meteorological Office: Typhoon 19 weather report for Nagano Prefecture",
@@ -111,7 +111,7 @@
       "area_code": "2020111",
       "area_name": "Chikuma riverside, Shinonoi–Toyono (incl. Naganuma/Hoyasu)",
       "title": "Alert Level 4: EVACUATION ORDER (避難指示・緊急) for Chikuma riverside districts",
-      "body": "Nagano City issued 警戒レベル4 避難指示（緊急） at 23:40 for the Chikuma riverside from Shinonoi to Toyono: 'Risk of Chikuma River flooding is high. Those in districts already flooding must take life-saving action immediately.' Flood forecast bulletin #10 (23:40): Tateganahana gauge to reach evacuation-judgment level around 23:20; bulletin #11 (23:55): Tateganahana reached the flood-danger level (9.60 m) around 23:40."
+      "body": "Nagano City issued 警戒レベル4 避難指示（緊急） at 23:40 for the Chikuma riverside from Shinonoi to Toyono: 'Risk of Chikuma River flooding is high. Those in districts already flooding must take life-saving action immediately.' Flood forecast bulletin #10 (23:40): Tategahana gauge to reach evacuation-judgment level around 23:20; bulletin #11 (23:55): Tategahana reached the flood-danger level (9.60 m) around 23:40."
     },
     {
       "ts": "2019-10-13T01:15:00+09:00",

@@ -4,217 +4,509 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Sonae — family disaster-readiness agents</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
   :root{
-    --bg:#0b1220; --panel:#121b2e; --panel2:#0e1626; --line:#233250;
-    --text:#e6edf7; --dim:#8ca0bd; --accent:#4cc9f0; --amber:#ffb703;
-    --l2:#f2e700; --l3:#ff2800; --l4:#aa00aa; --l5:#000000;
-    font-family:"Avenir Next","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+    --bg:#05080f; --bg2:#070c16; --panel:#0c1322; --panel2:#101a2e; --line:#1b2740; --line2:#243453;
+    --text:#e9eff9; --dim:#8296b4; --faint:#54678a;
+    --cyan:#3fd0ff; --cyan-deep:#0e6d94; --amber:#ffb703; --green:#3ddc97; --violet:#b18cff;
+    --l1:#dfe7f2; --l2:#f2e700; --l3:#ff2800; --l4:#aa00aa; --l5:#0c000c;
+    --sans:"IBM Plex Sans JP",-apple-system,"Hiragino Sans",sans-serif;
+    --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
   }
-  *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text)}
-  header{display:flex;align-items:center;gap:18px;padding:14px 22px;border-bottom:1px solid var(--line)}
-  .logo{font-size:22px;font-weight:700;letter-spacing:.5px}
-  .logo .jp{color:var(--accent)} .logo small{color:var(--dim);font-weight:400;margin-left:10px;font-size:12px}
-  .gauge{display:flex;gap:6px;margin-left:auto;align-items:center}
-  .gauge span{font-size:11px;color:var(--dim);margin-right:4px}
-  .lv{width:34px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;
-      font-size:11px;font-weight:700;color:#233;background:#1c2942;color:var(--dim);border:1px solid var(--line)}
-  .lv.on1{background:#dfe7f2;color:#122}
-  .lv.on2{background:var(--l2);color:#332}
-  .lv.on3{background:var(--l3);color:#fff}
-  .lv.on4{background:var(--l4);color:#fff}
-  .lv.on5{background:var(--l5);color:#f66;border-color:#f66}
-  .lv.pulse{animation:pulse 1.2s infinite}
-  @keyframes pulse{50%{filter:brightness(1.6)}}
-  .controls{display:flex;gap:10px;align-items:center;padding:10px 22px;border-bottom:1px solid var(--line);background:var(--panel2);flex-wrap:wrap}
-  button{background:var(--accent);border:0;color:#06283d;font-weight:700;padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px}
-  button.secondary{background:#22314f;color:var(--text)}
-  button:disabled{opacity:.45;cursor:default}
-  .simclock{font-variant-numeric:tabular-nums;color:var(--amber);font-weight:700;font-size:15px}
-  .busy{color:var(--accent);font-size:12px} .next{color:var(--dim);font-size:12px;max-width:420px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  main{display:grid;grid-template-columns:320px 1fr 400px;gap:14px;padding:14px 22px;align-items:start}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
-  .card h2{margin:0 0 10px;font-size:13px;text-transform:uppercase;letter-spacing:1.2px;color:var(--dim)}
-  .haz{display:inline-flex;align-items:center;gap:6px;background:#1a2740;border:1px solid var(--line);
-       padding:4px 10px;border-radius:20px;font-size:12px;margin:0 6px 6px 0}
-  .haz.risk{border-color:var(--l3);color:#ffb3a7}
-  .summary{font-size:13px;color:var(--text);line-height:1.5;border-left:3px solid var(--accent);padding-left:10px;margin:10px 0}
-  .member{display:flex;gap:8px;font-size:13px;margin:6px 0;color:var(--text)}
-  .member .tag{font-size:10px;color:var(--dim);border:1px solid var(--line);border-radius:4px;padding:1px 5px}
-  .shelter{font-size:12.5px;margin:6px 0;color:var(--text)}
-  .shelter b{color:var(--accent)} .shelter .km{color:var(--amber)}
-  .caveat{font-size:11px;color:var(--dim);margin-top:8px;line-height:1.4}
-  .step{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:10px 0;background:var(--panel2);position:relative}
-  .step .head{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
-  .step .trigger{font-size:11.5px;color:var(--dim);margin:4px 0 8px}
-  .step ul{margin:0;padding-left:18px;font-size:12.5px;line-height:1.55}
-  .step.active{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber) inset}
-  .step.active::after{content:"ACTIVATED";position:absolute;top:10px;right:12px;font-size:10px;color:var(--amber);letter-spacing:1px}
-  .badge{min-width:34px;text-align:center;border-radius:6px;padding:2px 6px;font-size:12px;font-weight:800}
-  .b1{background:#dfe7f2;color:#122}.b2{background:var(--l2);color:#332}.b3{background:var(--l3);color:#fff}
-  .b4{background:var(--l4);color:#fff}.b5{background:var(--l5);color:#f66;border:1px solid #f66}
-  .phones{display:flex;gap:12px;flex-wrap:wrap}
-  .phone{width:180px;background:#05080f;border:2px solid #2a3a5c;border-radius:22px;padding:10px 8px 14px;min-height:230px}
-  .phone .pname{text-align:center;font-size:11px;color:var(--dim);margin-bottom:8px}
-  .bubble{background:#16233c;border:1px solid var(--line);border-radius:10px;padding:8px 9px;font-size:11px;line-height:1.5;margin:6px 2px;white-space:pre-wrap;max-height:180px;overflow-y:auto}
-  .bubble.urgent{border-color:var(--l3)} .bubble .subj{font-weight:700;display:block;margin-bottom:3px}
-  .bubble .cites{color:var(--dim);font-size:9.5px;margin-top:5px}
-  .journal{max-height:340px;overflow-y:auto;font-size:11.5px;line-height:1.5}
-  .jrow{display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed #1c2942;color:var(--dim)}
-  .jrow .ic{width:18px;text-align:center}
-  .jrow .what{color:var(--text)}
-  .empty{color:var(--dim);font-size:12px;font-style:italic}
-  .disclaimer{font-size:10.5px;color:var(--dim);padding:8px 22px;border-top:1px solid var(--line);line-height:1.5}
-  a{color:var(--accent)}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px}
+  body{background:
+    radial-gradient(1200px 500px at 70% -10%, rgba(63,208,255,.07), transparent 60%),
+    radial-gradient(900px 400px at 10% 110%, rgba(177,140,255,.05), transparent 60%), var(--bg)}
+
+  /* ---------- header ---------- */
+  header{display:flex;align-items:center;gap:16px;padding:12px 24px;border-bottom:1px solid var(--line)}
+  .mark{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:17px;
+        color:#05222e;background:linear-gradient(135deg,var(--cyan),#7ce4ff);box-shadow:0 0 18px rgba(63,208,255,.35)}
+  .brand{line-height:1.1}
+  .brand b{font-size:16px;letter-spacing:.14em}
+  .brand small{display:block;color:var(--dim);font-size:10.5px;letter-spacing:.08em;margin-top:2px}
+  .hh-chip{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);
+           border-radius:99px;padding:6px 14px;font-size:12px;color:var(--dim)}
+  .hh-chip b{color:var(--text);font-weight:600}
+  .spacer{flex:1}
+  .watching{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim)}
+  .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 2.2s infinite}
+  .watching.alert .dot{background:var(--l3);box-shadow:0 0 12px var(--l3);animation-duration:.9s}
+  @keyframes blink{50%{opacity:.35}}
+
+  /* ---------- replay ribbon ---------- */
+  .ribbon{display:none;align-items:center;gap:10px;padding:6px 24px;font-size:11px;letter-spacing:.06em;
+          color:#3b2f00;background:repeating-linear-gradient(-45deg,var(--amber) 0 14px,#e9a800 14px 28px);font-weight:600}
+  .ribbon.show{display:flex}
+
+  /* ---------- status band ---------- */
+  .band{display:grid;grid-template-columns:290px 1fr auto;gap:18px;align-items:stretch;padding:16px 24px;border-bottom:1px solid var(--line);background:var(--bg2)}
+  .plate{border-radius:14px;padding:14px 18px;display:flex;flex-direction:column;justify-content:center;gap:2px;
+         border:1px solid var(--line2);background:var(--panel);position:relative;overflow:hidden}
+  .plate .lvl{font-family:var(--mono);font-size:30px;font-weight:700;line-height:1}
+  .plate .name{font-size:15px;font-weight:700;margin-top:4px}
+  .plate .en{font-size:10.5px;letter-spacing:.14em;color:var(--dim)}
+  .plate.c0{border-color:var(--cyan-deep)} .plate.c0 .lvl{color:var(--cyan)}
+  .plate.c1 .lvl{color:var(--l1)} .plate.c2 .lvl{color:var(--l2)}
+  .plate.c3{border-color:#8a1600;background:linear-gradient(160deg,#2a0b04,#160503)} .plate.c3 .lvl{color:var(--l3)}
+  .plate.c4{border-color:#5c0f5c;background:linear-gradient(160deg,#250425,#12021a)} .plate.c4 .lvl{color:#e07fe0}
+  .plate.c5{border-color:#ff5a5a;background:#000} .plate.c5 .lvl{color:#ff5a5a}
+  .plate.pulse::after{content:"";position:absolute;inset:0;border-radius:14px;border:1px solid currentColor;opacity:0;animation:ring 1.6s infinite}
+  @keyframes ring{0%{opacity:.55;transform:scale(.985)}100%{opacity:0;transform:scale(1.03)}}
+
+  .ladder{display:flex;gap:8px;align-items:stretch}
+  .rung{flex:1;border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--panel);opacity:.55;transition:.3s}
+  .rung .no{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--faint)}
+  .rung .ja{font-size:12px;font-weight:600;margin-top:2px}
+  .rung .en{font-size:9.5px;letter-spacing:.06em;color:var(--dim)}
+  .rung.on{opacity:1;border-color:var(--line2)}
+  .rung.on.k1{box-shadow:inset 0 -3px 0 var(--l1)} .rung.on.k2{box-shadow:inset 0 -3px 0 var(--l2)}
+  .rung.on.k3{box-shadow:inset 0 -3px 0 var(--l3)} .rung.on.k4{box-shadow:inset 0 -3px 0 var(--l4)}
+  .rung.on.k5{box-shadow:inset 0 -3px 0 #ff5a5a}
+  .rung.now{outline:1px solid var(--line2);background:var(--panel2)}
+
+  .deck{display:flex;flex-direction:column;gap:10px;justify-content:center;min-width:330px}
+  .clockrow{display:flex;align-items:baseline;gap:12px}
+  .simclock{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--amber);letter-spacing:.02em}
+  .simclock.calm{color:var(--dim);font-size:16px}
+  .next{font-size:11px;color:var(--dim);max-width:330px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .controls{display:flex;gap:8px}
+  .btn{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line2);background:var(--panel2);
+       color:var(--text);font-family:var(--sans);font-size:12px;font-weight:600;border-radius:9px;padding:8px 13px;cursor:pointer;transition:.15s}
+  .btn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+  .btn:disabled{opacity:.35;cursor:default}
+  .btn .k{font-family:var(--mono);font-size:10px;color:var(--faint);border:1px solid var(--line2);border-radius:5px;padding:1px 5px}
+  .btn.primary{background:linear-gradient(135deg,var(--cyan),#63dcff);color:#052330;border:0}
+  .btn.primary:hover:not(:disabled){filter:brightness(1.1);color:#052330}
+  .busy{display:none;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;color:var(--cyan)}
+  .busy.show{display:flex}
+  .spin{width:12px;height:12px;border-radius:50%;border:2px solid var(--line2);border-top-color:var(--cyan);animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* ---------- layout ---------- */
+  main{display:grid;grid-template-columns:minmax(430px,1.15fr) minmax(400px,1fr) minmax(360px,.95fr);gap:16px;padding:16px 24px;align-items:start}
+  @media (max-width:1250px){main{grid-template-columns:1fr 1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:16px;overflow:hidden}
+  .card > .hd{display:flex;align-items:baseline;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+  .hd .t{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--dim)}
+  .hd .ja{font-size:10.5px;color:var(--faint)}
+  .hd .right{margin-left:auto;font-size:10.5px;color:var(--faint)}
+  .bd{padding:14px 16px}
+  .empty{color:var(--faint);font-size:12px;font-style:italic;padding:18px;text-align:center}
+
+  /* ---------- map ---------- */
+  #map{height:400px;background:#0a101d}
+  .leaflet-container{font-family:var(--sans)}
+  .tile-base{filter:invert(1) hue-rotate(185deg) brightness(.9) contrast(.88) saturate(.35)}
+  .leaflet-control-attribution{background:rgba(5,8,15,.75)!important;color:var(--faint)!important;font-size:9px!important}
+  .leaflet-control-attribution a{color:var(--dim)!important}
+  .home-pin{position:relative}
+  .home-pin .core{width:14px;height:14px;border-radius:50%;background:var(--amber);border:2.5px solid #fff;box-shadow:0 0 12px var(--amber)}
+  .home-pin .wave{position:absolute;inset:-9px;border-radius:50%;border:2px solid var(--amber);animation:ring 1.8s infinite}
+  .shel-pin{width:11px;height:11px;border-radius:3px;background:var(--panel2);border:2px solid var(--cyan);box-shadow:0 0 8px rgba(63,208,255,.5)}
+  .shel-pin.primary{background:var(--green);border-color:#fff;box-shadow:0 0 12px var(--green);width:13px;height:13px}
+  .leaflet-popup-content-wrapper{background:var(--panel2);color:var(--text);border:1px solid var(--line2);border-radius:10px;font-size:12px}
+  .leaflet-popup-tip{background:var(--panel2)}
+  .maplegend{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:9px 16px;border-top:1px solid var(--line);font-size:10px;color:var(--dim)}
+  .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+  .keyrow{display:flex;gap:14px;flex-wrap:wrap}
+
+  /* ---------- hazard & household ---------- */
+  .hazrow{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .haz{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line2);background:var(--panel2);
+       padding:5px 12px;border-radius:99px;font-size:12px}
+  .haz.risk{border-color:#7e1f10;background:#1d0906;color:#ffc9bd}
+  .haz.ok{color:var(--dim)}
+  .summary{font-size:12.5px;line-height:1.65;color:var(--text);border-left:3px solid var(--amber);
+           background:var(--panel2);border-radius:0 10px 10px 0;padding:10px 12px;margin:0 0 12px}
+  .members{display:flex;flex-direction:column;gap:8px}
+  .member{display:flex;align-items:center;gap:10px;font-size:12.5px}
+  .ava{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px;color:#04141d;flex:none}
+  .member .meta{color:var(--faint);font-size:10.5px}
+  .member .needs{color:var(--dim);font-size:11px;margin-top:1px}
+  .caveat{font-size:10px;color:var(--faint);line-height:1.5;margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+
+  /* ---------- timeline ---------- */
+  .tl{position:relative;padding-left:34px}
+  .tl::before{content:"";position:absolute;left:13px;top:8px;bottom:8px;width:2px;background:var(--line2)}
+  .node{position:relative;margin-bottom:14px}
+  .node .pin{position:absolute;left:-34px;top:6px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;
+             font-family:var(--mono);font-size:11px;font-weight:700;border:2px solid var(--line2);background:var(--panel2);color:var(--dim);z-index:1}
+  .node.k1 .pin{border-color:var(--l1);color:var(--l1)} .node.k2 .pin{border-color:var(--l2);color:var(--l2)}
+  .node.k3 .pin{border-color:var(--l3);color:var(--l3)} .node.k4 .pin{border-color:#e07fe0;color:#e07fe0}
+  .node.k5 .pin{border-color:#ff5a5a;color:#ff5a5a}
+  .node.done .pin{background:var(--line2);color:var(--text)}
+  .stepcard{border:1px solid var(--line);border-radius:12px;background:var(--panel2);padding:11px 14px;transition:.3s}
+  .node.active .stepcard{border-color:var(--amber);box-shadow:0 0 0 1px var(--amber),0 6px 24px -12px var(--amber)}
+  .stephead{display:flex;align-items:center;gap:8px;font-weight:700;font-size:13px}
+  .chip{font-size:9px;letter-spacing:.12em;font-weight:700;border-radius:5px;padding:2px 7px}
+  .chip.act{background:var(--amber);color:#3a2a00;animation:blink 1.4s infinite}
+  .chip.done{background:var(--line2);color:var(--dim)}
+  .trigger{font-size:10.5px;color:var(--dim);margin:5px 0 8px;font-family:var(--mono)}
+  .acts{display:flex;flex-direction:column;gap:6px}
+  .act{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:1.5}
+  .act .ava{width:20px;height:20px;font-size:9.5px;margin-top:1px}
+  .act .eta{color:var(--faint);font-family:var(--mono);font-size:10px;white-space:nowrap;margin-left:auto;padding-left:8px}
+  .planmeta{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--dim);margin-bottom:12px}
+  .planmeta b{color:var(--green)}
+  details.supplies{margin-top:6px;font-size:12px}
+  details.supplies summary{cursor:pointer;color:var(--dim);font-size:11px;letter-spacing:.08em}
+  details.supplies li{color:var(--text);font-size:11.5px;line-height:1.6}
+  .approved{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--green);margin-top:12px}
+
+  /* ---------- phones ---------- */
+  .phones{display:flex;gap:12px;overflow-x:auto;padding-bottom:6px}
+  .phones::-webkit-scrollbar{height:4px}
+  .phones::-webkit-scrollbar-thumb{background:var(--line)}
+  #map:empty::after{content:"Onboard a home to render its hazard map · 住所を登録するとハザードマップを表示";
+    display:grid;place-items:center;height:100%;color:var(--faint);font-size:12px}
+  .phone{flex:0 0 200px;background:#03060c;border:1px solid #22314f;border-radius:26px;padding:8px;box-shadow:0 14px 34px -18px #000}
+  .screen{background:linear-gradient(180deg,#0a1120,#070c16);border-radius:19px;min-height:280px;overflow:hidden;display:flex;flex-direction:column}
+  .notch{width:74px;height:14px;background:#03060c;border-radius:0 0 10px 10px;margin:0 auto}
+  .statusbar{display:flex;justify-content:space-between;padding:3px 12px 0;font-family:var(--mono);font-size:8.5px;color:var(--faint)}
+  .appbar{display:flex;align-items:center;gap:6px;padding:7px 11px;border-bottom:1px solid var(--line)}
+  .appbar .mini{width:16px;height:16px;border-radius:5px;background:linear-gradient(135deg,var(--cyan),#7ce4ff);
+               display:grid;place-items:center;font-size:9px;font-weight:700;color:#05222e}
+  .appbar b{font-size:10.5px}
+  .appbar .who{margin-left:auto;font-size:9px;color:var(--faint)}
+  .msgs{padding:8px;display:flex;flex-direction:column;gap:7px;overflow-y:auto;max-height:250px}
+  .bubble{background:#111c31;border:1px solid var(--line);border-radius:11px;padding:8px 9px;font-size:10.5px;line-height:1.55;
+          white-space:pre-wrap;animation:pop .4s ease;position:relative}
+  .bubble.urgent{border-left:3px solid var(--l3)}
+  .bubble .subj{font-weight:700;display:block;margin-bottom:4px;font-size:10.5px;padding-right:30px}
+  .bubble .cite{margin-top:6px;color:var(--faint);font-size:8.5px;border-top:1px dashed var(--line);padding-top:4px}
+  .bubble .when{position:absolute;top:7px;right:9px;font-family:var(--mono);font-size:8px;color:var(--faint)}
+  @keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .phone .empty{min-height:200px;display:grid;place-items:center}
+
+  /* ---------- activity ---------- */
+  .feed{max-height:300px;overflow-y:auto;font-family:var(--mono);font-size:10.5px}
+  .jrow{display:flex;gap:9px;padding:5px 16px;border-bottom:1px solid #0f1626;line-height:1.5;align-items:baseline}
+  .jrow .ic{flex:none;width:15px;text-align:center}
+  .jrow .who{color:var(--cyan);flex:none}
+  .jrow .what{color:var(--dim);word-break:break-word}
+  .jrow.warn .what{color:#ffb3a7}
+  .jrow.big .what{color:var(--text)}
+
+  footer{padding:10px 24px 20px;font-size:10px;color:var(--faint);line-height:1.6;border-top:1px solid var(--line)}
+  ::-webkit-scrollbar{width:8px;height:8px} ::-webkit-scrollbar-thumb{background:var(--line2);border-radius:5px}
 </style>
 </head>
 <body>
+
 <header>
-  <div class="logo"><span class="jp">そなえ</span> Sonae <small>the agent team that stands watch over your family</small></div>
-  <div class="gauge"><span>ALERT LEVEL</span>
-    <div class="lv" id="lv1">L1</div><div class="lv" id="lv2">L2</div><div class="lv" id="lv3">L3</div>
-    <div class="lv" id="lv4">L4</div><div class="lv" id="lv5">L5</div>
-  </div>
+  <div class="mark">そ</div>
+  <div class="brand"><b>SONAE</b><small>FAMILY DISASTER-READINESS AGENTS · 家族のための防災エージェント</small></div>
+  <div class="hh-chip" id="hhChip">👨‍👩‍👧 <b>—</b><span id="hhAddr">not onboarded</span></div>
+  <div class="spacer"></div>
+  <div class="watching" id="watching"><span class="dot"></span><span id="watchLabel">STANDBY</span></div>
 </header>
 
-<div class="controls">
-  <button id="btnOnboard">1 · Protect this home</button>
-  <button id="btnLoad" class="secondary">2 · Load Typhoon Hagibis replay</button>
-  <button id="btnStep">3 · Advance ▸</button>
-  <span class="simclock" id="simClock">—</span>
-  <span class="busy" id="busy"></span>
-  <span class="next" id="next"></span>
+<div class="ribbon" id="ribbon">⏮ HISTORICAL REPLAY — reconstructed from official post-event records · タイムスタンプは公式記録どおり</div>
+
+<div class="band">
+  <div class="plate c0" id="plate">
+    <div class="lvl" id="plateLvl">—</div>
+    <div class="name" id="plateName">Standing by</div>
+    <div class="en" id="plateEn">NO ACTIVE ALERT</div>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:10px;justify-content:center">
+    <div class="ladder" id="ladder"></div>
+    <div class="next" id="next"></div>
+  </div>
+  <div class="deck">
+    <div class="clockrow"><span class="simclock calm" id="simClock">— live time —</span>
+      <span class="busy" id="busy"><span class="spin"></span><span id="busyLabel">agents working</span></span></div>
+    <div class="controls">
+      <button class="btn" id="btnOnboard"><span class="k">1</span> Protect this home</button>
+      <button class="btn" id="btnLoad"><span class="k">2</span> Load Hagibis replay</button>
+      <button class="btn primary" id="btnStep"><span class="k">3</span> Advance ▸</button>
+    </div>
+  </div>
 </div>
 
 <main>
   <section>
-    <div class="card"><h2>Household</h2><div id="household" class="empty">Not onboarded yet.</div></div>
-    <div class="card"><h2>Hazard profile <small>(statutory hazard maps)</small></h2><div id="profile" class="empty">—</div></div>
-    <div class="card"><h2>Evacuation sites</h2><div id="shelters" class="empty">—</div></div>
+    <div class="card">
+      <div class="hd"><span class="t">HAZARD MAP</span><span class="ja">ハザードマップ</span>
+        <span class="right">flood overlay: statutory max-scale scenario</span></div>
+      <div id="map"></div>
+      <div class="maplegend">
+        <div class="keyrow">
+          <span><span class="sw" style="background:#f7f5a9"></span>&lt;0.5m</span>
+          <span><span class="sw" style="background:#ffd8c0"></span>0.5–3m</span>
+          <span><span class="sw" style="background:#ffb7b7"></span>3–5m</span>
+          <span><span class="sw" style="background:#ff9191"></span>5–10m</span>
+          <span><span class="sw" style="background:#f285c9"></span>10–20m</span>
+          <span style="margin-left:8px"><span class="sw" style="background:var(--amber);border-radius:50%"></span>home</span>
+          <span><span class="sw" style="background:var(--green)"></span>primary site</span>
+          <span><span class="sw" style="background:var(--panel2);border:2px solid var(--cyan)"></span>evacuation sites</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="hd"><span class="t">HOUSEHOLD & RISK</span><span class="ja">この家の危険</span></div>
+      <div class="bd" id="riskBody"><div class="empty">Onboard a home to assess its hazards.</div></div>
+    </div>
   </section>
+
   <section>
-    <div class="card"><h2>Family My-Timeline <small>(マイ・タイムライン)</small></h2><div id="plan" class="empty">Run onboarding to generate the plan.</div></div>
+    <div class="card">
+      <div class="hd"><span class="t">FAMILY MY-TIMELINE</span><span class="ja">マイ・タイムライン</span>
+        <span class="right" id="planPath"></span></div>
+      <div class="bd" id="planBody"><div class="empty">The agent team builds this during onboarding:<br>Cartographer → Planner → Verifier (self-correcting graph).</div></div>
+    </div>
   </section>
+
   <section>
-    <div class="card"><h2>Family phones</h2><div class="phones" id="phones"><div class="empty">No notifications yet.</div></div></div>
-    <div class="card"><h2>Agent activity <small>(flight recorder)</small></h2><div class="journal" id="journal" class="empty">—</div></div>
+    <div class="card">
+      <div class="hd"><span class="t">FAMILY PHONES</span><span class="ja">家族への通知</span>
+        <span class="right">verified before send</span></div>
+      <div class="bd"><div class="phones" id="phones"></div></div>
+    </div>
+    <div class="card">
+      <div class="hd"><span class="t">AGENT ACTIVITY</span><span class="ja">フライトレコーダー</span></div>
+      <div class="feed" id="feed"><div class="empty">—</div></div>
+    </div>
   </section>
 </main>
 
-<div class="disclaimer" id="disclaimer">
-  Sonae relays and organizes official information (JMA, MLIT/GSI, municipalities); it never invents evacuation judgments.
-  Always follow instructions from your municipality. Shelter data can lag municipal updates — confirm locally.
-</div>
+<footer id="disclaimer">
+  Sonae relays and organizes official information (JMA · MLIT/GSI · municipalities) bound to a family-approved plan; it never
+  invents evacuation judgments. Municipal instructions always take precedence. Shelter data can lag municipal updates — confirm locally.
+  Basemap © 国土地理院 (GSI tiles) · flood layer: ハザードマップポータルサイト.
+</footer>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 const HOUSEHOLD = new URLSearchParams(location.search).get("household") || "aoki";
-const $ = (id) => document.getElementById(id);
-const esc = (s) => (s ?? "").toString().replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $ = id => document.getElementById(id);
+const esc = s => (s ?? "").toString().replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
-const HAZ_LABEL = {flood:"Flood 洪水", landslide:"Landslide 土砂", storm_surge:"Storm surge 高潮",
-  earthquake:"Earthquake 地震", tsunami:"Tsunami 津波", large_fire:"Large fire 大火事",
-  inland_flood:"Inland flood 内水", volcano:"Volcano 火山"};
-const J_ICON = {tool_call:"🔧", tool_result:"📄", sentinel_decision:"👁️", notifications_sent:"📨",
-  replay_moment:"⏱️", replay_outcome:"✅", onboarding_started:"🚀", onboarding_complete:"🗺️",
-  plan_approved:"✍️", error:"⚠️"};
+const LEVELS = {
+  0:{name:"Standing by", en:"NO ACTIVE ALERT", ja:""},
+  1:{name:"心構えを高める", en:"EARLY ADVISORY", ja:"警戒レベル1"},
+  2:{name:"避難行動の確認", en:"ADVISORIES OUT", ja:"警戒レベル2"},
+  3:{name:"高齢者等避難", en:"ELDERLY EVACUATE NOW", ja:"警戒レベル3"},
+  4:{name:"避難指示", en:"EVACUATION ORDER", ja:"警戒レベル4"},
+  5:{name:"緊急安全確保", en:"LIFE-SAVING ACTION", ja:"警戒レベル5"},
+};
+const HAZ = {flood:["Flood","洪水"], landslide:["Landslide","土砂災害"], storm_surge:["Storm surge","高潮"],
+  earthquake:["Earthquake","地震"], tsunami:["Tsunami","津波"], large_fire:["Large fire","大火事"],
+  inland_flood:["Inland flood","内水氾濫"], volcano:["Volcano","火山"]};
+const AVA_COLORS = ["#ffb703","#3fd0ff","#b18cff","#3ddc97","#ff8fa3"];
+const J_ICON = {tool_call:"🔧", tool_result:"·", sentinel_decision:"👁", notifications_sent:"📨",
+  replay_moment:"⏱", replay_outcome:"✓", onboarding_started:"🚀", onboarding_complete:"🗺",
+  plan_approved:"✍", error:"⚠"};
 
-async function post(url, body){
-  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body||{})});
-  if(!r.ok){ const t = await r.text(); alert(url+" failed: "+t); }
-  return r.ok ? r.json() : null;
+let map, homeMarker, shelterLayer, routeLine, mapReady = false;
+
+function initMap(h, profile, plan){
+  if(mapReady || !window.L) return;
+  map = L.map("map", {zoomControl:true, attributionControl:true, scrollWheelZoom:false})
+        .setView([h.lat, h.lon], 14);
+  L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png",
+    {attribution:"地理院タイル", maxZoom:17, className:"tile-base"}).addTo(map);
+  L.tileLayer("https://disaportaldata.gsi.go.jp/raster/01_flood_l2_shinsuishin_data/{z}/{x}/{y}.png",
+    {attribution:"ハザードマップポータル", maxZoom:17, opacity:.45}).addTo(map);
+  homeMarker = L.marker([h.lat, h.lon], {icon: L.divIcon({className:"", html:
+    '<div class="home-pin"><div class="wave"></div><div class="core"></div></div>', iconSize:[14,14], iconAnchor:[7,7]})})
+    .addTo(map).bindPopup(`<b>🏠 ${esc(h.address)}</b><br>${esc((h.members.find(m=>m.lives_at_home)||{}).name||"")} lives here`);
+  shelterLayer = L.layerGroup().addTo(map);
+  mapReady = true;
+  drawShelters(profile, plan);
 }
 
-$("btnOnboard").onclick = () => post("/api/onboard", {profile_path:"examples/aoki_family.json", approve:true});
-$("btnLoad").onclick   = () => post("/api/replay/load", {household:HOUSEHOLD});
-$("btnStep").onclick   = () => post("/api/replay/step", {household:HOUSEHOLD});
-
-function renderGauge(level){
-  for(let i=1;i<=5;i++){
-    const el = $("lv"+i);
-    el.className = "lv" + (level>=i ? " on"+i : "");
-    if(level===i && i>=3) el.classList.add("pulse");
+function drawShelters(profile, plan){
+  if(!mapReady || !profile) return;
+  shelterLayer.clearLayers();
+  if(routeLine){ routeLine.remove(); routeLine = null; }
+  const primary = plan && plan.primary_shelter ? plan.primary_shelter.name : null;
+  for(const s of (profile.nearest_shelters||[])){
+    const isP = s.name === primary;
+    L.marker([s.lat, s.lon], {icon: L.divIcon({className:"", html:`<div class="shel-pin ${isP?"primary":""}"></div>`,
+      iconSize:[12,12], iconAnchor:[6,6]})})
+      .addTo(shelterLayer)
+      .bindPopup(`<b>${isP?"🏁 ":"🏫 "}${esc(s.name)}</b><br>${s.distance_km} km · ${(s.suitable_for||[]).map(h=>HAZ[h]?HAZ[h][1]:h).join("・")}${s.is_designated_shelter?"<br>指定避難所 (mid-term)":""}`);
+  }
+  const home = homeMarker.getLatLng();
+  const p = plan && plan.primary_shelter;
+  if(p){
+    routeLine = L.polyline([[home.lat,home.lng],[p.lat,p.lon]],
+      {color:"#3ddc97", weight:2.5, dashArray:"6 7", opacity:.8}).addTo(map);
+    if(!map._sonaeFramed){
+      map.fitBounds(L.latLngBounds([home,[p.lat,p.lon]]).pad(0.22));
+      map._sonaeFramed = true;
+    }
   }
 }
 
-function renderHousehold(h){
-  if(!h) return;
-  $("household").innerHTML =
-    `<div style="font-size:14px;font-weight:700">${esc(h.address)}</div>
-     <div style="font-size:11.5px;color:var(--dim);margin:4px 0 8px">${esc(h.pref_name)}${esc(h.muni_name)} · muni ${esc(h.muni_code)} · JMA ${esc(h.jma_class20_code)}</div>` +
-    h.members.map(m => `<div class="member">👤 <b>${esc(m.name)}</b>${m.age?` (${m.age})`:""}
-      <span class="tag">${m.lives_at_home?"home":"remote"}</span>
-      <span class="tag">${esc(m.preferred_language)}</span>
-      ${m.needs && m.needs.length?`<span class="tag" title="${esc(m.needs.join("; "))}">needs</span>`:""}</div>`).join("");
-}
-
-function renderProfile(p){
-  if(!p) return;
-  const chips = p.assessments.map(a =>
-    `<span class="haz ${a.at_risk?"risk":""}">${a.at_risk?"⚠️":"✓"} ${HAZ_LABEL[a.hazard]||a.hazard}${a.severity?` · ${esc(a.severity)}`:""}</span>`).join("");
-  $("profile").innerHTML = chips + `<div class="summary">${esc(p.summary)}</div>` +
-    (p.caveats?.length ? `<div class="caveat">※ ${p.caveats.map(esc).join(" ※ ")}</div>` : "");
-  $("shelters").innerHTML = (p.nearest_shelters||[]).slice(0,5).map(s =>
-    `<div class="shelter">🏫 <b>${esc(s.name)}</b> <span class="km">${s.distance_km} km</span>
-     <div style="color:var(--dim);font-size:11px">${(s.suitable_for||[]).map(h=>HAZ_LABEL[h]?.split(" ")[0]||h).join(" · ")}${s.is_designated_shelter?" · mid-term shelter":""}</div></div>`).join("")
-    || '<div class="empty">—</div>';
-}
-
-function renderPlan(plan, level){
-  if(!plan) return;
-  const site = plan.primary_shelter ? `<div class="shelter">🏁 Primary: <b>${esc(plan.primary_shelter.name)}</b> <span class="km">${plan.primary_shelter.distance_km} km</span>${plan.backup_shelter?` · Backup: <b>${esc(plan.backup_shelter.name)}</b>`:""}</div>` : "";
-  $("plan").innerHTML = site + plan.steps.map(st => `
-    <div class="step ${level>=st.alert_level?"active":""}">
-      <div class="head"><span class="badge b${st.alert_level}">L${st.alert_level}</span> ${esc(st.headline)}</div>
-      <div class="trigger">⚡ ${esc(st.trigger)}</div>
-      <ul>${st.actions.map(a=>`<li><b>${esc(a.member)}</b>: ${esc(a.description)}${a.estimated_minutes?` <span style="color:var(--dim)">(~${a.estimated_minutes} min)</span>`:""}</li>`).join("")}</ul>
-    </div>`).join("") +
-    `<div class="caveat">${plan.family_approved?"✍️ Approved by the family — Sonae is authorized to act on this plan.":"⏳ Awaiting family approval."}</div>`;
-}
-
-function renderPhones(household, inbox){
-  if(!household) return;
-  const byMember = {};
-  for(const m of household.members) byMember[m.name] = [];
-  for(const n of inbox) (byMember[n.to_member] = byMember[n.to_member]||[]).push(n);
-  $("phones").innerHTML = household.members.map(m => `
-    <div class="phone"><div class="pname">${esc(m.name)} · ${m.lives_at_home?"🏠":"🌏"} ${esc(m.preferred_language)}</div>
-      ${(byMember[m.name]||[]).slice(-3).map(n => `
-        <div class="bubble ${n.urgent?"urgent":""}"><span class="subj">${esc(n.subject)}</span>${esc(n.body)}
-          ${n.citations?.length?`<div class="cites">📎 ${n.citations.map(c=>esc(c.name)).join(" · ")}</div>`:""}</div>`).join("")
-        || '<div class="empty" style="text-align:center;margin-top:60px">·</div>'}
+function renderBand(level, s){
+  const meta = LEVELS[level] || LEVELS[0];
+  const plate = $("plate");
+  plate.className = `plate c${level}` + (level>=3 ? " pulse" : "");
+  $("plateLvl").textContent = level ? `L${level}` : "◎";
+  $("plateName").textContent = meta.name;
+  $("plateEn").textContent = (meta.ja ? meta.ja + " · " : "") + meta.en;
+  const ladder = $("ladder");
+  ladder.innerHTML = [1,2,3,4,5].map(i => `
+    <div class="rung k${i} ${level>=i?"on":""} ${level===i?"now":""}">
+      <div class="no">L${i}</div><div class="ja">${LEVELS[i].name}</div><div class="en">${LEVELS[i].en}</div>
     </div>`).join("");
+  const w = $("watching");
+  w.classList.toggle("alert", level>=3);
+  $("watchLabel").textContent = s.replay.loaded ? (level>=3?"PLAN ACTIVE":"REPLAY ARMED") : (s.household?"WATCHING":"STANDBY");
 }
 
-function renderJournal(journal){
-  $("journal").innerHTML = journal.slice().reverse().map(j => {
-    const what = j.kind==="tool_call" ? `${esc(j.agent)} → ${esc(j.tool)}`
-      : j.kind==="tool_result" ? `${esc(j.tool)} ✓`
-      : j.kind==="sentinel_decision" ? `sentinel: ${j.triggered?`ACTIVATE L${j.level}`:"stand by"} — ${esc((j.reasoning||"").slice(0,90))}`
-      : j.kind==="notifications_sent" ? `sent ${j.count} notification(s) L${j.level} ${j.verified?"[verified]":"[fallback relay]"}`
-      : j.kind==="replay_moment" ? `${esc((j.sim_time||"").slice(5,16))} · ${(j.events||[]).length} event(s)`
-      : j.kind==="error" ? `ERROR ${esc(j.op)}: ${esc((j.error||"").slice(0,120))}`
-      : esc(JSON.stringify(j).slice(0,110));
-    return `<div class="jrow"><span class="ic">${J_ICON[j.kind]||"·"}</span><span class="what">${what}</span></div>`;
+function avatarColor(name, members){
+  const i = Math.max(0, members.findIndex(m => m.name === name));
+  return AVA_COLORS[i % AVA_COLORS.length];
+}
+const initial = n => (n||"?").slice(0,1).toUpperCase();
+
+function renderRisk(s){
+  const h = s.household, p = s.profile;
+  if(!h) return;
+  $("hhChip").innerHTML = `👨‍👩‍👧 <b>${esc(h.household_id.toUpperCase())}</b> <span>${esc(h.pref_name)}${esc(h.muni_name)} · JMA ${esc(h.jma_class20_code||"")}</span>`;
+  let html = "";
+  if(p){
+    html += `<div class="hazrow">` + p.assessments.map(a => {
+      const [en, ja] = HAZ[a.hazard] || [a.hazard, ""];
+      return `<span class="haz ${a.at_risk?"risk":"ok"}">${a.at_risk?"⚠":"✓"} ${en} <small>${ja}</small>${a.at_risk&&a.severity?` · ${esc(a.severity.replace("expected flood depth ",""))}`:""}</span>`;
+    }).join("") + `</div>`;
+    html += `<div class="summary">${esc(p.summary)}</div>`;
+  }
+  html += `<div class="members">` + h.members.map((m,i) => `
+    <div class="member">
+      <div class="ava" style="background:${AVA_COLORS[i%AVA_COLORS.length]}">${initial(m.name)}</div>
+      <div><b>${esc(m.name)}</b>${m.age?` <span class="meta">${m.age}</span>`:""}
+        <span class="meta">${m.lives_at_home?"🏠 at the home":"🌏 remote watcher"} · ${esc(m.preferred_language)}</span>
+        ${m.needs&&m.needs.length?`<div class="needs">◦ ${esc(m.needs.join(" ◦ "))}</div>`:""}
+      </div>
+    </div>`).join("") + `</div>`;
+  if(p && p.caveats && p.caveats.length) html += `<div class="caveat">※ ${p.caveats.map(esc).join("<br>※ ")}</div>`;
+  $("riskBody").innerHTML = html;
+}
+
+function renderPlan(s, level){
+  const plan = s.plan;
+  if(!plan) return;
+  const members = s.household ? s.household.members : [];
+  $("planPath").textContent = "cartographer → planner → verifier";
+  let html = `<div class="planmeta">
+    ${plan.primary_shelter?`<span>🏁 <b>${esc(plan.primary_shelter.name)}</b> ${plan.primary_shelter.distance_km} km</span>`:""}
+    ${plan.backup_shelter?`<span>backup: ${esc(plan.backup_shelter.name)}</span>`:""}
+    ${plan.vertical_evacuation_ok===false?`<span style="color:#ffb3a7">⛔ upper floors are not a refuge here</span>`:""}
+  </div>`;
+  html += `<div class="tl">` + plan.steps.map(st => {
+    const state = level>st.alert_level ? "done" : (level===st.alert_level ? "active" : "");
+    return `<div class="node k${st.alert_level} ${state}">
+      <div class="pin">L${st.alert_level}</div>
+      <div class="stepcard">
+        <div class="stephead">${esc(st.headline)}
+          ${state==="active"?'<span class="chip act">ACTIVE</span>':""}${state==="done"?'<span class="chip done">DONE</span>':""}</div>
+        <div class="trigger">⚡ ${esc(st.trigger)}</div>
+        <div class="acts">${st.actions.map(a => `
+          <div class="act"><div class="ava" style="background:${avatarColor(a.member, members)}">${initial(a.member)}</div>
+            <div><b>${esc(a.member)}</b> — ${esc(a.description)}</div>
+            ${a.estimated_minutes?`<span class="eta">~${a.estimated_minutes}m</span>`:""}</div>`).join("")}
+        </div>
+      </div>
+    </div>`;
+  }).join("") + `</div>`;
+  if(plan.supply_checklist && plan.supply_checklist.length)
+    html += `<details class="supplies"><summary>GO-BAG CHECKLIST · 非常持出品 (${plan.supply_checklist.length})</summary>
+      <ul>${plan.supply_checklist.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></details>`;
+  html += plan.family_approved
+    ? `<div class="approved">✍ Approved by the family — Sonae is authorized to act on this plan.</div>`
+    : `<div class="approved" style="color:var(--amber)">⏳ Awaiting family approval.</div>`;
+  $("planBody").innerHTML = html;
+}
+
+function renderPhones(s){
+  const h = s.household;
+  if(!h) { $("phones").innerHTML = '<div class="empty">—</div>'; return; }
+  const inbox = s.inbox || [];
+  const byMember = {};
+  for(const n of inbox) (byMember[n.to_member] = byMember[n.to_member] || []).push(n);
+  $("phones").innerHTML = h.members.map((m,i) => {
+    const msgs = (byMember[m.name]||[]).slice(-2);
+    return `<div class="phone"><div class="screen">
+      <div class="notch"></div>
+      <div class="statusbar"><span>${new Date().toTimeString().slice(0,5)}</span><span>📶 ▂▄▆</span></div>
+      <div class="appbar"><span class="mini">そ</span><b>Sonae</b><span class="who">${esc(m.name)} ${m.lives_at_home?"🏠":"🌏"}</span></div>
+      <div class="msgs">${msgs.map(n => `
+        <div class="bubble ${n.urgent?"urgent":""}">
+          <span class="when">${n.ts?new Date(n.ts).toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit",timeZone:"Asia/Tokyo"}):""}</span>
+          <span class="subj">${esc(n.subject)}</span>${esc(n.body)}
+          ${n.citations&&n.citations.length?`<div class="cite">📎 ${n.citations.map(c=>esc(c.name)).join(" · ")}</div>`:""}
+        </div>`).join("") || '<div class="empty">quiet ·<br>そなえは見守り中</div>'}
+      </div>
+    </div></div>`;
+  }).join("");
+}
+
+function renderFeed(journal){
+  $("feed").innerHTML = (journal||[]).slice().reverse().map(j => {
+    let who = j.agent || "", what = "", cls = "";
+    switch(j.kind){
+      case "tool_call": what = `→ ${j.tool} ${esc((j.input||"").slice(0,60))}`; break;
+      case "tool_result": what = `${j.tool} done ${j.duration_s?`(${(+j.duration_s).toFixed(1)}s)`:""}`; break;
+      case "sentinel_decision": who="sentinel"; cls="big";
+        what = j.triggered ? `ACTIVATE L${j.level} — ${esc((j.reasoning||"").slice(0,110))}` : `stand by — ${esc((j.reasoning||"").slice(0,90))}`; break;
+      case "notifications_sent": who="dispatch"; cls="big";
+        what = `${j.count} notification(s) at L${j.level} ${j.verified?"[verified ✓]":"[fallback relay]"}`; break;
+      case "replay_moment": who="replay"; what = `${(j.sim_time||"").slice(5,16)} · ${(j.events||[]).join("; ").slice(0,90)}`; break;
+      case "replay_outcome": who="replay"; what = esc(j.note||""); break;
+      case "onboarding_started": who="graph"; cls="big"; what = `onboarding started for ${esc(j.address||"")}`; break;
+      case "onboarding_complete": who="graph"; cls="big"; what = `plan built (${(j.nodes_executed||[]).join("→")}), ${j.checks} claims verified`; break;
+      case "plan_approved": who="family"; cls="big"; what = "plan approved ✍"; break;
+      case "error": who = j.op; cls="warn"; what = esc((j.error||"").slice(0,120)); break;
+      default: what = esc(JSON.stringify(j).slice(0,100));
+    }
+    return `<div class="jrow ${cls}"><span class="ic">${J_ICON[j.kind]||"·"}</span>${who?`<span class="who">${esc(who)}</span>`:""}<span class="what">${what}</span></div>`;
   }).join("") || '<div class="empty">—</div>';
 }
+
+async function post(url, body){
+  const r = await fetch(url, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body||{})});
+  if(!r.ok) alert(`${url} failed: ${await r.text()}`);
+}
+$("btnOnboard").onclick = () => post("/api/onboard", {profile_path:"examples/aoki_family.json", approve:true});
+$("btnLoad").onclick = () => post("/api/replay/load", {household:HOUSEHOLD});
+$("btnStep").onclick = () => post("/api/replay/step", {household:HOUSEHOLD});
 
 async function tick(){
   try{
     const s = await (await fetch(`/api/state?household=${HOUSEHOLD}`)).json();
-    const level = s.watch?.activated_level || 0;
-    renderGauge(level);
-    renderHousehold(s.household);
-    renderProfile(s.profile);
-    renderPlan(s.plan, level);
-    renderPhones(s.household, s.inbox||[]);
-    renderJournal(s.journal||[]);
-    $("busy").textContent = s.busy ? `⏳ agents working: ${s.busy}` : "";
-    $("btnStep").disabled = !!s.busy || !s.replay.loaded || s.replay.exhausted;
+    const level = (s.watch && s.watch.activated_level) || 0;
+    renderBand(level, s);
+    renderRisk(s);
+    renderPlan(s, level);
+    renderPhones(s);
+    renderFeed(s.journal);
+    if(s.household){ initMap(s.household, s.profile, s.plan); drawShelters(s.profile, s.plan); }
+    $("busy").classList.toggle("show", !!s.busy);
+    $("busyLabel").textContent = s.busy ? `${s.busy} · agents working` : "";
+    $("btnStep").disabled = !!s.busy || !s.replay.loaded || !!s.replay.exhausted;
     $("btnOnboard").disabled = !!s.busy;
-    $("simClock").textContent = s.replay.now ? new Date(s.replay.now).toLocaleString("ja-JP",{month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}) + " JST" : "—";
-    $("next").textContent = s.replay.next ? `next: ${s.replay.next.ts.slice(5,16)} ${s.replay.next.title}` : (s.replay.exhausted ? "replay complete" : "");
-    if(s.replay.loaded && s.replay.disclaimer) $("disclaimer").textContent = s.replay.disclaimer;
-  }catch(e){ /* server restarting; keep polling */ }
+    $("ribbon").classList.toggle("show", !!s.replay.loaded);
+    const clock = $("simClock");
+    if(s.replay.now){
+      clock.classList.remove("calm");
+      clock.textContent = s.replay.now.slice(5,10).replace("-","/") + " " + s.replay.now.slice(11,16) + " JST";
+    } else {
+      clock.classList.add("calm");
+      clock.textContent = s.replay.loaded ? "replay armed — advance ▸" : new Date().toLocaleTimeString("ja-JP",{hour:"2-digit",minute:"2-digit"}) + " live";
+    }
+    $("next").textContent = s.replay.next ? `NEXT ▸ ${s.replay.next.ts.slice(5,16).replace("T"," ")} — ${s.replay.next.title}`
+                          : (s.replay.exhausted ? "replay complete — the levee at Hoyasu failed at dawn; this family was out by 18:15." : "");
+  }catch(e){/* server restarting */}
 }
 setInterval(tick, 1500); tick();
 </script>
