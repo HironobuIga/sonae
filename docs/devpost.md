@@ -90,7 +90,7 @@ decisions.
 
 - LINE Messaging integration (how Japanese families actually talk) and safety check-in fan-out
   for neighborhood associations (自主防災会) — the paper name-list problem.
-- More feeds: earthquake early warning, river gauге telemetry, L-Alert.
+- More feeds: earthquake early warning, river gauge telemetry, L-Alert.
 - Country adapters: the architecture is data-driven — NOAA/NWS + FEMA shelters would port it.
 
 ## Built with
