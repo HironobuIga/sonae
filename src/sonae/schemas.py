@@ -54,6 +54,7 @@ class FamilyMember(BaseModel):
         default_factory=list,
         description="Mobility / medical / language needs, e.g. 'bad knees, walking takes 3x longer'",
     )
+    preferred_language: str = Field(default="ja", description="Language for notifications: 'ja' or 'en'")
     phone_available: bool = True
 
 

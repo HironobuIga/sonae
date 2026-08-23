@@ -1,0 +1,133 @@
+{
+  "scenario_id": "hagibis-2019-nagano",
+  "title": "Typhoon Hagibis (Reiwa 1 East Japan Typhoon), Chikuma River, Nagano City — October 11–13, 2019",
+  "disclaimer": "HISTORICAL REPLAY. Every event below is reconstructed from official post-event records: the Nagano City disaster-response verification report (指定河川洪水予報 and evacuation-order chronologies), the MLIT Hokuriku Regional Bureau damage report, and the JMA Nagano meteorological report. Timestamps are as officially recorded (JST); wording is paraphrased and translated. This scenario drives Sonae's agents exactly as a live feed would.",
+  "sources": [
+    {
+      "name": "Nagano City: Reiwa-1 East Japan Typhoon disaster-response verification report",
+      "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf",
+      "note": "pp.24–28: full chronology of designated-river flood forecasts (15 bulletins) and municipal evacuation orders"
+    },
+    {
+      "name": "MLIT Hokuriku Regional Development Bureau: Typhoon 19 damage report",
+      "url": "https://www.hrr.mlit.go.jp/saigai/taihuu1901/taihuu1901.pdf",
+      "note": "Emergency heavy rain warning for Nagano 12th 15:30; Tateganahana gauge danger level 9.60 m; Hoyasu levee breach L≈70 m"
+    },
+    {
+      "name": "JMA Nagano Local Meteorological Office: Typhoon 19 weather report for Nagano Prefecture",
+      "url": "https://www.data.jma.go.jp/stats/data/bosai/report/2019/20191012/pdf/2019_3_nagano_1.pdf",
+      "note": "warning issuance tables for all Nagano municipalities"
+    },
+    {
+      "name": "Nagano City verification report, ch.2 (damage overview)",
+      "url": "https://www.city.nagano.nagano.jp/documents/668/363617.pdf",
+      "note": "Hoyasu levee: overtopping 01:08 Oct 13, breach announced 06:00"
+    }
+  ],
+  "events": [
+    {
+      "ts": "2019-10-11T08:46:00+09:00",
+      "kind": "evacuation_info",
+      "area_code": "2020111",
+      "area_name": "Nagano City",
+      "title": "Nagano City advisory: caution ahead of approaching Typhoon 19",
+      "body": "Nagano City issued a public call for caution as Typhoon 19 (Hagibis) approaches. (台風第19号接近に伴う注意の呼びかけ)"
+    },
+    {
+      "ts": "2019-10-11T14:00:00+09:00",
+      "kind": "jma_forecast",
+      "area_code": "200000",
+      "area_name": "Nagano Prefecture",
+      "title": "JMA: record-class typhoon expected to approach eastern Japan on Oct 12–13",
+      "body": "JMA warns that Typhoon 19 is large and very strong and is expected to bring record heavy rain, storm winds, high waves and storm surge to east Japan through the 12th–13th. Residents are urged to complete preparations and check evacuation sites before the rain intensifies."
+    },
+    {
+      "ts": "2019-10-12T13:40:00+09:00",
+      "kind": "river_flood_forecast",
+      "area_code": "2020111",
+      "area_name": "Chikuma River (Ikuta gauge)",
+      "title": "Chikuma River flood forecast #1: flood advisory (氾濫注意情報)",
+      "body": "Designated-river flood forecast bulletin #1: the Chikuma River at the Ikuta gauge reached the flood-advisory level (氾濫注意水位) around 13:20. Alert level 2 equivalent."
+    },
+    {
+      "ts": "2019-10-12T14:55:00+09:00",
+      "kind": "river_flood_forecast",
+      "area_code": "2020111",
+      "area_name": "Chikuma River (Kuisege gauge)",
+      "title": "Chikuma River flood forecast #2: flood advisory (氾濫注意情報)",
+      "body": "Bulletin #2: the Chikuma River at the Kuisege gauge reached the flood-advisory level around 14:40. Alert level 2 equivalent."
+    },
+    {
+      "ts": "2019-10-12T15:30:00+09:00",
+      "kind": "jma_warning",
+      "area_code": "200000",
+      "area_name": "Nagano Prefecture",
+      "title": "EMERGENCY heavy rain warning (大雨特別警報) issued for Nagano Prefecture",
+      "body": "JMA issued an Emergency Heavy Rain Warning (大雨特別警報) for Nagano Prefecture at 15:30 — the first ever for 43 municipalities including Nagano City. Alert level 5 equivalent for rainfall. Heaviest rain expected into the night."
+    },
+    {
+      "ts": "2019-10-12T16:00:00+09:00",
+      "kind": "evacuation_info",
+      "area_code": "2020111",
+      "area_name": "Nagano City (landslide warning zones)",
+      "title": "Alert Level 3: evacuation preparation / elderly evacuation (avoid landslide zones)",
+      "body": "Nagano City issued 警戒レベル3 避難準備・高齢者等避難開始 at 16:00 for landslide warning zones (Shinonoi-Kyowa, Amori, part of Odagiri, Ooka districts). NOTE: no separate Level 3 for the Chikuma riverside was ever issued — riverside districts jumped straight to Level 4 at 18:00."
+    },
+    {
+      "ts": "2019-10-12T17:30:00+09:00",
+      "kind": "river_flood_forecast",
+      "area_code": "2020111",
+      "area_name": "Chikuma River (Kuisege gauge)",
+      "title": "Chikuma River flood forecast #3: flood WARNING (氾濫警戒情報)",
+      "body": "Bulletin #3: the Chikuma River at the Kuisege gauge is forecast to reach the flood-danger level (氾濫危険水位) around 19:00. Alert level 3 equivalent — elderly and mobility-limited residents along the river should begin evacuating now."
+    },
+    {
+      "ts": "2019-10-12T18:00:00+09:00",
+      "kind": "evacuation_info",
+      "area_code": "2020111",
+      "area_name": "Chikuma riverside, Shinonoi–Toyono (incl. Naganuma/Hoyasu)",
+      "title": "Alert Level 4: evacuation advisory (避難勧告) for Chikuma riverside districts",
+      "body": "Nagano City issued 警戒レベル4 避難勧告 at 18:00 for districts along the Chikuma River from Shinonoi to Toyono — this includes the Naganuma district (Hoyasu). Risk of Chikuma River flooding is rising. Same minute, flood forecast bulletin #4: Ikuta gauge reached flood-danger level (氾濫危険情報, level 4 equivalent) at 17:40."
+    },
+    {
+      "ts": "2019-10-12T18:40:00+09:00",
+      "kind": "river_flood_forecast",
+      "area_code": "2020111",
+      "area_name": "Chikuma River (Kuisege gauge)",
+      "title": "Chikuma River flood forecast #5: flood DANGER (氾濫危険情報)",
+      "body": "Bulletin #5: the Chikuma River at the Kuisege gauge reached the flood-danger level (氾濫危険水位) at 18:10. Alert level 4 equivalent — everyone in flood-forecast zones should evacuate."
+    },
+    {
+      "ts": "2019-10-12T20:50:00+09:00",
+      "kind": "river_flood_forecast",
+      "area_code": "2020111",
+      "area_name": "Chikuma River left bank (Shinonoi-Yokota)",
+      "title": "Chikuma River flood forecast #7: FLOODING OCCURRING (氾濫発生情報) at Shinonoi-Yokota",
+      "body": "Bulletin #7: the Chikuma River overtopped its left bank at Shinonoi-Yokota around 20:23 (Level 5). The city issued 警戒レベル5 災害発生情報 at 20:42. Flooding is now occurring upstream of Naganuma."
+    },
+    {
+      "ts": "2019-10-12T23:40:00+09:00",
+      "kind": "evacuation_info",
+      "area_code": "2020111",
+      "area_name": "Chikuma riverside, Shinonoi–Toyono (incl. Naganuma/Hoyasu)",
+      "title": "Alert Level 4: EVACUATION ORDER (避難指示・緊急) for Chikuma riverside districts",
+      "body": "Nagano City issued 警戒レベル4 避難指示（緊急） at 23:40 for the Chikuma riverside from Shinonoi to Toyono: 'Risk of Chikuma River flooding is high. Those in districts already flooding must take life-saving action immediately.' Flood forecast bulletin #10 (23:40): Tateganahana gauge to reach evacuation-judgment level around 23:20; bulletin #11 (23:55): Tateganahana reached the flood-danger level (9.60 m) around 23:40."
+    },
+    {
+      "ts": "2019-10-13T01:15:00+09:00",
+      "kind": "river_flood_forecast",
+      "area_code": "2020111",
+      "area_name": "Chikuma River left bank (Hoyasu, Naganuma district)",
+      "title": "Chikuma River flood forecast #12: FLOODING OCCURRING (氾濫発生情報) at HOYASU",
+      "body": "Bulletin #12: the Chikuma River began overtopping its left bank at Hoyasu (Naganuma district) around 01:08. The city issued 警戒レベル5 災害発生情報 at 01:12. Levee failure is feared."
+    },
+    {
+      "ts": "2019-10-13T02:12:00+09:00",
+      "kind": "evacuation_info",
+      "area_code": "2020111",
+      "area_name": "Naganuma district (Hoyasu)",
+      "title": "Alert Level 5: mayor's direct appeal — flooding at Hoyasu, evacuate to save your life",
+      "body": "Mayor's broadcast at 02:12: 'Level 5 — disaster occurring. Take the best possible action to protect life. Overtopping began at Hoyasu, Naganuma district around 01:08 and levee failure is feared. Anyone near the Chikuma River must flee immediately.' The levee at Hoyasu later failed over ~70 m (announced 06:00); the Naganuma district flooded to roof height."
+    }
+  ]
+}
