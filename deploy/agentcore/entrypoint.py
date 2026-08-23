@@ -18,7 +18,13 @@ store for the AgentCore Memory adapter.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
+
+# Containers copy the repo as-is; make the src layout importable without installation.
+_SRC = Path(__file__).resolve().parents[2] / "src"
+if _SRC.exists() and str(_SRC) not in sys.path:
+    sys.path.insert(0, str(_SRC))
 
 from bedrock_agentcore.runtime import BedrockAgentCoreApp
 

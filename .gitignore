@@ -7,3 +7,8 @@ data/store/
 .pytest_cache/
 .ruff_cache/
 dist/
+deploy/sonae/agentcore/cdk/node_modules/
+deploy/sonae/agentcore/cdk/cdk.out/
+deploy/sonae/agentcore/.cli/
+deploy/sonae/Users/
+requirements.txt
