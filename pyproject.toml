@@ -49,6 +49,10 @@ select = ["E", "F", "I", "UP", "B"]
 # UP042/UP047: keep (str, Enum) and TypeVar style for Pydantic/py312 compatibility
 ignore = ["UP042", "UP047"]
 
+[tool.ruff.lint.per-file-ignores]
+# The runtime entrypoint must extend sys.path before importing the src layout.
+"deploy/agentcore/entrypoint.py" = ["E402"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 asyncio_mode = "auto"
