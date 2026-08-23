@@ -308,7 +308,14 @@
     <div class="card">
       <div class="hd"><span class="t">FAMILY MY-TIMELINE</span><span class="ja">マイ・タイムライン</span>
         <span class="right" id="planPath"></span></div>
-      <div class="bd" id="planBody"><div class="empty">The agent team builds this during onboarding:<br>Cartographer → Planner → Verifier (self-correcting graph).</div></div>
+      <div class="bd" id="planBody"><div class="empty" style="padding:46px 20px">
+        <div style="font-size:34px;margin-bottom:10px">そ</div>
+        <div style="font-size:14px;color:var(--text);font-style:normal;font-weight:600;margin-bottom:6px">
+          No home is being watched yet · まだ見守り中の家がありません</div>
+        <div style="margin-bottom:18px;line-height:1.6">Give Sonae one address and a few sentences about your family.<br>
+          Cartographer → Planner → Verifier build and fact-check the plan; you approve it; Sonae stands watch.</div>
+        <button class="btn primary" onclick="openOnboard()">🛡 Protect a home · 家を見守る</button>
+      </div></div>
     </div>
   </section>
 

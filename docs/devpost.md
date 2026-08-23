@@ -88,9 +88,16 @@ decisions.
 ## Accomplishments
 
 - The full loop works on real data end-to-end: real hazard depths, real shelters, real feeds.
-- The verification gate caught a real hallucination on its first live run.
-- The dashboard renders the actual GSI hazard map with the home, the inundation zone, and the
-  evacuation route — no mockups anywhere in the video.
+- The verification gate caught real hallucinations on its first live runs — a phone number, an
+  over-claimed evacuation order, both stopped before dispatch.
+- The complete ambient chain is built and verified in AWS: EventBridge Scheduler → Lambda →
+  AgentCore Runtime → live JMA feeds → durable S3 household state — including a full onboarding
+  graph run *inside* the cloud runtime whose agent path shows the self-correction loop converging.
+- Generality proven with a second city: a Hitoyoshi (Kuma River) household onboarded through the
+  web form got a completely different, equally personalized plan — shelter 80 m away, phone calls
+  "loud and slow" for a hard-of-hearing 82-year-old.
+- The dashboard renders the actual GSI hazard map with the home, the inundation zone, the
+  evacuation route, and the historical levee-breach point — no mockups anywhere in the video.
 
 ## What's next
 

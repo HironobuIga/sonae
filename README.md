@@ -103,7 +103,14 @@ flowchart TB
 **Strands features used:** multi-agent `Graph` with a conditional revision edge (the verification loop),
 tool use over government open data, hook providers (`BeforeToolCall`/`AfterToolCall` flight recorder),
 Pydantic-validated JSON inter-agent protocol, model-agnostic providers (Bedrock default, Anthropic API
-fallback). Deployment on Amazon Bedrock AgentCore: see [`deploy/agentcore/`](deploy/agentcore/).
+fallback).
+
+**Cloud (built and verified in our account):** the team runs on **Amazon Bedrock AgentCore Runtime**
+(BYO container via the AgentCore CLI/CDK); household state is durable in S3 across container
+recycling; an EventBridge Scheduler → Lambda heartbeat drives `watch_cycle` every 5 minutes
+(currently paused between demos). The full chain — schedule → runtime → live JMA feeds → S3 state —
+is verified end-to-end, including a complete onboarding graph run inside the cloud runtime whose
+`agent_path` shows the verification loop converging. See [`deploy/agentcore/`](deploy/agentcore/).
 
 ## The trust layer
 
@@ -158,6 +165,18 @@ uv run uvicorn sonae.web.app:app --port 8000   # → http://localhost:8000
 ```
 
 Tests run fully offline against bundled data extracts: `uv run pytest`.
+
+## Not just one town
+
+Sonae's inputs are one address and a family description; everything else comes from nationwide
+standardized open data, so it generalizes to any Japanese municipality. We onboarded a second
+household through the web form — a single-story home in Hitoyoshi, Kumamoto (Kuma River basin,
+devastated in July 2020) with an 82-year-old who uses a cane and is hard of hearing. The agents
+produced a completely different plan: primary evacuation site 80 m away, "call Shigeru — speak
+loudly and slowly", car keys ready by Level 2 because he needs extra time. Same architecture, no
+city-specific code.
+
+![Hitoyoshi household](docs/screenshots/dashboard-hitoyoshi.png)
 
 ## The 2019 counterfactual
 

@@ -82,7 +82,12 @@ Actual responses from our deployed runtime (`sonae_sonae-OBwRHO2xdW`, us-west-2)
 {"activated_level": 0, "plan_approved": true, "last_checked": "2026-08-23T09:46:26Z"}
 ```
 
-## Making the watch ambient (running in our account since 2026-08-23)
+## Making the watch ambient
+
+> Current state in our account: fully built and verified end-to-end (schedule → Lambda → runtime →
+> JMA → S3), then **paused** (`--state DISABLED`) to keep the sandbox quiet between demos.
+> Re-enable for a live demonstration with:
+> `aws scheduler update-schedule --name sonae-watch-aoki ... --state ENABLED`
 
 A small Lambda invokes the runtime's `watch_cycle`, and EventBridge Scheduler fires it every five
 minutes. (A Lambda hop is used because `InvokeAgentRuntime` is a streaming API, which EventBridge
