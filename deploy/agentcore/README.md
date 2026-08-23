@@ -82,31 +82,40 @@ Actual responses from our deployed runtime (`sonae_sonae-OBwRHO2xdW`, us-west-2)
 {"activated_level": 0, "plan_approved": true, "last_checked": "2026-08-23T09:46:26Z"}
 ```
 
-## Making the watch ambient
+## Making the watch ambient (running in our account since 2026-08-23)
 
-Create a schedule that invokes the runtime every 5 minutes:
+A small Lambda invokes the runtime's `watch_cycle`, and EventBridge Scheduler fires it every five
+minutes. (A Lambda hop is used because `InvokeAgentRuntime` is a streaming API, which EventBridge
+universal targets don't drive directly.)
 
 ```bash
-aws scheduler create-schedule \
-  --name sonae-watch-aoki \
-  --schedule-expression "rate(5 minutes)" \
-  --flexible-time-window Mode=OFF \
-  --target '{
-    "Arn": "arn:aws:scheduler:::aws-sdk:bedrockagentcore:invokeAgentRuntime",
-    "RoleArn": "<scheduler-role-arn>",
-    "Input": "{\"agentRuntimeArn\": \"<agent-runtime-arn>\", \"payload\": \"{\\\"action\\\": \\\"watch_cycle\\\", \\\"household\\\": \\\"aoki\\\"}\"}"
-  }'
+# Lambda (see heartbeat/index.py in this directory): boto3 bedrock-agentcore
+# InvokeAgentRuntime with a fixed runtimeSessionId and {"action":"watch_cycle",...}
+aws lambda create-function --function-name sonae-heartbeat \
+  --runtime python3.12 --handler index.handler --zip-file fileb://heartbeat.zip \
+  --role <lambda-role-with-InvokeAgentRuntime> --timeout 600 \
+  --environment 'Variables={RUNTIME_ARN=<agent-runtime-arn>,HOUSEHOLD=aoki}'
+
+aws scheduler create-schedule --name sonae-watch-aoki \
+  --schedule-expression "rate(5 minutes)" --flexible-time-window Mode=OFF \
+  --target '{"Arn":"<lambda-arn>","RoleArn":"<scheduler-role>","Input":"{}"}'
 ```
 
-During calm weather each cycle is a cheap no-op (feed fetch, dedup, no model tokens); during an
-event it runs the full verified pipeline.
+During calm weather each cycle is a cheap no-op (feed fetch, dedup, **zero model tokens**); when a
+new official signal appears it runs the verified pipeline. Verified output of one live cycle:
 
-## State
+```json
+{"processed_events": 0, "dispatched": 0, "note": "no new events"}
+```
 
-The demo container stores household state under `SONAE_DATA_DIR` (`/tmp/sonae-data` — ephemeral,
-per-instance). For production use, mount durable storage or use the AgentCore Memory adapter so each
-household's plan, watch state, and flight recorder survive container recycling. Notifications
-dispatch through the channel layer — swap the inbox channel for LINE/SES/SNS in `sonae/channels/`.
+## State (durable via S3)
+
+With `SONAE_S3_BUCKET` set (see Dockerfile), every invocation pulls the household's store from
+`s3://<bucket>/store/<household>/` and pushes it back afterwards — plans, watch state, and the
+flight recorder survive container recycling, so the scheduled watch is genuinely stateful. The
+runtime's execution role needs Get/Put/List on that bucket. Local runs stay purely file-based.
+Notifications dispatch through the channel layer — swap the inbox channel for LINE/SES/SNS in
+`sonae/channels/`.
 
 ## Observability
 
