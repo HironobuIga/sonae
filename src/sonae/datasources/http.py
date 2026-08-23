@@ -17,7 +17,7 @@ import httpx
 
 from sonae.config import settings
 
-USER_AGENT = "sonae-agent/0.1 (+https://github.com/hironobu-iga/sonae; disaster-readiness research)"
+USER_AGENT = "sonae-agent/0.1 (+https://github.com/HironobuIga/sonae; disaster-readiness research)"
 
 _client: httpx.Client | None = None
 

@@ -144,7 +144,7 @@ through the pipeline and shown to users — relaying caveats is part of relaying
 ## Quickstart
 
 ```bash
-git clone <this repo> && cd sonae
+git clone https://github.com/HironobuIga/sonae.git && cd sonae
 uv sync
 
 # Model provider (pick one)
