@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sonae video slides</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#05080f; --panel:#0c1322; --panel2:#101a2e; --line:#1b2740; --line2:#31466e;
+    --text:#e9eff9; --dim:#8296b4; --faint:#54678a;
+    --cyan:#3fd0ff; --amber:#ffb703; --green:#3ddc97; --red:#ff5a5a;
+    --sans:"IBM Plex Sans JP",sans-serif; --mono:"JetBrains Mono",monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--text);font-family:var(--sans)}
+  .slide{display:none;width:1920px;height:1080px;padding:110px 140px;position:relative;flex-direction:column;
+    background:radial-gradient(1400px 600px at 70% -10%, rgba(63,208,255,.08), transparent 60%),
+               radial-gradient(1000px 500px at 8% 112%, rgba(177,140,255,.05), transparent 60%), var(--bg)}
+  .slide.show{display:flex}
+  .mark{width:88px;height:88px;border-radius:24px;display:grid;place-items:center;font-weight:700;font-size:44px;
+        color:#05222e;background:linear-gradient(135deg,var(--cyan),#7ce4ff);box-shadow:0 0 60px rgba(63,208,255,.4)}
+  h1{font-size:72px;margin:0;letter-spacing:.02em;line-height:1.25}
+  h2{font-size:30px;color:var(--dim);font-weight:500;margin:0}
+  .kicker{font-family:var(--mono);font-size:20px;letter-spacing:.25em;color:var(--cyan);margin-bottom:26px}
+  .big-stat{font-size:150px;font-weight:700;line-height:1;color:var(--amber)}
+  .foot{position:absolute;bottom:56px;left:140px;right:140px;display:flex;justify-content:space-between;
+        font-family:var(--mono);font-size:17px;color:var(--faint)}
+  .ts{display:flex;align-items:center;gap:34px;margin:26px 0}
+  .ts .time{font-family:var(--mono);font-size:56px;font-weight:700;min-width:300px}
+  .ts .what{font-size:31px;line-height:1.45}
+  .ts .what small{display:block;color:var(--dim);font-size:21px}
+  .card{background:var(--panel);border:1px solid var(--line2);border-radius:24px;padding:44px 52px}
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:44px;margin-top:48px}
+  .vs .card h3{font-size:26px;margin:0 0 14px;color:var(--dim);font-weight:500;letter-spacing:.1em}
+  .vs .card .t{font-family:var(--mono);font-size:88px;font-weight:700;line-height:1}
+  .vs .card p{font-size:24px;color:var(--dim);line-height:1.5;margin:16px 0 0}
+  .mono-log{font-family:var(--mono);font-size:24px;line-height:2.0;background:#04070e;border:1px solid var(--line2);
+            border-radius:18px;padding:38px 46px;white-space:pre-wrap}
+  .mono-log .ok{color:var(--green)} .mono-log .bad{color:#ffb3a7} .mono-log .k{color:var(--cyan)} .mono-log .c{color:var(--faint)}
+  ul.pts{font-size:31px;line-height:2.0;margin:30px 0 0;padding-left:34px}
+  ul.pts li b{color:var(--cyan)}
+  .ja{color:var(--dim)}
+</style>
+</head>
+<body>
+
+<!-- 1: title -->
+<section class="slide" data-n="1" style="justify-content:center;align-items:flex-start">
+  <div style="display:flex;align-items:center;gap:36px;margin-bottom:56px">
+    <div class="mark">そ</div>
+    <div><h1 style="font-size:96px">SONAE <span style="color:var(--dim);font-weight:400">そなえ</span></h1></div>
+  </div>
+  <h1 style="font-size:56px;max-width:1400px">The agent team that stands watch<br>over your family.</h1>
+  <h2 style="margin-top:34px">災害からあなたの家族を見守るエージェントチーム</h2>
+  <div class="foot"><span>AWS Agents for Humans Hackathon · Good Neighbor track</span>
+    <span>Strands Agents SDK · Amazon Bedrock AgentCore</span></div>
+</section>
+
+<!-- 2: the homework -->
+<section class="slide" data-n="2" style="justify-content:center">
+  <div class="kicker">THE PROBLEM</div>
+  <h1 style="max-width:1560px">Japan asks every household to prepare a personal evacuation timeline.</h1>
+  <h2 style="margin-top:30px">マイ・タイムライン — who does what, at which official alert level.</h2>
+  <ul class="pts">
+    <li>Read 200-page statutory hazard maps</li>
+    <li>Find which evacuation site covers <b>which</b> hazard — they differ</li>
+    <li>Negotiate it with your family, then keep it current</li>
+  </ul>
+  <h1 style="margin-top:56px;font-size:52px;color:var(--amber)">Homework assigned to 125 million people.<br>Almost no one has done it.</h1>
+</section>
+
+<!-- 3: who dies -->
+<section class="slide" data-n="3" style="justify-content:center">
+  <div class="kicker">WHO IS AT RISK</div>
+  <div class="big-stat">~80%</div>
+  <h1 style="font-size:50px;margin-top:24px;max-width:1500px">of Japan's flood fatalities are people aged 65 and over.</h1>
+  <h2 style="margin-top:40px;max-width:1500px;line-height:1.7">The hardest case is the one millions live with:<br>
+  an aging parent, alone in the family home, hours away.<br>
+  <span class="ja">— 東京の息子は、実家の裏の川の水位を知らない。</span></h2>
+</section>
+
+<!-- 4: the night -->
+<section class="slide" data-n="4" style="justify-content:center">
+  <div class="kicker">OCTOBER 12, 2019 — TYPHOON HAGIBIS · CHIKUMA RIVER, NAGANO</div>
+  <div class="ts"><span class="time" style="color:var(--amber)">17:30</span>
+    <span class="what">River reaches flood-warning footing (氾濫警戒情報)<small>It is still daylight. Roads are clear.</small></span></div>
+  <div class="ts"><span class="time" style="color:var(--red)">23:40</span>
+    <span class="what">Official evacuation order (避難指示)<small>Darkness. Driving rain. A 78-year-old walks 3× slower.</small></span></div>
+  <div class="ts"><span class="time" style="color:#ff5a5a">01:08</span>
+    <span class="what">The levee fails at Hoyasu — the district floods to roof height<small>Chronology: Nagano City post-event verification report, pp.24–28</small></span></div>
+  <h1 style="font-size:46px;margin-top:44px;max-width:1600px">The information was public the whole time.<br>
+  <span style="color:var(--cyan)">What families lacked was an agent on watch.</span></h1>
+</section>
+
+<!-- 5: counterfactual -->
+<section class="slide" data-n="5" style="justify-content:center">
+  <div class="kicker">SAME PUBLIC DATA · SAME NIGHT — REPLAYED MINUTE BY MINUTE</div>
+  <div class="vs">
+    <div class="card" style="border-color:#7e1f10">
+      <h3>WHAT HAPPENED</h3>
+      <div class="t" style="color:var(--red)">23:40</div>
+      <p>Evacuation order reaches Hoyasu — in darkness, hours after the river was already overtopping upstream.</p>
+    </div>
+    <div class="card" style="border-color:var(--green)">
+      <h3>SONAE'S FAMILY</h3>
+      <div class="t" style="color:var(--green)">15:31</div>
+      <p>Verified, personal push at the emergency warning: <b>“すぐに避難してください”</b> — grandmother walking to the flood-safe site in daylight.</p>
+    </div>
+  </div>
+  <h1 style="font-size:52px;margin-top:52px">Eight hours of margin — grounded in the official record.</h1>
+</section>
+
+<!-- 6: verifier moment -->
+<section class="slide" data-n="6" style="justify-content:center">
+  <div class="kicker">THE TRUST LAYER — REAL CATCHES FROM OUR FLIGHT RECORDER</div>
+  <div class="mono-log">
+<span class="c"># live run 1 — the Planner invented a plausible phone number</span>
+<span class="bad">verifier: REJECTED</span> — "the number 026-224-5011 cannot be verified; delete it"
+
+<span class="c"># the replay's pivotal moment, 15:30 — draft subject over-claimed an order</span>
+<span class="bad">verifier pass 1: REJECTED</span> — subject says 避難指示; no municipal order exists yet
+<span class="ok">verifier pass 2: APPROVED</span> → <span class="k">3 notifications dispatched [verified ✓]</span>
+  </div>
+  <ul class="pts" style="font-size:29px">
+    <li>AI prose fails <b>closed</b> — unverified text is never sent</li>
+    <li>The official signal fails <b>open</b> — verbatim relay rather than silence</li>
+    <li>Family approval is the authorization boundary — Sonae never invents an evacuation judgment</li>
+  </ul>
+</section>
+
+<!-- 7: cloud verified -->
+<section class="slide" data-n="7" style="justify-content:center">
+  <div class="kicker">RUNNING ON AMAZON BEDROCK AGENTCORE — VERIFIED IN OUR ACCOUNT</div>
+  <div class="mono-log">$ aws bedrock-agentcore invoke-agent-runtime --payload <span class="k">{"action":"onboard", …}</span>
+<span class="ok">{"verified": true,
+ "agent_path": ["cartographer","planner","verifier","planner","verifier","planner","verifier"]}</span>
+<span class="c"># the self-correction loop, converging inside the cloud runtime</span>
+
+$ aws bedrock-agentcore invoke-agent-runtime --payload <span class="k">{"action":"watch_cycle", …}</span>
+<span class="ok">{"processed_events": 0, "dispatched": 0, "note": "no new events"}</span>
+<span class="c"># EventBridge heartbeat · zero model tokens on a calm day · state durable in S3</span></div>
+  <h2 style="margin-top:40px">Boring is the job. The quiet path is the tested path.</h2>
+</section>
+
+<!-- 8: close -->
+<section class="slide" data-n="8" style="justify-content:center;align-items:flex-start">
+  <div style="display:flex;align-items:center;gap:30px;margin-bottom:48px">
+    <div class="mark" style="width:72px;height:72px;font-size:36px;border-radius:20px">そ</div>
+    <h1 style="font-size:64px">SONAE <span style="color:var(--dim);font-weight:400">そなえ</span></h1>
+  </div>
+  <h1 style="font-size:48px;max-width:1560px;line-height:1.4">The next Hagibis is already forming.<br>
+  Every neighborhood deserves someone on watch.</h1>
+  <ul class="pts" style="margin-top:44px">
+    <li><b>Strands Agents SDK</b> — self-correcting Graph · verified pipelines · flight-recorder hooks</li>
+    <li><b>Amazon Bedrock AgentCore</b> — deployed, stateful, ambient</li>
+    <li><b>100% government open data</b> — built for Japan, portable to any country with open hazard feeds</li>
+  </ul>
+  <div class="foot"><span>github.com/HironobuIga/sonae · MIT</span><span>AWS Agents for Humans Hackathon 2026</span></div>
+</section>
+
+<!-- 9: architecture (agents) -->
+<section class="slide" data-n="9" style="padding:60px 80px;justify-content:center;align-items:center">
+  <img src="../architecture.png" style="max-width:1760px;max-height:960px;object-fit:contain;border-radius:18px">
+</section>
+
+<!-- 10: architecture (aws) -->
+<section class="slide" data-n="10" style="padding:60px 80px;justify-content:center;align-items:center;background:#fff">
+  <img src="../architecture-aws.png" style="max-width:1760px;max-height:960px;object-fit:contain">
+</section>
+
+<script>
+  const n = new URLSearchParams(location.search).get("n") || "1";
+  document.querySelector(`.slide[data-n="${n}"]`).classList.add("show");
+</script>
+</body>
+</html>
