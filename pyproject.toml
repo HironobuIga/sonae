@@ -21,6 +21,11 @@ dependencies = [
 [project.scripts]
 sonae = "sonae.cli:main"
 
+[project.optional-dependencies]
+agentcore = [
+    "bedrock-agentcore>=1.22.0",
+]
+
 [dependency-groups]
 dev = [
     "pytest>=9.1.1",
