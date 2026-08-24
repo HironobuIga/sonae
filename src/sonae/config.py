@@ -23,9 +23,9 @@ class Settings:
     def __init__(self) -> None:
         self.model_provider: str = os.getenv("SONAE_MODEL_PROVIDER", "bedrock")
         self.bedrock_model_id: str = os.getenv(
-            "SONAE_BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-5-20250929-v1:0"
+            "SONAE_BEDROCK_MODEL_ID", "global.anthropic.claude-sonnet-4-6"
         )
-        self.anthropic_model_id: str = os.getenv("SONAE_ANTHROPIC_MODEL_ID", "claude-sonnet-4-5")
+        self.anthropic_model_id: str = os.getenv("SONAE_ANTHROPIC_MODEL_ID", "claude-sonnet-4-6")
         self.aws_region: str = os.getenv("AWS_REGION", "us-west-2")
 
         self.data_dir: Path = Path(os.getenv("SONAE_DATA_DIR", REPO_ROOT / "data"))

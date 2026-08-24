@@ -2,7 +2,9 @@ __pycache__/
 *.pyc
 .venv/
 data/cache/
-data/store/
+# data/store/ IS committed: the demo households are the evidence behind every
+# number in the README, the slides, and the video — the flight recorder has to
+# be inspectable, not described. Regenerate with scripts/regen_demo.sh.
 .env
 .pytest_cache/
 .ruff_cache/

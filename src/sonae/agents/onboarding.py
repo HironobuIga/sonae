@@ -17,6 +17,7 @@ becomes false) or when the node-execution cap is hit.
 
 from __future__ import annotations
 
+import hashlib
 import json
 from datetime import UTC, datetime
 
@@ -31,16 +32,60 @@ from sonae.schemas import HazardProfile, Household, TimelinePlan, VerificationRe
 MAX_NODE_EXECUTIONS = 8
 
 
-def _needs_revision(state: GraphState) -> bool:
-    """Edge condition: route verifier -> planner only when the report rejects."""
-    node_result = state.results.get("verifier")
-    if node_result is None:
-        return False
-    try:
-        report = parse_as(VerificationReport, str(node_result))
-    except AgentOutputError:
-        return True  # unparseable verification = not approved
-    return not report.approved
+def _make_revision_edge(store: HouseholdStore):
+    """Edge condition: route verifier -> planner only when the report rejects.
+
+    It also journals each verification attempt. The rejection that triggers a
+    revision is the interesting half of this graph — without it the flight
+    recorder shows a planner running twice and never says why.
+    """
+    seen: set[str] = set()
+
+    def _needs_revision(state: GraphState) -> bool:
+        node_result = state.results.get("verifier")
+        if node_result is None:
+            return False
+        raw = str(node_result)
+        # The condition can be evaluated more than once for the same result;
+        # journal each distinct report exactly once.
+        fingerprint = hashlib.sha256(raw.encode()).hexdigest()
+        first_time = fingerprint not in seen
+        seen.add(fingerprint)
+
+        try:
+            report = parse_as(VerificationReport, raw)
+        except AgentOutputError as exc:
+            # Unparseable verification = not approved. Journal it too: otherwise
+            # the record shows the planner running twice for no visible reason.
+            if first_time:
+                store.log_event(
+                    "verification",
+                    {
+                        "phase": "onboarding",
+                        "attempt": len(seen),
+                        "approved": False,
+                        "checks": 0,
+                        "parse_error": str(exc)[:200],
+                    },
+                )
+            return True
+
+        if first_time:
+            store.log_event(
+                "verification",
+                {
+                    "phase": "onboarding",
+                    "attempt": len(seen),
+                    "approved": report.approved,
+                    "checks": len(report.checks),
+                    "unsupported": [c.claim[:120] for c in report.checks if c.verdict == "unsupported"],
+                    "uncertain": [c.claim[:120] for c in report.checks if c.verdict == "uncertain"],
+                    "revision_request": (report.revision_request or "")[:300],
+                },
+            )
+        return not report.approved
+
+    return _needs_revision
 
 
 def build_onboarding_graph(store: HouseholdStore):
@@ -53,7 +98,7 @@ def build_onboarding_graph(store: HouseholdStore):
     builder.add_node(factory.make_verifier(audit, with_tools=True), "verifier")
     builder.add_edge("cartographer", "planner")
     builder.add_edge("planner", "verifier")
-    builder.add_edge("verifier", "planner", condition=_needs_revision)
+    builder.add_edge("verifier", "planner", condition=_make_revision_edge(store))
     builder.set_entry_point("cartographer")
     builder.reset_on_revisit(True)
     builder.set_max_node_executions(MAX_NODE_EXECUTIONS)

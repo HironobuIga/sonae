@@ -166,7 +166,8 @@ def test_trigger_dispatches_and_updates_level(tmp_store, fake_agents):
 def test_checkins_open_at_level_four(tmp_store, fake_agents):
     store = _setup(tmp_store)
     fake_agents["decision"] = SentinelDecision(triggered=True, alert_level=4, reasoning="evac order")
-    watch.process_events(store, [_event()], CaptureChannel())
+    # The wording has to support Level 4 — 大雨警報 alone would be clamped to 3.
+    watch.process_events(store, [_event("避難指示 for the riverside districts")], CaptureChannel())
     checkins = store.load_checkins()
     assert {c.member for c in checkins} == {"Yoshiko", "Kenji"}
     assert all(c.status == CheckInStatus.pending for c in checkins)
@@ -331,3 +332,33 @@ def test_planner_cannot_self_approve_its_plan(tmp_store, fake_agents, monkeypatc
     onboarding.approve_plan(store)
     out = watch.process_events(store, [_event("避難指示")], channel)
     assert out.dispatched == 1 and channel.sent
+
+
+def test_sentinel_level_is_clamped_to_what_the_signal_supports(tmp_store, fake_agents):
+    """A model can write 5 in the level field while its own reasoning says 4.
+
+    The official wording is the ceiling: 避難勧告 is Level 4, so a Sentinel
+    claiming Level 5 on it is corrected down and the correction is journaled.
+    """
+    store = _setup(tmp_store)
+    fake_agents["decision"] = SentinelDecision(
+        triggered=True, alert_level=5, reasoning="no Level 5 signal is present, but here is a 5"
+    )
+    event = _event("Alert Level 4: evacuation advisory (避難勧告) for the riverside")
+    out = watch.process_events(store, [event], CaptureChannel())
+
+    assert store.load_watch().activated_level == 4
+    assert out.decision.alert_level == 4
+    clamped = [e for e in store.load_watch().history if e.get("kind") == "level_clamped"]
+    assert clamped and clamped[0]["sentinel_level"] == 5 and clamped[0]["supported_level"] == 4
+
+
+def test_unrecognised_wording_is_never_clamped(tmp_store, fake_agents):
+    """A signal we cannot classify must not be able to silence an alert."""
+    store = _setup(tmp_store)
+    fake_agents["decision"] = SentinelDecision(triggered=True, alert_level=4, reasoning="novel signal")
+    out = watch.process_events(store, [_event("Some entirely new bulletin type")], CaptureChannel())
+
+    assert out.dispatched == 1
+    assert store.load_watch().activated_level == 4
+    assert not [e for e in store.load_watch().history if e.get("kind") == "level_clamped"]

@@ -167,6 +167,7 @@ def cmd_circle_report(args: argparse.Namespace) -> int:
         print("unknown circle", file=sys.stderr)
         return 1
     report = circles.compose_report(circle)
+    circles.save_report(args.circle_id, report)
     print(f"# {report.headline}\n\n{report.summary}")
     if report.needs_help:
         print("\nNEEDS HELP:")

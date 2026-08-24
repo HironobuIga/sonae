@@ -1,0 +1,19 @@
+{
+ "composed_at": "2026-08-24T21:11:46.281671+00:00",
+ "headline": "9人中5人の安否確認済み（在宅者）／要訪問3人・要支援1人",
+ "summary": "在宅メンバー9人のうち、安全確認済みは5人。要支援が1人（田中/Kazuo、膝の怪我で避難所まで歩けない）。未確認の在宅者は3人：高橋/Isamu（88歳、移動困難・pending）、渡辺/Sachi（no_response）、渡辺/Goro（no_response）。これら3人への戸別訪問が必要です。別居メンバーの青木/Kenji・青木/Mikaは在宅ではないため電話確認を行ってください。田村会長は雨の中の訪問前に要支援者への緊急連絡・搬送手配を優先してください。",
+ "needs_help": [
+  "tanaka/Kazuo — knee injury, cannot walk to shelter"
+ ],
+ "unresponsive": [
+  "takahashi/Isamu",
+  "watanabe/Sachi",
+  "watanabe/Goro"
+ ],
+ "next_actions": [
+  "1. まず田中宅（田中/Kazuo）へ：膝の怪我で自力避難不可。搬送支援の手配または担架・車の確保を今すぐ行う。",
+  "2. 次に高橋宅（高橋/Isamu）を訪問：88歳・移動困難・pending。一人の可能性が高い。応答がなければドアを確認し声がけを繰り返す。",
+  "3. 渡辺宅（渡辺/Sachi・渡辺/Goro）を訪問：2人ともno_response。夫婦とも70代。高橋宅と同じ穂保エリアのため連続して回れる。",
+  "4. 訪問と並行して、青木/Kenji・青木/Mikaに電話確認（別居のため訪問不要）。"
+ ]
+}

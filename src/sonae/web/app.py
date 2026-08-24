@@ -21,9 +21,9 @@ from pydantic import BaseModel
 
 from sonae import circles
 from sonae.channels.inbox import InboxChannel
-from sonae.config import REPO_ROOT, settings
+from sonae.config import REPO_ROOT
 from sonae.datasources.replay import ReplayClock, load_scenario
-from sonae.memory.store import HouseholdStore, atomic_write_text
+from sonae.memory.store import HouseholdStore
 
 app = FastAPI(title="Sonae")
 
@@ -281,17 +281,13 @@ def checkin(req: CheckInRequest) -> dict:
     return {"checkins": [json.loads(c.model_dump_json()) for c in board]}
 
 
-def _report_path(circle_id: str):
-    return settings.store_dir / "_circles" / f"{circle_id}.report.json"
-
-
 @app.get("/api/circle/{circle_id}")
 def circle_state(circle_id: str) -> dict:
     circle = circles.load_circle(circle_id)
     if circle is None:
         raise HTTPException(404, "unknown circle")
     board = circles.circle_board(circle)
-    report_path = _report_path(circle_id)
+    report_path = circles.report_path(circle_id)
     report = json.loads(report_path.read_text()) if report_path.exists() else None
     return {
         "circle": json.loads(circle.model_dump_json()),
@@ -320,17 +316,8 @@ def circle_report(req: CircleReportRequest) -> dict:
 
     def work() -> None:
         try:
-            from datetime import UTC, datetime
-
             report = circles.compose_report(circle)
-            atomic_write_text(
-                _report_path(req.circle_id),
-                json.dumps(
-                    {"composed_at": datetime.now(UTC).isoformat(), **json.loads(report.model_dump_json())},
-                    ensure_ascii=False,
-                    indent=1,
-                ),
-            )
+            circles.save_report(req.circle_id, report)
         except Exception as exc:
             # A missing report is indistinguishable from one nobody asked for.
             # Journal the failure and hand it to the UI instead of swallowing it.

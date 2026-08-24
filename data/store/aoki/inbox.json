@@ -1,0 +1,194 @@
+[
+ {
+  "ts": "2026-08-24T20:58:00.256950+00:00",
+  "to_member": "Yoshiko",
+  "subject": "【警戒レベル1】台風19号接近 — 長野市",
+  "body": "青木よしこ様\n\n長野市から連絡がありました。\n台風19号（ハギビス）が長野市に近づいています。\n市は注意を呼びかけています。\n\n今すぐ、次の3つをしてください。\n\n1. 非常用バッグを玄関に持ってきてください。\n2. お薬がバッグの中に入っているか確かめてください。\n3. 携帯電話を充電してください。100%にしてください。\n\nまだ避難する必要はありません。準備だけしてください。\nケンジさんから電話がかかってきます。安心してお待ちください。",
+  "urgent": false,
+  "citations": [
+   {
+    "name": "Nagano City: Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T20:58:00.257337+00:00",
+  "to_member": "Kenji",
+  "subject": "[Alert Level 1] Typhoon 19 approaching — Nagano City",
+  "body": "Kenji,\n\nSituation summary:\nAt 08:46 JST on 11 October 2019, Nagano City issued an official public call for caution as Typhoon 19 (Hagibis) approaches Nagano City. No higher-level warning (注意報, 警報, or flood signal) has been issued at this time. This activation corresponds to Level 1 of the Aoki household plan.\n\nYour tasks for this step:\n\n1. Check the JMA typhoon track. If Nagano is in the forecast cone, call Yoshiko and speak slowly: 「台風が来るかもしれません。準備を始めてください」 (estimated 10 minutes).\n\n2. Contact the pre-arranged support helper to confirm their availability for this event (estimated 5 minutes).\n\nConfirmation to report back:\nOnce you have reached Yoshiko and spoken with the helper, please reply: \"Level 1 tasks complete — Yoshiko called, helper: [available / unavailable].\"",
+  "urgent": false,
+  "citations": [
+   {
+    "name": "Nagano City: Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T20:58:00.257627+00:00",
+  "to_member": "Mika",
+  "subject": "[Alert Level 1] Typhoon 19 approaching — Nagano City",
+  "body": "Mika,\n\nSituation summary:\nAt 08:46 JST on 11 October 2019, Nagano City issued an official public call for caution as Typhoon 19 (Hagibis) approaches Nagano City. No higher-level warning (注意報, 警報, or flood signal) has been issued at this time. This activation corresponds to Level 1 of the Aoki household plan.\n\nYour task for this step:\n\n1. Verify that the Nagano City disaster alert SMS and automated-call service is active and registered for Yoshiko's phone (no app is required on her end). Review the full household timeline so you are ready to act at higher levels (estimated 10 minutes).\n\nConfirmation to report back:\nOnce done, please reply: \"Level 1 task complete — Yoshiko alert service: [active / issue found].\"",
+  "urgent": false,
+  "citations": [
+   {
+    "name": "Nagano City: Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:00:00.636859+00:00",
+  "to_member": "Yoshiko",
+  "subject": "【警戒レベル2】千曲川 洪水注意情報 — 長野市穂保",
+  "body": "よしこさん、こんにちは。落ち着いて読んでください。\n\n千曲川の水位が上がっています。\n今日（10月12日）午後1時20分ごろ、洪水注意の情報が出ました。\n\nいまやること（順番どおりに）：\n1. 水筒やペットボトルに水を入れてください。\n2. 丈夫な靴とレインコートを玄関に出してください。\n3. しっかり食事をしてください。\n\n避難場所は「北部スポーツ・レクリエーションパーク」です。\n住所は「長野市大字三才1981-1」です。\n\nまだ今すぐ行く必要はありません。\n準備だけしておいてください。\nけんじさんから電話が来ます。\n\nご安心ください。みんなが見ています。",
+  "urgent": false,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:00:00.637424+00:00",
+  "to_member": "Kenji",
+  "subject": "[Alert Level 2] Chikuma River flood advisory issued — Nagano City",
+  "body": "Situation summary:\nAt approximately 13:20 on 2019-10-12, the Chikuma River at the Ikuta gauge reached the flood-advisory level (氾濫注意水位). Designated-river flood forecast bulletin #1 (氾濫注意情報) was issued. This matches the Level 2 trigger in the family plan. Issued source: Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report.\n\nYour tasks for Level 2:\n1. Call Yoshiko now. Confirm she has received the alert and that her go-bag is ready at the front entrance.\n2. Confirm the exact time the support helper will arrive at her door.\n3. Check the Chikuma River water level at the MLIT 川の防災情報 site (www.river.go.jp). If the gauge is already above 氾濫注意水位, skip Level 3 and escalate immediately to Level 4 actions.\n\nConfirmation to report back:\nPlease reply or call Mika once you have (a) spoken with Yoshiko, (b) confirmed the helper's arrival time, and (c) noted the current river gauge reading.",
+  "urgent": false,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   },
+   {
+    "name": "国土交通省 川の防災情報",
+    "url": "https://www.river.go.jp/"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:00:00.637813+00:00",
+  "to_member": "Mika",
+  "subject": "[Alert Level 2] Chikuma River flood advisory issued — Nagano City",
+  "body": "Situation summary:\nAt approximately 13:20 on 2019-10-12, the Chikuma River at the Ikuta gauge reached the flood-advisory level (氾濫注意水位). Designated-river flood forecast bulletin #1 (氾濫注意情報) was issued by official authorities. This is the Level 2 trigger in the family plan. Source: Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report.\n\nYour task for Level 2:\nSend Yoshiko one plain-text SMS (no links, no apps required) with the following message:\n「明日、〇〇さんと一緒に北部スポーツ・レクリエーションパークへ避難してください」\n(Replace 〇〇 with the helper's name as recorded in the family plan.)\n\nConfirmation to report back:\nPlease confirm to Kenji once the SMS has been sent to Yoshiko.",
+  "urgent": false,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   },
+   {
+    "name": "GSI designated evacuation site data",
+    "url": "https://hinanmap.gsi.go.jp/"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:02:16.611034+00:00",
+  "to_member": "Yoshiko",
+  "subject": "【レベル4・大雨特別警報】長野市 — 今すぐ避難してください",
+  "body": "ヨシコさんへ\n\n気象庁が長野県に大雨特別警報を出しました。時刻は午後3時30分です。\n\n今すぐ動いてください。\n\n1. 玄関のゴーバッグを持ってください。\n2. ドアに鍵をかけてください。\n3. ヘルパーさんと一緒に出発してください。\n4. 避難先は「北部スポーツ・レクリエーションパーク」です。住所：長野県長野市大字三才1981-1。\n5. 着いたら、すぐにケンジに電話してください。「着きました」と伝えてください。\n\nもし水が道をふさいでいる場合は、動かないでください。その場で119番に電話してください。\n\n落ち着いて、一歩ずつ進んでください。",
+  "urgent": true,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   },
+   {
+    "name": "GSI designated evacuation site data",
+    "url": "https://hinanmap.gsi.go.jp/"
+   },
+   {
+    "name": "Cabinet Office / MLIT 警戒レベルと避難行動の対応表",
+    "url": "https://www.mlit.go.jp/river/bousai/main/saigai/jouhou/jikobousi/pdf/timeline_guideline.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:02:16.611496+00:00",
+  "to_member": "Kenji",
+  "subject": "LEVEL 4 EMERGENCY — Major Heavy Rain Warning / Nagano City — Confirm Yoshiko is evacuating NOW",
+  "body": "Kenji,\n\nSituation summary: At 15:30 on 12 October 2019, JMA issued an Emergency Heavy Rain Warning (大雨特別警報) for Nagano Prefecture — the first ever — covering 43 municipalities including Nagano City. The household plan has advanced to Level 4.\n\nWhat this means: The plan's Level 4 trigger has been met. Yoshiko must already be moving toward 北部スポーツ・レクリエーションパーク (Nagano City, Ōaza Misai 1981-1) with the helper.\n\nYour tasks (Level 4):\n1. Call Yoshiko immediately. Confirm she has arrived at 北部スポーツ・レクリエーションパーク.\n2. If she has NOT yet left home, call 119 immediately and stay on the line. The plan records that the 2-storey house sits in a statutory flood inundation zone rated at depth class 10–20 m, and upper floors are NOT a refuge.\n3. If you cannot reach Yoshiko, Mika will attempt contact and call 119 with Yoshiko's address (長野県長野市穂保) and her mobility situation.\n\nConfirmation to report back: Message the family group once you have confirmed Yoshiko's location — at the shelter, en route, or rescue requested.",
+  "urgent": true,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   },
+   {
+    "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+    "url": "https://disaportal.gsi.go.jp/"
+   },
+   {
+    "name": "GSI designated evacuation site data",
+    "url": "https://hinanmap.gsi.go.jp/"
+   },
+   {
+    "name": "Cabinet Office / MLIT 警戒レベルと避難行動の対応表",
+    "url": "https://www.mlit.go.jp/river/bousai/main/saigai/jouhou/jikobousi/pdf/timeline_guideline.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:02:16.611864+00:00",
+  "to_member": "Mika",
+  "subject": "LEVEL 4 EMERGENCY — Major Heavy Rain Warning / Nagano City — Standby to call 119 for Yoshiko",
+  "body": "Mika,\n\nSituation summary: At 15:30 on 12 October 2019, JMA issued an Emergency Heavy Rain Warning (大雨特別警報) for Nagano Prefecture — the first ever — covering 43 municipalities including Nagano City. The household plan has advanced to Level 4.\n\nWhat this means: Yoshiko must already be moving toward the designated flood shelter 北部スポーツ・レクリエーションパーク (Nagano City, Ōaza Misai 1981-1) with the helper. Kenji is the primary contact attempting to confirm her status.\n\nYour task (Level 4):\nIf Kenji cannot reach Yoshiko, you call 119 and provide the following:\n- Address: 長野県長野市穂保\n- An elderly woman with limited mobility may need rescue assistance.\n\nDo not make additional claims about conditions that have not been reported to you. Relay only what you know from this message.\n\nConfirmation to report back: Notify Kenji immediately if you have placed a 119 call, and share any response you receive from emergency services.",
+  "urgent": true,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   },
+   {
+    "name": "GSI designated evacuation site data",
+    "url": "https://hinanmap.gsi.go.jp/"
+   },
+   {
+    "name": "Cabinet Office / MLIT 警戒レベルと避難行動の対応表",
+    "url": "https://www.mlit.go.jp/river/bousai/main/saigai/jouhou/jikobousi/pdf/timeline_guideline.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:09:48.260620+00:00",
+  "to_member": "Yoshiko",
+  "subject": "【警戒レベル5】千曲川氾濫発生・緊急安全確保　長野市穂保",
+  "body": "よしこさんへ。\n\n今すぐ外に出ないでください。\n\n千曲川が氾濫しています。\n長野市が午後8時42分に「警戒レベル5　災害発生情報」を出しました。\n\nやること：\n1. 外に出ない。\n2. 家の中でいちばん高い場所へ移動する。\n3. 窓またはドアを少し開ける。救助隊員に気づいてもらうためです。\n4. まだ119番に電話していなければ、今すぐかける。\n\n以上です。落ち着いて、その場にいてください。",
+  "urgent": true,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:09:48.261279+00:00",
+  "to_member": "Kenji",
+  "subject": "LEVEL 5 FLOOD — Chikuma River breached — Nagano City, Hobo district",
+  "body": "SITUATION SUMMARY\nAt approximately 20:23 on 12 October 2019, the Chikuma River overtopped its left bank at Shinonoi-Yokota (flood forecast bulletin #7 — 氾濫発生情報). Nagano City issued 警戒レベル5 災害発生情報 at 20:42. This is the highest alert level. Flooding is now occurring upstream of Naganuma, which includes the Hobo area where Yoshiko lives.\n\nYOUR TASKS (Plan Level 5)\n1. Call Yoshiko now. Confirm she is indoors and has moved to the highest reachable point inside the house.\n2. Relay her exact location — 長野県長野市穂保 の自宅 — to 119 emergency services. Stay on the line with 119.\n3. Do not end the call with Yoshiko or 119 until rescue has been confirmed or she is confirmed safe.\n\nCONFIRMATION TO REPORT BACK\nPlease notify Mika immediately: (a) whether you have reached Yoshiko, and (b) whether 119 has been contacted and has her address.",
+  "urgent": true,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ },
+ {
+  "ts": "2026-08-24T21:09:48.261772+00:00",
+  "to_member": "Mika",
+  "subject": "LEVEL 5 FLOOD — Chikuma River breached — Nagano City, Hobo district",
+  "body": "SITUATION SUMMARY\nAt approximately 20:23 on 12 October 2019, the Chikuma River overtopped its left bank at Shinonoi-Yokota (flood forecast bulletin #7 — 氾濫発生情報). Nagano City issued 警戒レベル5 災害発生情報 at 20:42. This is the highest alert level. Flooding is now occurring upstream of Naganuma, which includes the Hobo area where Yoshiko lives.\n\nYOUR TASKS (Plan Level 5)\n1. Stand by to support Kenji. If Kenji cannot reach Yoshiko or cannot reach 119, you attempt contact with Yoshiko and coordinate with emergency services from your location.\n2. Provide Yoshiko's address — 長野県長野市穂保 — to emergency services if you are the one making the call.\n\nCONFIRMATION TO REPORT BACK\nOnce you know whether Kenji has reached Yoshiko and whether 119 has been notified, confirm back to Kenji so the family has a shared picture of the situation.",
+  "urgent": true,
+  "citations": [
+   {
+    "name": "Nagano City Reiwa-1 East Japan Typhoon disaster-response verification report",
+    "url": "https://www.city.nagano.nagano.jp/documents/1803/346440.pdf"
+   }
+  ]
+ }
+]

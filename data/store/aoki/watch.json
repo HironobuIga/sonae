@@ -1,0 +1,923 @@
+{
+  "activated_level": 5,
+  "seen_event_keys": [
+    "2019-10-11T08:46:00+09:00|Nagano City advisory: caution ahead of approaching Typhoon 19",
+    "2019-10-11T14:00:00+09:00|JMA: record-class typhoon expected to approach eastern Japan on Oct 12–13",
+    "2019-10-12T13:40:00+09:00|Chikuma River flood forecast #1: flood advisory (氾濫注意情報)",
+    "2019-10-12T14:55:00+09:00|Chikuma River flood forecast #2: flood advisory (氾濫注意情報)",
+    "2019-10-12T15:30:00+09:00|EMERGENCY heavy rain warning (大雨特別警報) issued for Nagano Prefecture",
+    "2019-10-12T16:00:00+09:00|Alert Level 3: evacuation preparation / elderly evacuation (avoid landslide zones)",
+    "2019-10-12T17:30:00+09:00|Chikuma River flood forecast #3: flood WARNING (氾濫警戒情報)",
+    "2019-10-12T18:00:00+09:00|Alert Level 4: evacuation advisory (避難勧告) for Chikuma riverside districts",
+    "2019-10-12T18:40:00+09:00|Chikuma River flood forecast #5: flood DANGER (氾濫危険情報)",
+    "2019-10-12T20:50:00+09:00|Chikuma River flood forecast #7: FLOODING OCCURRING (氾濫発生情報) at Shinonoi-Yokota",
+    "2019-10-12T23:40:00+09:00|Alert Level 4: EVACUATION ORDER (避難指示・緊急) for Chikuma riverside districts",
+    "2019-10-13T01:15:00+09:00|Chikuma River flood forecast #12: FLOODING OCCURRING (氾濫発生情報) at HOYASU",
+    "2019-10-13T02:12:00+09:00|Alert Level 5: mayor's direct appeal — flooding at Hoyasu, evacuate to save your life"
+  ],
+  "last_checked": "2026-08-24T21:10:57.582314Z",
+  "history": [
+    {
+      "ts": "2026-08-24T20:34:54.408541+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "geocode_address",
+      "input": "{\"address\": \"長野県長野市穂保\"}",
+      "at": "2026-08-24T20:34:54.408481+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:34:54.409238+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "assess_hazards_at_point",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759}",
+      "at": "2026-08-24T20:34:54.409093+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:34:54.409883+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "geocode_address",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"lat\\\": 36.684467, \\\"lon\\\": 138.271759, \\\"matched_name\\\": \\\"長野県長野市穂保\\\", \\\"locality\\\": \\\"大字穂保\\\", \\\"muni_code\\\": \\\"20201\\\", \\\"prefecture\\\": \\\"長野県\\\", \\\"municipality\\\": \\\"長野市\\\", \\\"jma_office_code\\\": \\\"200000\\\", \\\"jma_office_name\\\": \\\"長野県\\\", \\\"jma_class20_code\\\": \\\"2020111\\\", \\\"jma_class20_name\\\": \\\"長野市長野\\\", \\\"jma_class20_ambiguous\\\": true, \\\"jma_class20_candidates\\\": [\\\"2020111\\\", \\\"2020112\\\"], \\\"sources\\\": [{\\\"name\\\": \\\"GSI address search / reverse geocoder\\\", \\\"url\\\": \\\"https://msearch.gsi.go.jp/\\\"}]}\"}]",
+      "duration_s": 0.0008350405842065811
+    },
+    {
+      "ts": "2026-08-24T20:36:11.607181+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "assess_hazards_at_point",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"hazards\\\": {\\\"flood\\\": {\\\"at_risk\\\": true, \\\"expected_depth\\\": \\\"10–20 m\\\", \\\"expected_depth_ja\\\": \\\"10〜20m\\\", \\\"representative_depth_m\\\": 15.0, \\\"at_exact_point\\\": true}, \\\"storm_surge\\\": {\\\"at_risk\\\": false}, \\\"tsunami\\\": {\\\"at_risk\\\": false}}, \\\"landslide_zones\\\": [], \\\"sources\\\": [{\\\"name\\\": \\\"MLIT/GSI national hazard map portal (重ねるハザードマップ)\\\", \\\"url\\\": \\\"https://disaportal.gsi.go.jp/\\\", \\\"note\\\": \\\"statutory hazard-map raster tiles; legend per MLIT specification\\\"}], \\\"note\\\": \\\"Depth classes come from the largest-scale statutory inundation scenario (想定最大規模). 'at_exact_point…",
+      "duration_s": 77.19616833422333
+    },
+    {
+      "ts": "2026-08-24T20:36:17.200723+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759, \"prefecture\": \"長野県\", \"municipality\": \"長野市\", \"hazard\": \"flood\", \"limit\": 5}",
+      "at": "2026-08-24T20:36:17.200552+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:36:17.201496+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759, \"prefecture\": \"長野県\", \"municipality\": \"長野市\", \"hazard\": \"earthquake\", \"limit\": 5}",
+      "at": "2026-08-24T20:36:17.201358+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:36:17.202169+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759, \"prefecture\": \"長野県\", \"municipality\": \"長野市\", \"hazard\": \"inland_flood\", \"limit\": 5}",
+      "at": "2026-08-24T20:36:17.202069+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:36:18.544136+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"穂保高台避難公園\\\", \\\"address\\\": \\\"長野県長野市大字穂保573-1\\\", \\\"lat\\\": 36.68399444, \\\"lon\\\": 138.26494722, \\\"distance_km\\\": 0.61, \\\"suitable_for\\\": [\\\"landslide\\\", \\\"earthquake\\\"], \\\"also_mid_term_shelter\\\": false}, {\\\"name\\\": \\\"長野市立長沼小学校\\\", \\\"address\\\": \\\"長野県長野市大字津野191\\\", \\\"lat\\\": 36.68875291, \\\"lon\\\": 138.2670074, \\\"distance_km\\\": 0.64, \\\"suitable_for\\\": [\\\"landslide\\\", \\\"earthquake\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"長野市立東北中学校\\\", \\\"address\\\": \\\"長野県長野市大字大町945\\\", \\\"lat\\\": 36.67662084, \\\"lon\\\": 138.2596909, \\\"distance_km\\\": 1.39, \\\"suitable_for\\\": [\\\"landsli…",
+      "duration_s": 1.3119120001792908
+    },
+    {
+      "ts": "2026-08-24T20:36:18.555114+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"北部スポーツ・レクリエーションパーク\\\", \\\"address\\\": \\\"長野県長野市大字三才1981-1\\\", \\\"lat\\\": 36.68931944, \\\"lon\\\": 138.24286666, \\\"distance_km\\\": 2.63, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"earthquake\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"昭和の森公園\\\", \\\"address\\\": \\\"長野県長野市上野2-120-13\\\", \\\"lat\\\": 36.68532037, \\\"lon\\\": 138.2352768, \\\"distance_km\\\": 3.25, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"earthquake\\\", \\\"large_fire\\\"], \\\"also_mid_term_shelter\\\": false}, {\\\"name\\\": \\\"昭和の森公園フィットネスセンター\\\", \\\"address\\\": \\\"長野県長野市上野2-120-13\\\", \\\"lat\\\": 36.68537499, \\\"lon\\\": 138.2…",
+      "duration_s": 1.3537717498838902
+    },
+    {
+      "ts": "2026-08-24T20:36:18.555534+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [], \\\"caveat\\\": \\\"Shelter data is registered by municipalities and may not reflect the latest designations; confirm with the municipality for critical decisions (GSI terms of use).\\\", \\\"sources\\\": [{\\\"name\\\": \\\"GSI designated evacuation site data\\\", \\\"url\\\": \\\"https://hinanmap.gsi.go.jp/\\\"}]}\"}]",
+      "duration_s": 1.3529509156942368
+    },
+    {
+      "ts": "2026-08-24T20:39:13.536873+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "geocode_address",
+      "input": "{\"address\": \"長野県長野市穂保\"}",
+      "at": "2026-08-24T20:39:13.536673+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:39:13.537737+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "assess_hazards_at_point",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759}",
+      "at": "2026-08-24T20:39:13.537538+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:39:13.538516+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759, \"prefecture\": \"長野県\", \"municipality\": \"長野市\", \"hazard\": \"flood\", \"limit\": 5}",
+      "at": "2026-08-24T20:39:13.538367+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:39:13.549858+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "geocode_address",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"lat\\\": 36.684467, \\\"lon\\\": 138.271759, \\\"matched_name\\\": \\\"長野県長野市穂保\\\", \\\"locality\\\": \\\"大字穂保\\\", \\\"muni_code\\\": \\\"20201\\\", \\\"prefecture\\\": \\\"長野県\\\", \\\"municipality\\\": \\\"長野市\\\", \\\"jma_office_code\\\": \\\"200000\\\", \\\"jma_office_name\\\": \\\"長野県\\\", \\\"jma_class20_code\\\": \\\"2020111\\\", \\\"jma_class20_name\\\": \\\"長野市長野\\\", \\\"jma_class20_ambiguous\\\": true, \\\"jma_class20_candidates\\\": [\\\"2020111\\\", \\\"2020112\\\"], \\\"sources\\\": [{\\\"name\\\": \\\"GSI address search / reverse geocoder\\\", \\\"url\\\": \\\"https://msearch.gsi.go.jp/\\\"}]}\"}]",
+      "duration_s": 0.009407457895576954
+    },
+    {
+      "ts": "2026-08-24T20:39:13.550509+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"北部スポーツ・レクリエーションパーク\\\", \\\"address\\\": \\\"長野県長野市大字三才1981-1\\\", \\\"lat\\\": 36.68931944, \\\"lon\\\": 138.24286666, \\\"distance_km\\\": 2.63, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"earthquake\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"昭和の森公園\\\", \\\"address\\\": \\\"長野県長野市上野2-120-13\\\", \\\"lat\\\": 36.68532037, \\\"lon\\\": 138.2352768, \\\"distance_km\\\": 3.25, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"earthquake\\\", \\\"large_fire\\\"], \\\"also_mid_term_shelter\\\": false}, {\\\"name\\\": \\\"昭和の森公園フィットネスセンター\\\", \\\"address\\\": \\\"長野県長野市上野2-120-13\\\", \\\"lat\\\": 36.68537499, \\\"lon\\\": 138.2…",
+      "duration_s": 0.011364375241100788
+    },
+    {
+      "ts": "2026-08-24T20:40:30.649002+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "assess_hazards_at_point",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"hazards\\\": {\\\"flood\\\": {\\\"at_risk\\\": true, \\\"expected_depth\\\": \\\"10–20 m\\\", \\\"expected_depth_ja\\\": \\\"10〜20m\\\", \\\"representative_depth_m\\\": 15.0, \\\"at_exact_point\\\": true}, \\\"storm_surge\\\": {\\\"at_risk\\\": false}, \\\"tsunami\\\": {\\\"at_risk\\\": false}}, \\\"landslide_zones\\\": [], \\\"sources\\\": [{\\\"name\\\": \\\"MLIT/GSI national hazard map portal (重ねるハザードマップ)\\\", \\\"url\\\": \\\"https://disaportal.gsi.go.jp/\\\", \\\"note\\\": \\\"statutory hazard-map raster tiles; legend per MLIT specification\\\"}], \\\"note\\\": \\\"Depth classes come from the largest-scale statutory inundation scenario (想定最大規模). 'at_exact_point…",
+      "duration_s": 77.11009600013494
+    },
+    {
+      "ts": "2026-08-24T20:41:48.832459+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "geocode_address",
+      "input": "{\"address\": \"長野県長野市穂保\"}",
+      "at": "2026-08-24T20:41:48.832223+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:41:48.833448+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "assess_hazards_at_point",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759}",
+      "at": "2026-08-24T20:41:48.833260+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:41:48.834314+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 36.684467, \"lon\": 138.271759, \"prefecture\": \"長野県\", \"municipality\": \"長野市\", \"hazard\": \"flood\", \"limit\": 5}",
+      "at": "2026-08-24T20:41:48.834109+00:00"
+    },
+    {
+      "ts": "2026-08-24T20:41:48.846322+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "geocode_address",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"lat\\\": 36.684467, \\\"lon\\\": 138.271759, \\\"matched_name\\\": \\\"長野県長野市穂保\\\", \\\"locality\\\": \\\"大字穂保\\\", \\\"muni_code\\\": \\\"20201\\\", \\\"prefecture\\\": \\\"長野県\\\", \\\"municipality\\\": \\\"長野市\\\", \\\"jma_office_code\\\": \\\"200000\\\", \\\"jma_office_name\\\": \\\"長野県\\\", \\\"jma_class20_code\\\": \\\"2020111\\\", \\\"jma_class20_name\\\": \\\"長野市長野\\\", \\\"jma_class20_ambiguous\\\": true, \\\"jma_class20_candidates\\\": [\\\"2020111\\\", \\\"2020112\\\"], \\\"sources\\\": [{\\\"name\\\": \\\"GSI address search / reverse geocoder\\\", \\\"url\\\": \\\"https://msearch.gsi.go.jp/\\\"}]}\"}]",
+      "duration_s": 0.009607667103409767
+    },
+    {
+      "ts": "2026-08-24T20:41:48.847016+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"北部スポーツ・レクリエーションパーク\\\", \\\"address\\\": \\\"長野県長野市大字三才1981-1\\\", \\\"lat\\\": 36.68931944, \\\"lon\\\": 138.24286666, \\\"distance_km\\\": 2.63, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"earthquake\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"昭和の森公園\\\", \\\"address\\\": \\\"長野県長野市上野2-120-13\\\", \\\"lat\\\": 36.68532037, \\\"lon\\\": 138.2352768, \\\"distance_km\\\": 3.25, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"earthquake\\\", \\\"large_fire\\\"], \\\"also_mid_term_shelter\\\": false}, {\\\"name\\\": \\\"昭和の森公園フィットネスセンター\\\", \\\"address\\\": \\\"長野県長野市上野2-120-13\\\", \\\"lat\\\": 36.68537499, \\\"lon\\\": 138.2…",
+      "duration_s": 0.011859290767461061
+    },
+    {
+      "ts": "2026-08-24T20:43:05.908408+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "assess_hazards_at_point",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"hazards\\\": {\\\"flood\\\": {\\\"at_risk\\\": true, \\\"expected_depth\\\": \\\"10–20 m\\\", \\\"expected_depth_ja\\\": \\\"10〜20m\\\", \\\"representative_depth_m\\\": 15.0, \\\"at_exact_point\\\": true}, \\\"storm_surge\\\": {\\\"at_risk\\\": false}, \\\"tsunami\\\": {\\\"at_risk\\\": false}}, \\\"landslide_zones\\\": [], \\\"sources\\\": [{\\\"name\\\": \\\"MLIT/GSI national hazard map portal (重ねるハザードマップ)\\\", \\\"url\\\": \\\"https://disaportal.gsi.go.jp/\\\", \\\"note\\\": \\\"statutory hazard-map raster tiles; legend per MLIT specification\\\"}], \\\"note\\\": \\\"Depth classes come from the largest-scale statutory inundation scenario (想定最大規模). 'at_exact_point…",
+      "duration_s": 77.07383979205042
+    },
+    {
+      "ts": "2026-08-24T20:43:39.687693+00:00",
+      "kind": "verification",
+      "phase": "onboarding",
+      "attempt": 1,
+      "approved": true,
+      "checks": 20,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T20:43:39.690724+00:00",
+      "kind": "onboarding_complete",
+      "nodes_executed": [
+        "cartographer",
+        "planner",
+        "verifier",
+        "planner",
+        "verifier"
+      ],
+      "hazards_at_risk": [
+        "flood",
+        "earthquake"
+      ],
+      "checks": 20
+    },
+    {
+      "ts": "2026-08-24T20:43:40.229148+00:00",
+      "kind": "plan_approved",
+      "by": "family"
+    },
+    {
+      "ts": "2026-08-24T20:43:50.035202+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 1,
+      "reasoning": "Nagano City has issued a public caution call specifically referencing the approach of Typhoon 19 (Hagibis) toward the household's municipality. The plan's Level 1 trigger is met by a typhoon outlook or early caution notice for 長野県/長野市, and this official municipal advisory — naming Nagano City directly — satisfies that condition. No higher-level instrument (注意報, 警報, 氾濫情報) has yet been issued in the current event batch, so Level 1 is the highest justified step.",
+      "events": [
+        "Nagano City advisory: caution ahead of approaching Typhoon 19"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:44:19.819793+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": true,
+      "checks": 9,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T20:44:19.823953+00:00",
+      "kind": "notifications_sent",
+      "level": 1,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T20:44:28.771502+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 1,
+      "reasoning": "The only event present is a JMA forecast/outlook warning that Typhoon 19 is expected to bring record rain to eastern Japan including Nagano Prefecture. This is a foreshadowing statement and an urge to prepare — no named official instrument (大雨注意報, 洪水注意報, 氾濫注意情報, or higher) has been issued. Under the plan's rules, an outlook or forecast keeps the household at Level 1, which is already the current activated level. No advancement is warranted.",
+      "events": [
+        "JMA: record-class typhoon expected to approach eastern Japan on Oct 12–13"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:44:36.318032+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 2,
+      "reasoning": "The Chikuma River at the Ikuta gauge has officially reached 氾濫注意水位 and a 氾濫注意情報 (flood advisory) bulletin has been issued. This is a named official instrument that directly matches the Level 2 trigger in the plan ('氾濫注意情報 issued for 長野市'). The Chikuma River runs through 長野市 and the Ikuta gauge is within the household's relevant basin, so geographic discipline is satisfied. Current activated level is 1, so advancing to Level 2 is warranted.",
+      "events": [
+        "Chikuma River flood forecast #1: flood advisory (氾濫注意情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:45:18.267690+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": false,
+      "checks": 12,
+      "unsupported": [
+        "Kenji's escalation instruction says 'skip Level 3 and escalate immediately to Level 3 procedures'"
+      ],
+      "uncertain": [],
+      "revision_request": "In Kenji's notification body, step 2, change 'skip Level 3 and escalate immediately to Level 3 procedures' to 'skip Level 3 and escalate immediately to Level 4 procedures'."
+    },
+    {
+      "ts": "2026-08-24T20:45:52.077153+00:00",
+      "kind": "verification",
+      "attempt": 2,
+      "approved": true,
+      "checks": 12,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T20:45:52.081893+00:00",
+      "kind": "notifications_sent",
+      "level": 2,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T20:45:59.624521+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 2,
+      "reasoning": "The only new event is a 氾濫注意情報 (flood advisory) for the Chikuma River at the Kuisege gauge, which maps to Cabinet Office Level 2 — exactly the level already activated. No higher instrument (氾濫警戒情報, 大雨警報, 避難指示, 氾濫危険情報, 大雨特別警報, or 氾濫発生情報) has been issued in these events. Because the new signal does not exceed the current activated level, no advancement is warranted.",
+      "events": [
+        "Chikuma River flood forecast #2: flood advisory (氾濫注意情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:46:05.823304+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 4,
+      "reasoning": "JMA has issued a 大雨特別警報 explicitly naming Nagano Prefecture and specifically listing Nagano City among the 43 municipalities covered. The plan's Level 4 trigger includes '大雨特別警報 announced while horizontal evacuation is still physically possible,' which matches this event exactly. Per plan rules and Cabinet Office guidance, 大雨特別警報 is treated as Level 4 (not Level 5) because inundation has not yet been confirmed as occurring — 氾濫発生情報 has not been issued. Current activated level is 2, so escalating to Level 4 is justified and necessary.",
+      "events": [
+        "EMERGENCY heavy rain warning (大雨特別警報) issued for Nagano Prefecture"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:46:47.800426+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": true,
+      "checks": 12,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T20:46:47.804404+00:00",
+      "kind": "checkins_opened",
+      "level": 4,
+      "members": 3
+    },
+    {
+      "ts": "2026-08-24T20:46:47.805155+00:00",
+      "kind": "notifications_sent",
+      "level": 4,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T20:46:57.365785+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The only new event is a Level 3 避難準備・高齢者等避難開始 for Nagano City landslide warning zones (Shinonoi-Kyowa, Amori, Odagiri, Ooka districts) — not for the Chikuma riverside area where Yoshiko (穂保) lives, and not a flood-related instrument. The plan's Level 4 trigger has already been met and activated. This landslide-zone Level 3 for different districts does not represent a higher signal than the current Level 4, and the event body explicitly notes no riverside Level 3 was ever issued. No new instrument justifies advancing beyond the already-activated Level 4.",
+      "events": [
+        "Alert Level 3: evacuation preparation / elderly evacuation (avoid landslide zones)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:47:03.884082+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The only new instrument in this batch is 氾濫警戒情報 (flood WARNING) for the Chikuma River at the Kuisege gauge, which maps to Cabinet Office Level 3 equivalent. The plan's Level 3 trigger (氾濫警戒情報 OR 大雨警報 OR 高齢者等避難) is already surpassed by the current activated level of 4. No 氾濫危険情報, 避難指示, 大雨特別警報, or 氾濫発生情報 is named in this batch, so there is no basis to advance beyond Level 4. The plan remains at Level 4; no escalation is warranted.",
+      "events": [
+        "Chikuma River flood forecast #3: flood WARNING (氾濫警戒情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:47:16.189968+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 5,
+      "reasoning": "The events batch reports 氾濫危険情報 at the Ikuta gauge (千曲川) and a Level 4 避難勧告 for Naganuma/Hoyasu (穂保) — these are the exact signals that already justified the current Level 4. However, the current activated level is already 4, so I must assess whether any signal in this batch justifies Level 5. It does not: no 氾濫発生情報 and no 緊急安全確保 is named in the events. The highest justified level from the named instruments (氾濫危険情報 + 避難指示-equivalent 避難勧告 for 穂保) is Level 4, which is already active. There is no new signal in this batch that advances beyond Level 4.",
+      "events": [
+        "Alert Level 4: evacuation advisory (避難勧告) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:47:16.190917+00:00",
+      "kind": "level_clamped",
+      "sentinel_level": 5,
+      "supported_level": 4,
+      "events": [
+        "Alert Level 4: evacuation advisory (避難勧告) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:47:23.160824+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The new event is 氾濫危険情報 for the Chikuma River at the Kuisege gauge, which maps to Cabinet Office Level 4 and matches the plan's Level 4 trigger ('氾濫危険情報 issued for 穂保' area). However, the current activated level is already 4, so this event does not advance the plan beyond what is already active. No 氾濫発生情報 or 緊急安全確保 (Level 5 signals) are present in this batch, so escalation to Level 5 is not justified.",
+      "events": [
+        "Chikuma River flood forecast #5: flood DANGER (氾濫危険情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:47:30.166665+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 5,
+      "reasoning": "The Chikuma River flood forecast #7 explicitly names 氾濫発生情報 (flooding occurring) at Shinonoi-Yokota, and Nagano City simultaneously issued 警戒レベル5 災害発生情報 at 20:42. Both are the exact triggers the plan lists for Level 5. The current activated level is 4, so this advances the plan to Level 5. Inundation is now occurring upstream of Naganuma — the area that includes 穂保 — meaning outdoor movement is no longer safe.",
+      "events": [
+        "Chikuma River flood forecast #7: FLOODING OCCURRING (氾濫発生情報) at Shinonoi-Yokota"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:48:05.262914+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": true,
+      "checks": 14,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T20:48:05.266640+00:00",
+      "kind": "notifications_sent",
+      "level": 5,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T20:48:12.172711+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 5,
+      "reasoning": "The current activated level is already 5. The incoming event — Nagano City's 警戒レベル4 避難指示（緊急） for Chikuma riverside districts including 穂保/Hoyasu — maps at most to Level 4 under the plan's trigger (避難指示 issued for 穂保). It does not name a 氾濫発生情報 or 緊急安全確保 that would re-trigger Level 5. Since Level 5 is already active and de-escalation is not the Sentinel's call, there is no advancement to make; the plan stays at Level 5.",
+      "events": [
+        "Alert Level 4: EVACUATION ORDER (避難指示・緊急) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:48:18.457829+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 5,
+      "reasoning": "The incoming event reports 氾濫発生情報 at Hoyasu (穂保) on the Chikuma River left bank, with Nagano City simultaneously issuing 警戒レベル5 災害発生情報 at 01:12 — both are named Level 5 triggers in the plan. However, the current activated level is already 5, so no further escalation is possible or needed. The plan's Level 5 actions (shelter in place, call 119, relay location to rescue services) should already be in effect.",
+      "events": [
+        "Chikuma River flood forecast #12: FLOODING OCCURRING (氾濫発生情報) at HOYASU"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:48:23.838943+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 5,
+      "reasoning": "The incoming event is the mayor's Level 5 緊急安全確保 broadcast citing active overtopping and imminent levee failure at 穂保 (Hoyasu), Naganuma district — exactly the household's area on the Chikuma River. This is the 氾濫発生情報-equivalent signal that already triggered Level 5 in the current watch state. The plan is already at Level 5, so no further escalation is possible or warranted; the family's Level 5 actions remain in force.",
+      "events": [
+        "Alert Level 5: mayor's direct appeal — flooding at Hoyasu, evacuate to save your life"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:48:24.472013+00:00",
+      "kind": "checkin",
+      "member": "Yoshiko",
+      "status": "safe",
+      "note": "避難所に到着しました"
+    },
+    {
+      "ts": "2026-08-24T20:56:41.317302+00:00",
+      "kind": "plan_approved",
+      "by": "family"
+    },
+    {
+      "ts": "2026-08-24T20:56:57.075969+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-11T08:46:00+09:00",
+      "events": [
+        "Nagano City advisory: caution ahead of approaching Typhoon 19"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:57:05.227341+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 1,
+      "reasoning": "Nagano City issued a public call for caution specifically naming Typhoon 19 (Hagibis) approaching 長野市. While this is not a formal JMA 早期注意情報 instrument, it is an official municipal advisory that Nagano is in the path of an approaching typhoon — which maps directly to the Level 1 trigger ('JMA issues typhoon outlook or 早期注意情報 for 長野県'). No higher instrument (注意報, 警報, or flood signal) has been named in the events, so Level 1 is the correct and highest justified activation.",
+      "events": [
+        "Nagano City advisory: caution ahead of approaching Typhoon 19"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:58:00.255325+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": true,
+      "checks": 10,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T20:58:00.258886+00:00",
+      "kind": "notifications_sent",
+      "level": 1,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T20:58:00.259871+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-11T08:46:00+09:00",
+      "note": "activated level 1",
+      "dispatched": 3,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T20:58:25.566175+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-11T14:00:00+09:00",
+      "events": [
+        "JMA: record-class typhoon expected to approach eastern Japan on Oct 12–13"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:58:34.863824+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 1,
+      "reasoning": "The only event is a JMA typhoon forecast/outlook urging residents to prepare — no named official warning instrument (大雨注意報, 洪水注意報, 氾濫注意情報, or higher) has been issued for 長野市. Per plan rules, an outlook or call for caution is not an issued instrument. The plan's Level 1 trigger (typhoon outlook for 長野県) is already matched and already activated; Level 2 and above require an issued advisory or flood information for 長野市 specifically, none of which appear in these events. The current activated level of 1 therefore stands — no advance is warranted.",
+      "events": [
+        "JMA: record-class typhoon expected to approach eastern Japan on Oct 12–13"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:58:34.866493+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-11T14:00:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T20:58:37.751242+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T13:40:00+09:00",
+      "events": [
+        "Chikuma River flood forecast #1: flood advisory (氾濫注意情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:58:45.339906+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 2,
+      "reasoning": "The Chikuma River at the Ikuta gauge officially reached 氾濫注意水位 at 13:20 on 2019-10-12, triggering flood forecast bulletin #1 (氾濫注意情報). This is a named official instrument that exactly matches the Level 2 trigger in the plan ('氾濫注意情報 issued for 長野市'). The Chikuma River runs through 長野市 and the Ikuta gauge is within that basin, satisfying geographic discipline. Current activated level is 1, so advancing to Level 2 is warranted.",
+      "events": [
+        "Chikuma River flood forecast #1: flood advisory (氾濫注意情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T20:59:25.380850+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": false,
+      "checks": 10,
+      "unsupported": [
+        "Kenji's escalation instruction reads 'skip Level 3 and escalate the family plan immediately to Level 3 actions'"
+      ],
+      "uncertain": [],
+      "revision_request": "In Kenji's notification body, step 3, replace 'skip Level 3 and escalate the family plan immediately to Level 3 actions' with 'skip Level 3 and escalate immediately to Level 4 actions' (the instruction is to skip Level 3, so the escalation target must be Level 4, not Level 3)."
+    },
+    {
+      "ts": "2026-08-24T21:00:00.634660+00:00",
+      "kind": "verification",
+      "attempt": 2,
+      "approved": true,
+      "checks": 9,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T21:00:00.639286+00:00",
+      "kind": "notifications_sent",
+      "level": 2,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T21:00:00.640347+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T13:40:00+09:00",
+      "note": "activated level 2",
+      "dispatched": 3,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:00:39.615960+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T14:55:00+09:00",
+      "events": [
+        "Chikuma River flood forecast #2: flood advisory (氾濫注意情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:00:48.234912+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 2,
+      "reasoning": "The only new event is a 氾濫注意情報 (flood advisory) for the Chikuma River at the Kuisege gauge, which is a Cabinet Office Level 2 equivalent signal. The plan's Level 2 trigger is '大雨注意報・洪水注意報 OR 氾濫注意情報 issued for 長野市', and this signal matches that trigger — but Level 2 is already the current activated level. No event names a 氾濫警戒情報, 大雨警報, 高齢者等避難, or any higher instrument, so there is no basis to advance beyond Level 2.",
+      "events": [
+        "Chikuma River flood forecast #2: flood advisory (氾濫注意情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:00:48.237402+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T14:55:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:00:48.771139+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T15:30:00+09:00",
+      "events": [
+        "EMERGENCY heavy rain warning (大雨特別警報) issued for Nagano Prefecture"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:00:54.218028+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 4,
+      "reasoning": "JMA has issued a 大雨特別警報 for Nagano Prefecture, explicitly naming Nagano City among the 43 municipalities covered. The plan's Level 4 trigger includes 大雨特別警報 and instructs activation at Level 4 — not Level 5 — because horizontal evacuation may still be physically possible and movement should be completed before inundation begins. Current activated level is 2, so this advances the plan to Level 4.",
+      "events": [
+        "EMERGENCY heavy rain warning (大雨特別警報) issued for Nagano Prefecture"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:01:39.378027+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": false,
+      "checks": 12,
+      "unsupported": [
+        "Kenji's notification cites Level 4 = 避難指示 in the Cabinet Office citation note",
+        "Mika's notification cites Level 4 = 避難指示 in the Cabinet Office citation note"
+      ],
+      "uncertain": [],
+      "revision_request": "In Kenji's notification, change the Cabinet Office citation note from \"Level 4 = 避難指示; 大雨特別警報 triggers Level 4 activation per national guidance\" to \"大雨特別警報 triggers Level 4 activation per national guidance; no 避難指示 was issued\". Apply the identical change to the same citation note in Mika's notificat"
+    },
+    {
+      "ts": "2026-08-24T21:02:16.609433+00:00",
+      "kind": "verification",
+      "attempt": 2,
+      "approved": true,
+      "checks": 12,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T21:02:16.613333+00:00",
+      "kind": "notifications_sent",
+      "level": 4,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T21:02:16.614310+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T15:30:00+09:00",
+      "note": "activated level 4",
+      "dispatched": 3,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:05:25.385567+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T16:00:00+09:00",
+      "events": [
+        "Alert Level 3: evacuation preparation / elderly evacuation (avoid landslide zones)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:34.245735+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The sole new event is a 警戒レベル3 高齢者等避難 issued for landslide warning zones in Nagano City (Shinonoi-Kyowa, Amori, Odagiri, Ooka districts) — not for the Chikuma riverside district of 穂保 where Yoshiko lives, and not a flood signal. No flood-specific instrument (氾濫発生情報, 緊急安全確保, or any Level 5 equivalent) has been issued for the household's area. The current activated level of 4 was triggered by earlier riverside signals and remains the correct level; this landslide-zone Level 3 for different districts does not raise or change that.",
+      "events": [
+        "Alert Level 3: evacuation preparation / elderly evacuation (avoid landslide zones)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:34.248001+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T16:00:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:05:34.598321+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T17:30:00+09:00",
+      "events": [
+        "Chikuma River flood forecast #3: flood WARNING (氾濫警戒情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:43.217357+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The only new instrument in this batch is 氾濫警戒情報 (flood warning information) for the Chikuma River at the Kuisege gauge — a Cabinet Office Level 3 equivalent. The plan's Level 3 trigger includes 氾濫警戒情報, so this event is covered by Level 3. The current activated level is already 4, which is higher. No Level 4 or Level 5 instrument (氾濫危険情報, 避難指示, 大雨特別警報, or 氾濫発生情報) is named in the incoming events, so there is no justification to advance beyond the already-active Level 4. The plan does not de-escalate; the level stays at 4.",
+      "events": [
+        "Chikuma River flood forecast #3: flood WARNING (氾濫警戒情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:43.219449+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T17:30:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:05:43.800183+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T18:00:00+09:00",
+      "events": [
+        "Alert Level 4: evacuation advisory (避難勧告) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:50.973516+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The incoming event names a 避難勧告 (警戒レベル4) for the Chikuma riverside districts including 穂保/長沼 (Naganuma/Hoyasu), and a concurrent 氾濫危険情報 at the Ikuta gauge — both are Level 4 triggers in the plan (避難指示 equivalent and 氾濫危険情報). However, the current activated level is already 4, so no advancement is warranted. No 氾濫発生情報 or 緊急安全確保 (Level 5 signals) appears in the events, so Level 5 cannot be activated. The plan stays at Level 4.",
+      "events": [
+        "Alert Level 4: evacuation advisory (避難勧告) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:50.975702+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T18:00:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:05:52.997043+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T18:40:00+09:00",
+      "events": [
+        "Chikuma River flood forecast #5: flood DANGER (氾濫危険情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:59.018692+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 4,
+      "reasoning": "The new event is 氾濫危険情報 for the Chikuma River at the Kuisege gauge, which maps to Cabinet Office Level 4 — the same level already activated. No Level 5 signal (氾濫発生情報 or 緊急安全確保) is present in the feed, so there is no basis to advance beyond the current level. The plan remains at Level 4 and no escalation is triggered.",
+      "events": [
+        "Chikuma River flood forecast #5: flood DANGER (氾濫危険情報)"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:05:59.021183+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T18:40:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:09:05.073850+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T20:50:00+09:00",
+      "events": [
+        "Chikuma River flood forecast #7: FLOODING OCCURRING (氾濫発生情報) at Shinonoi-Yokota"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:09:12.498198+00:00",
+      "kind": "sentinel_decision",
+      "triggered": true,
+      "level": 5,
+      "reasoning": "氾濫発生情報 has been issued for the Chikuma River at Shinonoi-Yokota, and Nagano City simultaneously issued 警戒レベル5 災害発生情報 at 20:42. Both are explicit Level 5 triggers named in the plan ('氾濫発生情報 OR 長野市 発令 緊急安全確保'). The Chikuma River is the household's hazard river and the Shinonoi-Yokota breach is upstream of 穂保, placing inundation directly in the household's area. Current activated level is 4; this advances the plan to Level 5.",
+      "events": [
+        "Chikuma River flood forecast #7: FLOODING OCCURRING (氾濫発生情報) at Shinonoi-Yokota"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:09:48.257919+00:00",
+      "kind": "verification",
+      "attempt": 1,
+      "approved": true,
+      "checks": 11,
+      "unsupported": [],
+      "uncertain": [],
+      "revision_request": ""
+    },
+    {
+      "ts": "2026-08-24T21:09:48.264360+00:00",
+      "kind": "notifications_sent",
+      "level": 5,
+      "count": 3,
+      "verified": true,
+      "fallback_relay": false
+    },
+    {
+      "ts": "2026-08-24T21:09:48.266549+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T20:50:00+09:00",
+      "note": "activated level 5",
+      "dispatched": 3,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:10:31.614257+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-12T23:40:00+09:00",
+      "events": [
+        "Alert Level 4: EVACUATION ORDER (避難指示・緊急) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:10:39.074604+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 5,
+      "reasoning": "The current activated level is already 5. The incoming event is a Level 4 避難指示（緊急） for Chikuma riverside districts including 穂保/Hoyasu, which would justify Level 4 under the plan — but Level 4 is below the current activated level of 5. The Sentinel does not de-escalate; the plan remains at Level 5. No new signal in this batch meets or exceeds Level 5 (no 氾濫発生情報 or 緊急安全確保 is named in these events beyond what has already triggered the current level).",
+      "events": [
+        "Alert Level 4: EVACUATION ORDER (避難指示・緊急) for Chikuma riverside districts"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:10:39.076772+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-12T23:40:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:10:40.794756+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-13T01:15:00+09:00",
+      "events": [
+        "Chikuma River flood forecast #12: FLOODING OCCURRING (氾濫発生情報) at HOYASU"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:10:47.316892+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 5,
+      "reasoning": "The new event confirms 氾濫発生情報 at Hoyasu (穂保) on the Chikuma River left bank, together with 長野市 警戒レベル5 災害発生情報 — the exact dual triggers for Level 5 in the plan. However, the plan is already activated at Level 5, so no further escalation is possible or needed. The current Level 5 posture (shelter in place, call 119, do not go outside) remains the correct and active response.",
+      "events": [
+        "Chikuma River flood forecast #12: FLOODING OCCURRING (氾濫発生情報) at HOYASU"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:10:47.319667+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-13T01:15:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:10:49.964849+00:00",
+      "kind": "replay_moment",
+      "sim_time": "2019-10-13T02:12:00+09:00",
+      "events": [
+        "Alert Level 5: mayor's direct appeal — flooding at Hoyasu, evacuate to save your life"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:10:57.581335+00:00",
+      "kind": "sentinel_decision",
+      "triggered": false,
+      "level": 5,
+      "reasoning": "The mayor's Level 5 broadcast at 02:12 names active flooding at 穂保 (Hoyasu), Naganuma district — directly the household's area — confirming 氾濫発生情報-equivalent 緊急安全確保 is in effect. This matches the plan's Level 5 trigger exactly. However, the plan is already activated at Level 5, so no further escalation is possible or warranted. The decision is to hold at Level 5; no new step advancement occurs.",
+      "events": [
+        "Alert Level 5: mayor's direct appeal — flooding at Hoyasu, evacuate to save your life"
+      ]
+    },
+    {
+      "ts": "2026-08-24T21:10:57.583789+00:00",
+      "kind": "replay_outcome",
+      "sim_time": "2019-10-13T02:12:00+09:00",
+      "note": "stand by — no step activation beyond current level",
+      "dispatched": 0,
+      "household": "aoki"
+    },
+    {
+      "ts": "2026-08-24T21:11:35.489586+00:00",
+      "kind": "checkin",
+      "member": "Yoshiko",
+      "status": "safe",
+      "note": "避難所に到着しました"
+    }
+  ]
+}

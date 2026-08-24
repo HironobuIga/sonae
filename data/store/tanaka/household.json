@@ -1,0 +1,25 @@
+{
+  "household_id": "tanaka",
+  "address": "長野県長野市穂保 田中宅",
+  "lat": 36.682866999999995,
+  "lon": 138.270659,
+  "muni_code": "20201",
+  "muni_name": "長野市",
+  "pref_name": "長野県",
+  "jma_office_code": "200000",
+  "jma_class20_code": "2020111",
+  "members": [
+    {
+      "name": "Kazuo",
+      "age": 74,
+      "lives_at_home": true,
+      "needs": [],
+      "preferred_language": "ja",
+      "phone_available": true
+    }
+  ],
+  "home_floors": null,
+  "has_car": true,
+  "pets": [],
+  "notes": null
+}

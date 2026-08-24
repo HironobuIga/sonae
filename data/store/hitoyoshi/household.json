@@ -1,0 +1,35 @@
+{
+  "household_id": "hitoyoshi",
+  "address": "熊本県人吉市",
+  "lat": 32.205631,
+  "lon": 130.760162,
+  "muni_code": "43203",
+  "muni_name": "人吉市",
+  "pref_name": "熊本県",
+  "jma_office_code": "430000",
+  "jma_class20_code": "4320300",
+  "members": [
+    {
+      "name": "Shigeru",
+      "age": 82,
+      "lives_at_home": true,
+      "needs": [
+        "uses a cane; hard of hearing — phone calls must be loud and slow"
+      ],
+      "preferred_language": "ja",
+      "phone_available": true
+    },
+    {
+      "name": "Akiko",
+      "age": 55,
+      "lives_at_home": false,
+      "needs": [],
+      "preferred_language": "ja",
+      "phone_available": true
+    }
+  ],
+  "home_floors": 1,
+  "has_car": true,
+  "pets": [],
+  "notes": null
+}

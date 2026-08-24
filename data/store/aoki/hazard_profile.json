@@ -1,0 +1,252 @@
+{
+  "household_id": "aoki",
+  "assessments": [
+    {
+      "hazard": "flood",
+      "at_risk": true,
+      "severity": "Expected inundation depth 10–20 m (statutory maximum scenario)",
+      "detail": "The home sits directly within the Chikuma River's largest-scale statutory flood inundation zone. At 10–20 m expected depth, both floors of a 2-storey house would be fully submerged. Vertical evacuation within the home is impossible — horizontal evacuation away from the river is the only viable option. This is the household's dominant and most life-threatening hazard.",
+      "sources": [
+        {
+          "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+          "url": "https://disaportal.gsi.go.jp/",
+          "note": "Statutory flood inundation hazard map raster tiles; largest-scale scenario (想定最大規模); depth class 10–20 m confirmed at exact coordinates (36.684467, 138.271759)",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "inland_flood",
+      "at_risk": false,
+      "severity": null,
+      "detail": "No designated inland-flood (内水氾濫) evacuation sites returned for this location; inland flood risk is subordinate to and encompassed by the dominant river-flood risk assessed above.",
+      "sources": [
+        {
+          "name": "GSI designated evacuation site data",
+          "url": "https://hinanmap.gsi.go.jp/",
+          "note": "Inland-flood site query returned zero results for 長野市 at these coordinates",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "storm_surge",
+      "at_risk": false,
+      "severity": null,
+      "detail": "The hazard map confirms no storm-surge risk at this inland location.",
+      "sources": [
+        {
+          "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+          "url": "https://disaportal.gsi.go.jp/",
+          "note": "Storm-surge layer: at_risk = false",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "tsunami",
+      "at_risk": false,
+      "severity": null,
+      "detail": "Inland location; no tsunami risk.",
+      "sources": [
+        {
+          "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+          "url": "https://disaportal.gsi.go.jp/",
+          "note": "Tsunami layer: at_risk = false",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "landslide",
+      "at_risk": false,
+      "severity": null,
+      "detail": "No landslide-designated zones identified at or immediately adjacent to the home coordinates.",
+      "sources": [
+        {
+          "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+          "url": "https://disaportal.gsi.go.jp/",
+          "note": "Landslide zone query: no designated zones returned",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "earthquake",
+      "at_risk": true,
+      "severity": "Always relevant nationwide; no site-specific amplification data returned from hazard tool",
+      "detail": "Earthquake preparedness is mandatory for all Japanese households. Nearest earthquake-designated evacuation sites have been identified. Note that flood-safe sites (high ground, 2.6 km west) and earthquake-safe sites (nearby but low-elevation) differ — during typhoon season Yoshiko must target the flood-safe sites, not the nearest earthquake sites which may themselves be in the flood zone.",
+      "sources": [
+        {
+          "name": "GSI designated evacuation site data",
+          "url": "https://hinanmap.gsi.go.jp/",
+          "note": "Earthquake-suitable sites returned for 長野市 at household coordinates",
+          "retrieved_at": null
+        }
+      ]
+    }
+  ],
+  "nearest_shelters": [
+    {
+      "name": "北部スポーツ・レクリエーションパーク",
+      "address": "長野県長野市大字三才1981-1",
+      "lat": 36.68931944,
+      "lon": 138.24286666,
+      "distance_km": 2.63,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "earthquake"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Flood + earthquake designated; also mid-term shelter (指定避難所). PRIORITY FLOOD DESTINATION for Yoshiko — the nearest flood-safe site.",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "昭和の森公園",
+      "address": "長野県長野市上野2-120-13",
+      "lat": 36.68532037,
+      "lon": 138.2352768,
+      "distance_km": 3.25,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "earthquake",
+        "large_fire"
+      ],
+      "is_designated_shelter": false,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Flood-safe; evacuation site only (not mid-term shelter).",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "昭和の森公園フィットネスセンター",
+      "address": "長野県長野市上野2-120-13",
+      "lat": 36.68537499,
+      "lon": 138.23486666,
+      "distance_km": 3.29,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "earthquake"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Flood-safe; also mid-term shelter (指定避難所). Secondary flood destination.",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "穂保高台避難公園",
+      "address": "長野県長野市大字穂保573-1",
+      "lat": 36.68399444,
+      "lon": 138.26494722,
+      "distance_km": 0.61,
+      "suitable_for": [
+        "landslide",
+        "earthquake"
+      ],
+      "is_designated_shelter": false,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "CRITICAL WARNING: This site is only 0.61 km away and designated for earthquake/landslide — but it is NOT designated as flood-safe. Yoshiko must NOT use this as a flood refuge during Chikuma River flooding events.",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "長野市立長沼小学校",
+      "address": "長野県長野市大字津野191",
+      "lat": 36.68875291,
+      "lon": 138.2670074,
+      "distance_km": 0.64,
+      "suitable_for": [
+        "landslide",
+        "earthquake"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Earthquake/landslide designated mid-term shelter; NOT flood-designated. Do not use during Chikuma flood events.",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "長野市立東北中学校",
+      "address": "長野県長野市大字大町945",
+      "lat": 36.67662084,
+      "lon": 138.2596909,
+      "distance_km": 1.39,
+      "suitable_for": [
+        "landslide",
+        "earthquake"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Earthquake/landslide mid-term shelter; NOT flood-designated.",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "長野市立徳間小学校",
+      "address": "長野県長野市大字徳間570",
+      "lat": 36.67640238,
+      "lon": 138.2278137,
+      "distance_km": 4.02,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "earthquake"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Flood-safe mid-term shelter. Third flood destination option.",
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "長野市立若槻小学校",
+      "address": "長野県長野市大字若槻東条810",
+      "lat": 36.686086406009,
+      "lon": 138.22454626731,
+      "distance_km": 4.21,
+      "suitable_for": [
+        "flood",
+        "earthquake"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": "Flood-safe mid-term shelter. Fourth flood destination option.",
+        "retrieved_at": null
+      }
+    }
+  ],
+  "river_names": [
+    "千曲川 (Chikuma River)"
+  ],
+  "summary": "⚠️ CRITICAL FLOOD RISK — This home sits in a 10–20 m statutory flood zone beside the Chikuma River. At that depth, a 2-storey house is completely submerged: the second floor is NOT a refuge. Yoshiko (78, bad knees, no smartphone) lives alone and will need 3× the normal walking time to reach safety. The nearest flood-safe shelter is 北部スポーツ・レクリエーションパーク at 2.63 km — walking that distance with impaired mobility is extremely challenging without assistance. Kenji and Mika must arrange a support person to accompany Yoshiko at the first sign of a Chikuma River flood warning. The closest facilities (穂保高台避難公園 at 0.61 km, 長沼小学校 at 0.64 km) are NOT flood-designated — going there during a flood could be fatal. For typhoon season: act on Level 3 Evacuation Preparation alert or earlier; do not wait for Level 4 or 5.",
+  "assessed_at": "2026-08-24T00:00:00Z",
+  "caveats": [
+    "Shelter data is registered by municipalities and may not reflect the latest designations; confirm with 長野市 for critical decisions (GSI terms of use).",
+    "Hazard depths are from the largest-scale statutory inundation scenario (想定最大規模) per MLIT specification — actual event depth may be lower, but planning must assume the statutory maximum.",
+    "JMA warning area code 2020111/2020112 is ambiguous for this address; monitor both 長野市長野 area feeds during typhoon events.",
+    "Distances are straight-line; actual walking routes may be longer. With Yoshiko's mobility needs, route reconnaissance in calm conditions is strongly recommended.",
+    "This assessment reflects data retrieved on 2026-08-24 and should be reviewed after each municipal hazard-map update cycle."
+  ]
+}

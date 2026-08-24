@@ -1,0 +1,175 @@
+{
+  "household_id": "hitoyoshi",
+  "assessments": [
+    {
+      "hazard": "flood",
+      "at_risk": false,
+      "severity": null,
+      "detail": "No flood risk indicated at this exact coordinate on the statutory hazard map. However, Hitoyoshi is located in the Kuma River basin, which experienced catastrophic flooding in July 2020. Families should monitor river levels and municipal evacuation orders during heavy rain.",
+      "sources": [
+        {
+          "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+          "url": "https://disaportal.gsi.go.jp/",
+          "note": "statutory hazard-map raster tiles; legend per MLIT specification",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "landslide",
+      "at_risk": false,
+      "severity": null,
+      "detail": "No landslide designated zones at this location.",
+      "sources": [
+        {
+          "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+          "url": "https://disaportal.gsi.go.jp/",
+          "note": "statutory hazard-map raster tiles; legend per MLIT specification",
+          "retrieved_at": null
+        }
+      ]
+    },
+    {
+      "hazard": "earthquake",
+      "at_risk": true,
+      "severity": null,
+      "detail": "Earthquake preparedness is essential throughout Japan. Kumamoto experienced a magnitude 7.3 earthquake in April 2016. Ensure furniture is secured and an emergency kit is ready.",
+      "sources": [
+        {
+          "name": "GSI designated evacuation site data",
+          "url": "https://hinanmap.gsi.go.jp/",
+          "note": null,
+          "retrieved_at": null
+        }
+      ]
+    }
+  ],
+  "nearest_shelters": [
+    {
+      "name": "人吉市保健センター",
+      "address": "熊本県人吉市西間下町118-1",
+      "lat": 32.205739,
+      "lon": 130.759317,
+      "distance_km": 0.08,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "storm_surge",
+        "earthquake",
+        "tsunami",
+        "large_fire",
+        "inland_flood",
+        "volcano"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "第一中学校",
+      "address": "熊本県人吉市土手町36-3",
+      "lat": 32.2079236455698,
+      "lon": 130.759861988962,
+      "distance_km": 0.26,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "storm_surge",
+        "earthquake",
+        "tsunami",
+        "large_fire",
+        "inland_flood",
+        "volcano"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "東間小学校",
+      "address": "熊本県人吉市東間下町2683",
+      "lat": 32.203725,
+      "lon": 130.766611,
+      "distance_km": 0.64,
+      "suitable_for": [
+        "flood",
+        "storm_surge",
+        "earthquake",
+        "tsunami",
+        "large_fire",
+        "inland_flood",
+        "volcano"
+      ],
+      "is_designated_shelter": true,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "人吉城跡ふるさと歴史の広場",
+      "address": "熊本県人吉市麓町22-1",
+      "lat": 32.211099,
+      "lon": 130.762739,
+      "distance_km": 0.65,
+      "suitable_for": [
+        "landslide",
+        "storm_surge",
+        "earthquake",
+        "tsunami",
+        "large_fire",
+        "inland_flood",
+        "volcano"
+      ],
+      "is_designated_shelter": false,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": null,
+        "retrieved_at": null
+      }
+    },
+    {
+      "name": "東間小学校グラウンド",
+      "address": "熊本県人吉市東間下町2683",
+      "lat": 32.203079,
+      "lon": 130.766608,
+      "distance_km": 0.67,
+      "suitable_for": [
+        "flood",
+        "landslide",
+        "storm_surge",
+        "earthquake",
+        "tsunami",
+        "large_fire",
+        "inland_flood",
+        "volcano"
+      ],
+      "is_designated_shelter": false,
+      "source": {
+        "name": "GSI designated evacuation site data",
+        "url": "https://hinanmap.gsi.go.jp/",
+        "note": null,
+        "retrieved_at": null
+      }
+    }
+  ],
+  "river_names": [],
+  "summary": "This Hitoyoshi home does not show statutory flood or landslide risk at the exact coordinate, but the city experienced devastating Kuma River flooding in July 2020. Given Shigeru's age (82), single-story home, and mobility challenges (uses cane), early evacuation is critical if heavy rain warnings are issued. The nearest shelter, Hitoyoshi Health Center, is only 80 meters away and suitable for all hazards. Because Shigeru is hard of hearing, Akiko must ensure he receives evacuation orders through loud, clear phone calls or in-person contact. Earthquake preparedness is also essential—secure furniture and keep an emergency kit accessible.",
+  "assessed_at": "2026-08-23T00:00:00Z",
+  "caveats": [
+    "Shelter data is registered by municipalities and may not reflect the latest designations; confirm with the municipality for critical decisions.",
+    "Hazard map depth classes represent the largest-scale statutory inundation scenario (想定最大規模).",
+    "No flood risk shown at this exact point does not guarantee safety during extreme events; Hitoyoshi's 2020 flood history demonstrates real risk in the wider area."
+  ]
+}

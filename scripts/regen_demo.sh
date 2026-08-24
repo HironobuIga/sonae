@@ -18,6 +18,10 @@ mkdir -p "$BACKUP"
 cp -R data/store/aoki "$BACKUP/" 2>/dev/null || true
 cp -R data/store/_circles "$BACKUP/" 2>/dev/null || true
 
+# Start clean: a leftover watch state would dedup every replay event as already
+# seen, and the replay would silently do nothing.
+rm -rf "$STORE"
+
 echo "== 1/5 onboarding (cartographer -> planner -> verifier) =="
 python3 -m sonae.cli onboard examples/aoki_family.json
 

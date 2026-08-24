@@ -1,0 +1,171 @@
+{
+  "activated_level": 0,
+  "seen_event_keys": [],
+  "last_checked": null,
+  "history": [
+    {
+      "ts": "2026-08-23T09:55:20.433922+00:00",
+      "kind": "onboarding_started",
+      "address": "熊本県人吉市"
+    },
+    {
+      "ts": "2026-08-23T09:55:24.122645+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "assess_hazards_at_point",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162}",
+      "at": "2026-08-23T09:55:24.122470+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:56:27.749718+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "assess_hazards_at_point",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"hazards\\\": {\\\"flood\\\": {\\\"at_risk\\\": false}, \\\"storm_surge\\\": {\\\"at_risk\\\": false}, \\\"tsunami\\\": {\\\"at_risk\\\": false}}, \\\"landslide_zones\\\": [], \\\"sources\\\": [{\\\"name\\\": \\\"MLIT/GSI national hazard map portal (重ねるハザードマップ)\\\", \\\"url\\\": \\\"https://disaportal.gsi.go.jp/\\\", \\\"note\\\": \\\"statutory hazard-map raster tiles; legend per MLIT specification\\\"}], \\\"note\\\": \\\"Depth classes come from the largest-scale statutory inundation scenario (想定最大規模). 'at_exact_point'=false means the zone is within ~20 m.\\\"}\"}]",
+      "duration_s": 63.62582933297381
+    },
+    {
+      "ts": "2026-08-23T09:56:35.149053+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162, \"prefecture\": \"熊本県\", \"municipality\": \"人吉市\", \"hazard\": \"flood\", \"limit\": 5}",
+      "at": "2026-08-23T09:56:35.148681+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:56:35.150408+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162, \"prefecture\": \"熊本県\", \"municipality\": \"人吉市\", \"hazard\": \"landslide\", \"limit\": 5}",
+      "at": "2026-08-23T09:56:35.150246+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:56:35.151742+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162, \"prefecture\": \"熊本県\", \"municipality\": \"人吉市\", \"hazard\": \"earthquake\", \"limit\": 5}",
+      "at": "2026-08-23T09:56:35.151622+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:56:35.152681+00:00",
+      "kind": "tool_call",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162, \"prefecture\": \"熊本県\", \"municipality\": \"人吉市\", \"hazard\": \"inland_flood\", \"limit\": 5}",
+      "at": "2026-08-23T09:56:35.152541+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:56:37.024828+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"人吉市保健センター\\\", \\\"address\\\": \\\"熊本県人吉市西間下町118-1\\\", \\\"lat\\\": 32.205739, \\\"lon\\\": 130.759317, \\\"distance_km\\\": 0.08, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"第一中学校\\\", \\\"address\\\": \\\"熊本県人吉市土手町36-3\\\", \\\"lat\\\": 32.2079236455698, \\\"lon\\\": 130.759861988962, \\\"distance_km\\\": 0.26, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mi…",
+      "duration_s": 1.743615709245205
+    },
+    {
+      "ts": "2026-08-23T09:56:37.212311+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"人吉市保健センター\\\", \\\"address\\\": \\\"熊本県人吉市西間下町118-1\\\", \\\"lat\\\": 32.205739, \\\"lon\\\": 130.759317, \\\"distance_km\\\": 0.08, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"第一中学校\\\", \\\"address\\\": \\\"熊本県人吉市土手町36-3\\\", \\\"lat\\\": 32.2079236455698, \\\"lon\\\": 130.759861988962, \\\"distance_km\\\": 0.26, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mi…",
+      "duration_s": 2.058305500075221
+    },
+    {
+      "ts": "2026-08-23T09:56:37.213041+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"人吉市保健センター\\\", \\\"address\\\": \\\"熊本県人吉市西間下町118-1\\\", \\\"lat\\\": 32.205739, \\\"lon\\\": 130.759317, \\\"distance_km\\\": 0.08, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"第一中学校\\\", \\\"address\\\": \\\"熊本県人吉市土手町36-3\\\", \\\"lat\\\": 32.2079236455698, \\\"lon\\\": 130.759861988962, \\\"distance_km\\\": 0.26, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mi…",
+      "duration_s": 2.0605961666442454
+    },
+    {
+      "ts": "2026-08-23T09:56:37.213587+00:00",
+      "kind": "tool_result",
+      "agent": "cartographer",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"人吉市保健センター\\\", \\\"address\\\": \\\"熊本県人吉市西間下町118-1\\\", \\\"lat\\\": 32.205739, \\\"lon\\\": 130.759317, \\\"distance_km\\\": 0.08, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"第一中学校\\\", \\\"address\\\": \\\"熊本県人吉市土手町36-3\\\", \\\"lat\\\": 32.2079236455698, \\\"lon\\\": 130.759861988962, \\\"distance_km\\\": 0.26, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mi…",
+      "duration_s": 2.062079249881208
+    },
+    {
+      "ts": "2026-08-23T09:57:37.442105+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "assess_hazards_at_point",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162}",
+      "at": "2026-08-23T09:57:37.441780+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:57:37.442632+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162, \"prefecture\": \"熊本県\", \"municipality\": \"人吉市\", \"hazard\": \"flood\", \"limit\": 5}",
+      "at": "2026-08-23T09:57:37.442527+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:57:37.451961+00:00",
+      "kind": "tool_call",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "input": "{\"lat\": 32.205631, \"lon\": 130.760162, \"prefecture\": \"熊本県\", \"municipality\": \"人吉市\", \"hazard\": \"earthquake\", \"limit\": 5}",
+      "at": "2026-08-23T09:57:37.451739+00:00"
+    },
+    {
+      "ts": "2026-08-23T09:57:37.460873+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"人吉市保健センター\\\", \\\"address\\\": \\\"熊本県人吉市西間下町118-1\\\", \\\"lat\\\": 32.205739, \\\"lon\\\": 130.759317, \\\"distance_km\\\": 0.08, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"第一中学校\\\", \\\"address\\\": \\\"熊本県人吉市土手町36-3\\\", \\\"lat\\\": 32.2079236455698, \\\"lon\\\": 130.759861988962, \\\"distance_km\\\": 0.26, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mi…",
+      "duration_s": 0.017889749724417925
+    },
+    {
+      "ts": "2026-08-23T09:57:37.461379+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "find_evacuation_sites",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"sites\\\": [{\\\"name\\\": \\\"人吉市保健センター\\\", \\\"address\\\": \\\"熊本県人吉市西間下町118-1\\\", \\\"lat\\\": 32.205739, \\\"lon\\\": 130.759317, \\\"distance_km\\\": 0.08, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mid_term_shelter\\\": true}, {\\\"name\\\": \\\"第一中学校\\\", \\\"address\\\": \\\"熊本県人吉市土手町36-3\\\", \\\"lat\\\": 32.2079236455698, \\\"lon\\\": 130.759861988962, \\\"distance_km\\\": 0.26, \\\"suitable_for\\\": [\\\"flood\\\", \\\"landslide\\\", \\\"storm_surge\\\", \\\"earthquake\\\", \\\"tsunami\\\", \\\"large_fire\\\", \\\"inland_flood\\\", \\\"volcano\\\"], \\\"also_mi…",
+      "duration_s": 0.008947541937232018
+    },
+    {
+      "ts": "2026-08-23T09:58:41.085666+00:00",
+      "kind": "tool_result",
+      "agent": "verifier",
+      "tool": "assess_hazards_at_point",
+      "status": "success",
+      "output": "[{\"text\": \"{\\\"hazards\\\": {\\\"flood\\\": {\\\"at_risk\\\": false}, \\\"storm_surge\\\": {\\\"at_risk\\\": false}, \\\"tsunami\\\": {\\\"at_risk\\\": false}}, \\\"landslide_zones\\\": [], \\\"sources\\\": [{\\\"name\\\": \\\"MLIT/GSI national hazard map portal (重ねるハザードマップ)\\\", \\\"url\\\": \\\"https://disaportal.gsi.go.jp/\\\", \\\"note\\\": \\\"statutory hazard-map raster tiles; legend per MLIT specification\\\"}], \\\"note\\\": \\\"Depth classes come from the largest-scale statutory inundation scenario (想定最大規模). 'at_exact_point'=false means the zone is within ~20 m.\\\"}\"}]",
+      "duration_s": 63.64242895832285
+    },
+    {
+      "ts": "2026-08-23T09:58:59.217903+00:00",
+      "kind": "onboarding_complete",
+      "nodes_executed": [
+        "cartographer",
+        "planner",
+        "verifier"
+      ],
+      "hazards_at_risk": [
+        "earthquake"
+      ],
+      "checks": 17
+    },
+    {
+      "ts": "2026-08-23T09:59:29.415673+00:00",
+      "kind": "plan_approved",
+      "by": "family"
+    },
+    {
+      "ts": "2026-08-23T20:36:24.401940+00:00",
+      "kind": "plan_approved",
+      "by": "family"
+    }
+  ]
+}

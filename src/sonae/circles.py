@@ -28,6 +28,27 @@ def save_circle(circle: Circle) -> None:
     atomic_write_text(_circles_dir() / f"{circle.circle_id}.json", circle.model_dump_json(indent=2))
 
 
+def report_path(circle_id: str):
+    return _circles_dir() / f"{circle_id}.report.json"
+
+
+def save_report(circle_id: str, report: CircleReport) -> None:
+    """Persist the coordinator's report — the dashboard reads this file.
+
+    Both the CLI and the web app compose reports; if only one of them saved,
+    the committed demo would show a report from a different run than the
+    check-ins beside it.
+    """
+    atomic_write_text(
+        report_path(circle_id),
+        json.dumps(
+            {"composed_at": datetime.now(UTC).isoformat(), **json.loads(report.model_dump_json())},
+            ensure_ascii=False,
+            indent=1,
+        ),
+    )
+
+
 def load_circle(circle_id: str) -> Circle | None:
     path = _circles_dir() / f"{circle_id}.json"
     if not path.exists():

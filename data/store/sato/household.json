@@ -1,0 +1,35 @@
+{
+  "household_id": "sato",
+  "address": "長野県長野市穂保 佐藤宅",
+  "lat": 36.681267,
+  "lon": 138.26955900000002,
+  "muni_code": "20201",
+  "muni_name": "長野市",
+  "pref_name": "長野県",
+  "jma_office_code": "200000",
+  "jma_class20_code": "2020111",
+  "members": [
+    {
+      "name": "Hiroshi",
+      "age": 81,
+      "lives_at_home": true,
+      "needs": [
+        "mobility-limited"
+      ],
+      "preferred_language": "ja",
+      "phone_available": true
+    },
+    {
+      "name": "Fumiko",
+      "age": 79,
+      "lives_at_home": true,
+      "needs": [],
+      "preferred_language": "ja",
+      "phone_available": true
+    }
+  ],
+  "home_floors": null,
+  "has_car": true,
+  "pets": [],
+  "notes": null
+}

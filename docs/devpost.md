@@ -71,7 +71,7 @@ decisions.
   national designated-evacuation-site registry (per-hazard suitability flags under the Disaster
   Countermeasures Basic Act); and the statutory hazard-map raster tiles, which we sample at the
   home's coordinates and decode against the official depth legend.
-- **Amazon Bedrock** (Claude Sonnet 4.5) for all agents; **Amazon Bedrock AgentCore Runtime** hosts
+- **Amazon Bedrock** (Claude Sonnet 4.6) for all agents; **Amazon Bedrock AgentCore Runtime** hosts
   the team in production — deployed with the AgentCore CLI (CDK) as a bring-your-own container, with
   an EventBridge Scheduler heartbeat making the Sentinel ambient. The same payload-selected
   entrypoint serves onboarding, watch cycles, and replay.
@@ -103,7 +103,7 @@ decisions.
 - **Honesty in the demo.** We refused to stage a fictional disaster. Reconstructing the real
   official timeline made the demo stronger — and it is labelled for what it is: a counterfactual
   from the replay, not something that happened to anyone. In it, the verified push goes out at
-  **15:31**, 8 hours 9 minutes of warning lead ahead of the 23:40 order; with the plan's 120-minute
+  **15:31**, 8 hours 9 minutes of warning lead ahead of the 23:40 order; with the plan's 90–120 minute
   walking allowance, grandmother is inside the shelter around 17:31, roughly a 6-hour safety margin.
 
 ## Accomplishments
@@ -130,5 +130,5 @@ decisions.
 
 ## Built with
 
-`strands-agents` · Amazon Bedrock (Claude Sonnet 4.5) · Amazon Bedrock AgentCore · Python ·
+`strands-agents` · Amazon Bedrock (Claude Sonnet 4.6) · Amazon Bedrock AgentCore · Python ·
 FastAPI · Leaflet · JMA open feeds · GSI hazard tiles & evacuation-site registry

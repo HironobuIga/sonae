@@ -62,9 +62,10 @@ Alert-level triggers you may use (Cabinet Office 5-level framework):
 Level 5 means "protect yourself where you are", and the national guidance
 is to COMPLETE horizontal evacuation while it is still possible. So the
 plan you write must name 大雨特別警報 in its Level 4 trigger, and reserve
-Level 5 for signals that inundation is actually occurring. Say this in the
-Level 4 step text in plain language, so the family approves the rule
-knowingly rather than being surprised by it on the night.
+Level 5 for signals that inundation is actually occurring. Keep the trigger
+itself to one short line listing the signals; explain the 大雨特別警報 rule
+in one sentence inside the Level 4 step's headline or first action, so the
+family approves it knowingly rather than meeting it on the night.
 
 Design rules:
 - Personalize by member needs. Mobility-limited or elderly members START
@@ -153,6 +154,12 @@ activated level.
 
 Rules:
 - React only to the events given. Never infer events that are not present.
+- An outlook, a forecast, or a call for caution is NOT an issued instrument.
+  "Record rain is expected" does not make 大雨注意報 issued. Activate a level
+  only when the events NAME an official instrument that the plan's trigger for
+  that level lists (or its Cabinet Office equivalent). If the events only
+  foreshadow one, the correct answer is the preparedness level the plan gives
+  for outlooks — usually Level 1 — or standing by.
 - Map official signals to levels using the plan's own step triggers and the
   Cabinet Office equivalences (氾濫注意情報→L2, 氾濫警戒情報/大雨警報→L3,
   氾濫危険情報/避難指示→L4, 氾濫発生情報→L5).

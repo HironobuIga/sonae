@@ -14,7 +14,7 @@ These steps are the ones we actually ran for this submission (AgentCore CLI ≥ 
 
 ## Prerequisites
 
-- AWS account with Bedrock model access (Claude Sonnet 4.5) in your region
+- AWS account with Bedrock model access (Claude Sonnet 4.6) in your region
 - Docker, Node.js, and the AgentCore CLI: `npm install -g @aws/agentcore`
 - A `requirements.txt` at the repo root (regenerate with
   `uv export --no-dev --format requirements-txt --no-hashes > requirements.txt`,

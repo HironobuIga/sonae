@@ -1,0 +1,181 @@
+{
+  "household_id": "hitoyoshi",
+  "hazard_focus": [
+    "flood",
+    "earthquake"
+  ],
+  "steps": [
+    {
+      "alert_level": 1,
+      "trigger": "Typhoon outlook or heavy-rain early-warning information (早期注意情報) issued for Kuma River basin",
+      "headline": "Prepare and decide watchkeeping roles",
+      "actions": [
+        {
+          "member": "Akiko",
+          "description": "Call Shigeru (speak loudly and slowly). Confirm he hears you clearly. Tell him to charge his phone fully and keep it within arm's reach.",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Shigeru",
+          "description": "Charge phone to 100%. Place medications, cane, phone charger, and wallet by the front door. Fill water bottles (3 liters).",
+          "estimated_minutes": 20
+        },
+        {
+          "member": "Akiko",
+          "description": "Monitor JMA warnings and Hitoyoshi city disaster website every 2 hours. Set phone alarms to call Shigeru at each check.",
+          "estimated_minutes": 5
+        }
+      ]
+    },
+    {
+      "alert_level": 2,
+      "trigger": "Heavy rain advisory (大雨注意報) or flood advisory (洪水注意報) issued; or river flood advisory (氾濫注意情報) for Kuma River",
+      "headline": "Finalize evacuation supplies and confirm transport",
+      "actions": [
+        {
+          "member": "Akiko",
+          "description": "Call Shigeru every hour. Ask: 'Is rain getting heavier? Can you hear any city loudspeaker announcements?' Remind him to stay dressed and ready.",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Shigeru",
+          "description": "Pack a bag: 3 days of medication, phone charger, cash, ID, health insurance card, water bottles, easy-to-eat food (rice balls, crackers). Place bag and cane at door. Wear shoes indoors.",
+          "estimated_minutes": 30
+        },
+        {
+          "member": "Akiko",
+          "description": "Confirm car is fueled and keys are ready. Plan to leave immediately if Level 3 is issued—Shigeru needs extra time.",
+          "estimated_minutes": 10
+        }
+      ]
+    },
+    {
+      "alert_level": 3,
+      "trigger": "Level 3: Elderly evacuation order (高齢者等避難) issued by Hitoyoshi city, or river flood warning (氾濫警戒情報) for Kuma River",
+      "headline": "Shigeru evacuates NOW—this alert exists for him",
+      "actions": [
+        {
+          "member": "Akiko",
+          "description": "Call Shigeru immediately. Say: 'Level 3 is issued. I am coming now or you must leave NOW to the Health Center 80 meters away.' If you cannot reach him by phone within 5 minutes, call a neighbor or the city disaster line and request a welfare check.",
+          "estimated_minutes": 10
+        },
+        {
+          "member": "Shigeru",
+          "description": "Take your bag, cane, and phone. Walk to Hitoyoshi Health Center (人吉市保健センター), 80 meters away at 西間下町118-1. If Akiko is driving to you, wait by the door but DO NOT wait past 20 minutes—leave on foot if she is delayed.",
+          "estimated_minutes": 10
+        },
+        {
+          "member": "Akiko",
+          "description": "If you can drive to Shigeru's home safely, pick him up and drive to the Health Center together. If roads are already flooded or blocked, guide him by phone and meet him at the shelter. Once he is inside, confirm with shelter staff that he is registered.",
+          "estimated_minutes": 30
+        }
+      ]
+    },
+    {
+      "alert_level": 4,
+      "trigger": "Level 4: Evacuation order (避難指示) issued, or river flood danger information (氾濫危険情報) for Kuma River",
+      "headline": "All residents must evacuate immediately—no exceptions",
+      "actions": [
+        {
+          "member": "Akiko",
+          "description": "If Shigeru is not yet at the shelter, call him every 2 minutes. If he does not answer, call the city disaster line and request emergency assistance for an 82-year-old man at his address.",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Shigeru",
+          "description": "If you are still at home, leave IMMEDIATELY for the Health Center on foot with your cane, even in rain. If water is already at your door, do NOT go outside—call Akiko and the city disaster line (look up the number NOW while it is calm) and wait for rescue.",
+          "estimated_minutes": 10
+        },
+        {
+          "member": "Akiko",
+          "description": "Once Shigeru is confirmed safe at the shelter, do not attempt travel to Hitoyoshi if you are far away—roads may be impassable. Stay in phone contact and coordinate with shelter staff.",
+          "estimated_minutes": 10
+        }
+      ]
+    }
+  ],
+  "primary_shelter": {
+    "name": "人吉市保健センター",
+    "address": "熊本県人吉市西間下町118-1",
+    "lat": 32.205739,
+    "lon": 130.759317,
+    "distance_km": 0.08,
+    "suitable_for": [
+      "flood",
+      "landslide",
+      "storm_surge",
+      "earthquake",
+      "tsunami",
+      "large_fire",
+      "inland_flood",
+      "volcano"
+    ],
+    "is_designated_shelter": true,
+    "source": {
+      "name": "GSI designated evacuation site data",
+      "url": "https://hinanmap.gsi.go.jp/",
+      "note": null,
+      "retrieved_at": null
+    }
+  },
+  "backup_shelter": {
+    "name": "第一中学校",
+    "address": "熊本県人吉市土手町36-3",
+    "lat": 32.2079236455698,
+    "lon": 130.759861988962,
+    "distance_km": 0.26,
+    "suitable_for": [
+      "flood",
+      "landslide",
+      "storm_surge",
+      "earthquake",
+      "tsunami",
+      "large_fire",
+      "inland_flood",
+      "volcano"
+    ],
+    "is_designated_shelter": true,
+    "source": {
+      "name": "GSI designated evacuation site data",
+      "url": "https://hinanmap.gsi.go.jp/",
+      "note": null,
+      "retrieved_at": null
+    }
+  },
+  "vertical_evacuation_ok": false,
+  "supply_checklist": [
+    "3 days of Shigeru's prescription medications in original bottles",
+    "Cane (walking aid)",
+    "Phone charger and fully charged phone",
+    "Cash (ATMs may be offline)",
+    "Health insurance card and ID",
+    "Drinking water: 9 liters (3 liters/person/day × 3 days for Shigeru; Akiko should maintain her own supply)",
+    "Easy-to-eat food: rice balls, crackers, canned goods with pull-tabs",
+    "Flashlight and spare batteries",
+    "List of Akiko's phone number and city disaster hotline written in large print",
+    "Warm clothing and rain gear",
+    "Towels and basic hygiene items"
+  ],
+  "sources": [
+    {
+      "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+      "url": "https://disaportal.gsi.go.jp/",
+      "note": "statutory hazard-map raster tiles; legend per MLIT specification",
+      "retrieved_at": null
+    },
+    {
+      "name": "GSI designated evacuation site data",
+      "url": "https://hinanmap.gsi.go.jp/",
+      "note": null,
+      "retrieved_at": null
+    },
+    {
+      "name": "Cabinet Office 5-level alert framework",
+      "url": "https://www.bousai.go.jp/oukyu/hinank권고/h30_hinank권고_guideline/",
+      "note": "Defines 高齢者等避難 (Level 3) as the trigger for elderly and mobility-limited residents to begin evacuation",
+      "retrieved_at": null
+    }
+  ],
+  "created_at": "2026-08-23T00:00:00Z",
+  "family_approved": true
+}

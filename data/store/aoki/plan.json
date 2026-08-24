@@ -1,0 +1,215 @@
+{
+  "household_id": "aoki",
+  "hazard_focus": [
+    "flood"
+  ],
+  "steps": [
+    {
+      "alert_level": 1,
+      "trigger": "JMA issues typhoon outlook or 早期注意情報 for 長野県",
+      "headline": "Watch phase: remote family activates monitoring, Yoshiko begins preparation",
+      "actions": [
+        {
+          "member": "Kenji",
+          "description": "Check JMA typhoon track; if Nagano is in the forecast cone, call Yoshiko and say slowly: 「台風が来るかもしれません。準備を始めてください」",
+          "estimated_minutes": 10
+        },
+        {
+          "member": "Kenji",
+          "description": "Contact the pre-arranged support helper to confirm availability for this event",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Yoshiko",
+          "description": "Move go-bag to front entrance; confirm all medications are packed; charge mobile phone to 100%",
+          "estimated_minutes": 15
+        },
+        {
+          "member": "Mika",
+          "description": "Check that 長野市 disaster alert SMS/automated-call service is active for Yoshiko's phone (no app needed); review this timeline",
+          "estimated_minutes": 10
+        }
+      ]
+    },
+    {
+      "alert_level": 2,
+      "trigger": "大雨注意報・洪水注意報 OR 氾濫注意情報 issued for 長野市",
+      "headline": "Elevated watch: confirm helper commitment, check river level, finish supplies",
+      "actions": [
+        {
+          "member": "Kenji",
+          "description": "Call Yoshiko to confirm she has received the alert and her go-bag is ready; confirm exact time the helper will arrive at her door",
+          "estimated_minutes": 10
+        },
+        {
+          "member": "Kenji",
+          "description": "Check Chikuma River level at the 国土交通省 川の防災情報 site (www.river.go.jp); if already above 氾濫注意水位, skip Level 3 and escalate immediately",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Yoshiko",
+          "description": "Fill all water bottles; lay out sturdy shoes and raincoat by the front door; eat a proper meal",
+          "estimated_minutes": 20
+        },
+        {
+          "member": "Mika",
+          "description": "Send Yoshiko a plain-text SMS reminder: 「明日、〇〇さんと一緒に北部スポーツ・レクリエーションパークへ避難してください」",
+          "estimated_minutes": 3
+        }
+      ]
+    },
+    {
+      "alert_level": 3,
+      "trigger": "長野市 発令: 高齢者等避難 (Level 3) OR 氾濫警戒情報 OR 大雨警報",
+      "headline": "Yoshiko departs NOW with helper — mobility needs mean Level 3 is her evacuation trigger, not a preparation signal",
+      "actions": [
+        {
+          "member": "Kenji",
+          "description": "Immediately call Yoshiko AND the helper to confirm both are moving; ask the single critical question: 「今、〇〇さんの家にいますか？一緒に出発しましたか？」 — do not hang up until confirmed",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Helper",
+          "description": "Arrive at Yoshiko's home and depart together on foot toward 北部スポーツ・レクリエーションパーク (長野県長野市大字三才1981-1, approximately 2.63 km west). Allow 90–120 minutes walking time. Do NOT go to 穂保高台避難公園 or 長沼小学校 — neither is flood-designated and both may flood.",
+          "estimated_minutes": 120
+        },
+        {
+          "member": "Yoshiko",
+          "description": "Pick up go-bag, lock door, depart with helper. On arrival, call Kenji immediately: 「着きました」",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Kenji",
+          "description": "If the helper cannot come, immediately call 長野市 の地域支え合いセンターまたは 119 to request evacuation assistance — do not leave Yoshiko to walk alone",
+          "estimated_minutes": 5
+        }
+      ]
+    },
+    {
+      "alert_level": 4,
+      "trigger": "避難指示 OR 氾濫危険情報 issued for 穂保 — OR — 大雨特別警報 announced while horizontal evacuation is still physically possible (complete the journey to shelter before stopping; once Level 5 氾濫発生情報 is issued, movement may no longer be safe)",
+      "headline": "Complete evacuation to shelter — this level means the river is about to overflow; Yoshiko must already be at the shelter",
+      "actions": [
+        {
+          "member": "Kenji",
+          "description": "Confirm Yoshiko has arrived at 北部スポーツ・レクリエーションパーク; if she has NOT yet left home, call 119 immediately and stay on the line — the 2-storey house will be fully submerged at statutory flood depth (10–20 m) and upper floors are NOT a refuge",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Mika",
+          "description": "If Kenji cannot reach Yoshiko, Mika calls 119 and provides the address 長野県長野市穂保, describing that an elderly woman with limited mobility may need rescue",
+          "estimated_minutes": 5
+        },
+        {
+          "member": "Yoshiko",
+          "description": "If still en route: keep moving toward the shelter with the helper; if water is already blocking the route, stop, call 119, move to the highest accessible indoor point as a last resort only — understand that the building will not be tall enough at maximum flood depth",
+          "estimated_minutes": null
+        }
+      ]
+    },
+    {
+      "alert_level": 5,
+      "trigger": "氾濫発生情報 OR 長野市 発令 緊急安全確保 — flooding is occurring now",
+      "headline": "Do not move outdoors — protect life where you are; emergency rescue may be the only option",
+      "actions": [
+        {
+          "member": "Yoshiko",
+          "description": "Do NOT go outside. Move to the highest reachable indoor position. Open a window or door to signal rescuers. Call 119 if not already done.",
+          "estimated_minutes": null
+        },
+        {
+          "member": "Kenji",
+          "description": "Remain in phone contact with Yoshiko; relay her exact location (長野県長野市穂保 の自宅) to 119; do not end the call",
+          "estimated_minutes": null
+        },
+        {
+          "member": "Mika",
+          "description": "If Kenji cannot reach Yoshiko or 119, Mika attempts contact and coordinates with emergency services from her location",
+          "estimated_minutes": null
+        }
+      ]
+    }
+  ],
+  "primary_shelter": {
+    "name": "北部スポーツ・レクリエーションパーク",
+    "address": "長野県長野市大字三才1981-1",
+    "lat": 36.68931944,
+    "lon": 138.24286666,
+    "distance_km": 2.63,
+    "suitable_for": [
+      "flood",
+      "landslide",
+      "earthquake"
+    ],
+    "is_designated_shelter": true,
+    "source": {
+      "name": "GSI designated evacuation site data",
+      "url": "https://hinanmap.gsi.go.jp/",
+      "note": "Flood + earthquake designated; also mid-term shelter (指定避難所). Nearest flood-safe destination for Yoshiko.",
+      "retrieved_at": null
+    }
+  },
+  "backup_shelter": {
+    "name": "昭和の森公園フィットネスセンター",
+    "address": "長野県長野市上野2-120-13",
+    "lat": 36.68537499,
+    "lon": 138.23486666,
+    "distance_km": 3.29,
+    "suitable_for": [
+      "flood",
+      "landslide",
+      "earthquake"
+    ],
+    "is_designated_shelter": true,
+    "source": {
+      "name": "GSI designated evacuation site data",
+      "url": "https://hinanmap.gsi.go.jp/",
+      "note": "Flood-safe; also mid-term shelter (指定避難所). Secondary flood destination if primary is unavailable.",
+      "retrieved_at": null
+    }
+  },
+  "vertical_evacuation_ok": false,
+  "supply_checklist": [
+    "処方薬（最低7日分）と服薬スケジュールのメモ",
+    "保険証・マイナンバーカードのコピー",
+    "現金（小銭含む、ATM不使用を想定）",
+    "飲料水 3日分（Yoshiko 1人分：約6リットル）",
+    "非常食 3日分（食べやすいもの、調理不要）",
+    "携帯電話 と 充電ケーブル・モバイルバッテリー",
+    "歩きやすい靴・レインコート・着替え2日分",
+    "タオル・ウェットティッシュ・マスク",
+    "簡易トイレ・生理衛生用品",
+    "懐中電灯・予備電池",
+    "避難カード（住所・連絡先・避難先を印刷したもの）",
+    "杖または歩行補助器（Yoshiko の膝の状態に応じて）",
+    "毛布または保温シート"
+  ],
+  "sources": [
+    {
+      "name": "MLIT/GSI national hazard map portal (重ねるハザードマップ)",
+      "url": "https://disaportal.gsi.go.jp/",
+      "note": "Statutory flood inundation hazard map; largest-scale scenario (想定最大規模); depth class 10–20 m confirmed at exact coordinates (36.684467, 138.271759)",
+      "retrieved_at": null
+    },
+    {
+      "name": "GSI designated evacuation site data",
+      "url": "https://hinanmap.gsi.go.jp/",
+      "note": "Shelter names, addresses, coordinates, suitable_for designations, and mid-term shelter status as retrieved 2026-08-24",
+      "retrieved_at": null
+    },
+    {
+      "name": "Cabinet Office / MLIT 警戒レベルと避難行動の対応表",
+      "url": "https://www.mlit.go.jp/river/bousai/main/saigai/jouhou/jikobousi/pdf/timeline_guideline.pdf",
+      "note": "5-level alert framework; Level 3 = 高齢者等避難; Level 4 = 避難指示/氾濫危険情報; Level 5 = 緊急安全確保/氾濫発生情報; 大雨特別警報 treated at Level 4 per national guidance that horizontal evacuation must be completed before Level 5",
+      "retrieved_at": null
+    },
+    {
+      "name": "国土交通省 川の防災情報",
+      "url": "https://www.river.go.jp/",
+      "note": "Official MLIT river water level monitoring; Chikuma River (千曲川) gauge data including 長野観測所",
+      "retrieved_at": null
+    }
+  ],
+  "created_at": "2026-08-24T00:00:00Z",
+  "family_approved": true
+}

@@ -208,7 +208,7 @@ Run the replay and watch the timestamps. Nagano City's evacuation order for the 
 came at **23:40**, in darkness. In the replay, the 大雨特別警報 lands at **15:30** and Sonae's verified
 push goes out at **15:31** — **8 hours 9 minutes of warning lead** before the official order, and the
 last clearly-daylight window of the day (sunset was 17:16 JST). The approved plan allows Yoshiko
-**120 minutes** to walk the 2.6 km to her flood-designated shelter, so on that timeline she is inside
+**90–120 minutes** to walk the 2.63 km to her flood-designated shelter, so on that timeline she is inside
 it around **17:31** — roughly a **6-hour safety margin** ahead of the order that the real residents of
 Hoyasu received. Every timestamp comes from the official record; the plan came from the same hazard
 maps anyone could have read. That margin is the product.

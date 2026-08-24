@@ -27,6 +27,7 @@ from pydantic import BaseModel
 from sonae.agents import factory
 from sonae.agents.audit import AuditHook
 from sonae.agents.jsonio import AgentOutputError, parse_as
+from sonae.alert_levels import max_supported_level
 from sonae.channels.base import Channel
 from sonae.memory.store import HouseholdStore
 from sonae.schemas import (
@@ -74,14 +75,17 @@ def _invoke_json(agent, prompt: str, model_cls, retries: int = 1):
 
 
 def _log_verification(store: HouseholdStore, report: VerificationReport, attempt: int) -> None:
-    unsupported = [c.claim[:120] for c in report.checks if c.verdict != "supported"]
+    # Kept apart on purpose: only `unsupported` blocks a dispatch, and this
+    # journal is quoted in the docs. Lumping the two together would attribute
+    # rejections to claims the verifier merely could not confirm either way.
     store.log_event(
         "verification",
         {
             "attempt": attempt,
             "approved": report.approved,
             "checks": len(report.checks),
-            "unsupported": unsupported,
+            "unsupported": [c.claim[:120] for c in report.checks if c.verdict == "unsupported"],
+            "uncertain": [c.claim[:120] for c in report.checks if c.verdict == "uncertain"],
             "revision_request": (report.revision_request or "")[:300],
         },
     )
@@ -233,6 +237,23 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
             "events": [e.title for e in fresh],
         },
     )
+
+    # The Sentinel is a model, and a model can write 5 in a field while its own
+    # reasoning says "no Level 5 signal is present" — that exact slip is in this
+    # repo's flight recorder. Clamp the activation to what the official wording
+    # positively supports. Only ever downward, and only when we recognise a
+    # signal: an unfamiliar wording must not be able to silence a real alert.
+    supported = max_supported_level([f"{e.title}\n{e.body}" for e in fresh])
+    if decision.triggered and supported is not None and (decision.alert_level or 0) > supported:
+        store.log_event(
+            "level_clamped",
+            {
+                "sentinel_level": decision.alert_level,
+                "supported_level": supported,
+                "events": [e.title for e in fresh],
+            },
+        )
+        decision.alert_level = supported
 
     if not decision.triggered or (decision.alert_level or 0) <= watch.activated_level:
         # A deliberate, journaled decision NOT to notify — the one case where

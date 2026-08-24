@@ -86,7 +86,7 @@ through the moments. Pace: linger where it matters.
 - **10/12 23:40** (pause, let it land): "23:40. The official evacuation order. Darkness, driving
   rain. This is when the real residents of Hoyasu were told to leave. Sonae's push went out at
   **15:31** — **eight hours and nine minutes** of warning lead, from the same public information.
-  The plan gives Yoshiko two hours to walk it, so on this timeline she is inside the shelter around
+  The plan allows Yoshiko 90–120 minutes on foot, so on this timeline she is inside the shelter around
   half past five: about **six hours of safety margin**. To be clear about what you're watching —
   this is a counterfactual from the replay, not something that happened to anyone that night."
 - **10/13 01:15 → 02:12** (advance, quiet): "At 1:08 the river began overtopping the levee at

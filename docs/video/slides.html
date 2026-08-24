@@ -105,30 +105,32 @@
     <div class="card" style="border-color:var(--green)">
       <h3>SONAE'S FAMILY</h3>
       <div class="t" style="color:var(--green)">15:31</div>
-      <p>Verified, personal push at the emergency warning: <b>“すぐに避難してください”</b> — grandmother walking to the flood-safe site in daylight.</p>
+      <p>Verified, personal push at the emergency warning: <b>「今すぐ避難してください」</b> — grandmother walking to the flood-safe site in daylight.</p>
     </div>
   </div>
   <h1 style="font-size:48px;margin-top:52px">8 h 09 m of warning lead — grounded in the official record.<br>
-  <span style="font-size:34px;color:var(--dim)">On the plan's own 2-hour walking allowance, at the shelter by ~17:31 — about six hours before the order.</span></h1>
+  <span style="font-size:34px;color:var(--dim)">On the plan's own 90–120 min walking allowance, at the shelter by ~17:31 — about six hours before the order.</span></h1>
 </section>
 
 <!-- 6: verifier moment -->
 <section class="slide" data-n="6" style="justify-content:center">
   <div class="kicker">THE TRUST LAYER — QUOTED FROM data/store/aoki/watch.json IN THIS REPO</div>
-  <div class="mono-log" style="font-size:22px;line-height:1.85">
-<span class="c"># Level 2 — the draft told Mika to look up a hotline number</span>
-<span class="bad">verifier attempt 1: REJECTED</span> (11 checks) — <span class="c">unsupported:</span> "Nagano City's disaster hotline phone number"
-   → "The evidence bundle contains no disaster hotline phone number for Nagano City."
-<span class="ok">verifier attempt 2: APPROVED</span> (12 checks)
+  <div class="mono-log" style="font-size:21px;line-height:1.8">
+<span class="c"># 15:30, the pivotal push — the draft cited an order that was never issued</span>
+<span class="bad">verification attempt 1: REJECTED</span> (12 checks)
+   <span class="c">unsupported:</span> "Level 4 = <span class="bad">避難指示</span>" in the Cabinet Office citation note
+   <span class="c">revision:</span> → "…<span class="ok">no 避難指示 was issued</span>; 大雨特別警報 triggers Level 4 per national guidance"
+<span class="ok">verification attempt 2: APPROVED</span> (12 checks) → <span class="k">3 notifications dispatched [verified ✓]</span>
 
-<span class="c"># the pivotal moment, 15:30 — the draft subject over-claimed an order</span>
-<span class="bad">verifier attempt 1: REJECTED</span> (12 checks) — <span class="c">unsupported:</span> subject "避難指示 大雨 長野市"
-   → "The actual alert issued is 大雨特別警報, not 避難指示 (evacuation order)."
-<span class="ok">verifier attempt 2: APPROVED</span> (13 checks) → <span class="k">3 notifications dispatched [verified ✓]</span>
+<span class="c"># 18:00 — the Sentinel claimed Level 5 on a Level 4 advisory (避難勧告)</span>
+<span class="bad">level_clamped:</span> sentinel_level <span class="bad">5</span> → supported_level <span class="ok">4</span>
+   <span class="c"># a deterministic guard, not a model: the official wording is the ceiling.</span>
+   <span class="c"># unclamped, a false Level 5 here would have swallowed the real one at 20:50.</span>
   </div>
-  <ul class="pts" style="font-size:27px;line-height:1.75">
+  <ul class="pts" style="font-size:26px;line-height:1.7">
     <li>AI prose fails <b>closed</b> — unverified text is never sent</li>
     <li>The official signal fails <b>open</b> — verbatim relay rather than silence</li>
+    <li>A model's own level claim is <b>bounded by the official wording</b> before anyone is woken</li>
     <li>Family approval is the authorization boundary — Sonae maps official signals onto the plan they
       signed, and never originates an evacuation judgment of its own</li>
   </ul>

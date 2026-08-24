@@ -1,0 +1,20 @@
+[
+  {
+    "member": "Yoshiko",
+    "status": "safe",
+    "note": "\u907f\u96e3\u6240\u306b\u5230\u7740\u3057\u307e\u3057\u305f",
+    "updated_at": "2026-08-24T21:11:35.488645Z"
+  },
+  {
+    "member": "Kenji",
+    "status": "pending",
+    "note": null,
+    "updated_at": null
+  },
+  {
+    "member": "Mika",
+    "status": "pending",
+    "note": null,
+    "updated_at": null
+  }
+]
