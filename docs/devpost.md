@@ -103,7 +103,7 @@ decisions.
 - **Honesty in the demo.** We refused to stage a fictional disaster. Reconstructing the real
   official timeline made the demo stronger — and it is labelled for what it is: a counterfactual
   from the replay, not something that happened to anyone. In it, the verified push goes out at
-  **15:31**, 8 hours 9 minutes of warning lead ahead of the 23:40 order; with the plan's 90–120 minute
+  **15:30**, 8 hours 10 minutes of warning lead ahead of the 23:40 emergency order; with the plan's 90–120 minute
   walking allowance, grandmother is inside the shelter around 17:31, roughly a 6-hour safety margin.
 
 ## Accomplishments

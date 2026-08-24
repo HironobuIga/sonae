@@ -23,7 +23,7 @@ AUDIO = HERE / "audio"
 WORK = HERE / "work"
 OUT = HERE / "sonae-demo.mp4"
 
-GAP = 0.45  # breathing room between segments (s)
+GAP = 0.8  # breathing room between segments (s) — a beat to absorb each one
 LEAD_IN = 0.6
 MIN_PER_VISUAL = 2.4
 FPS = 30

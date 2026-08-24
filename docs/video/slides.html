@@ -66,7 +66,7 @@
     <li>Find which evacuation site is designated for <b>which</b> hazard — they differ</li>
     <li>Negotiate it with your family, then keep it current</li>
   </ul>
-  <h1 style="margin-top:56px;font-size:52px;color:var(--amber)">Homework assigned to every household in Japan.<br>It waits until the river is rising.</h1>
+  <h1 style="margin-top:56px;font-size:52px;color:var(--amber)">Homework Japan asks of every household.<br>It waits until the river is rising.</h1>
 </section>
 
 <!-- 3: who dies -->
@@ -77,52 +77,54 @@
   <h2 style="margin-top:40px;max-width:1500px;line-height:1.7">The hardest case is the one millions live with:<br>
   an aging parent, alone in the family home, hours away.<br>
   <span class="ja">— 東京の息子は、実家の裏の川の水位を知らない。</span></h2>
-  <div class="foot"><span>2019 East Japan Typhoon ≈65% · July 2020 heavy rain ≈79% — Cabinet Office / MHLW</span><span></span></div>
+  <div class="foot"><span>≈65% 2019 East Japan Typhoon · ≈79% July 2020 heavy rain — MHLW 001075647.pdf · Cabinet Office FY2021 白書</span><span></span></div>
 </section>
 
 <!-- 4: the night -->
 <section class="slide" data-n="4" style="justify-content:center">
   <div class="kicker">OCTOBER 12, 2019 — TYPHOON HAGIBIS · CHIKUMA RIVER, NAGANO</div>
   <div class="ts"><span class="time" style="color:var(--amber)">15:30</span>
-    <span class="what">大雨特別警報 — first ever issued for Nagano Prefecture<small>Sunset is at 17:16. This is the last full-daylight window.</small></span></div>
+    <span class="what">大雨特別警報 — first ever issued for Nagano Prefecture<small>Sunset 17:16 (NAOJ). The last full-daylight window.</small></span></div>
+  <div class="ts"><span class="time" style="color:#ffb703">18:00</span>
+    <span class="what">Evacuation advisory (避難勧告) for the riverside, incl. Hoyasu<small>Level 4 equivalent — 2½ hours after the emergency warning.</small></span></div>
   <div class="ts"><span class="time" style="color:var(--red)">23:40</span>
-    <span class="what">Emergency evacuation order (避難指示・緊急)<small>Darkness. Driving rain. Yoshiko's family says her knees triple the walk.</small></span></div>
+    <span class="what">Escalated to emergency evacuation order (避難指示・緊急)<small>Darkness. Yoshiko's family says her knees triple the walk.</small></span></div>
   <div class="ts"><span class="time" style="color:#ff5a5a">01:08</span>
-    <span class="what">The river overtops the bank at Hoyasu — the district floods to roof height<small>Breach announced 06:00. Chronology: Nagano City verification report, pp.24–28</small></span></div>
+    <span class="what">The river overtops the bank at Hoyasu — the district floods to roof height<small>Breach announced 06:00. Nagano City verification report pp.24–28 · damage overview ch.2</small></span></div>
   <h1 style="font-size:46px;margin-top:44px;max-width:1600px">The information was public the whole time.<br>
   <span style="color:var(--cyan)">What families lacked was an agent on watch.</span></h1>
 </section>
 
 <!-- 5: counterfactual -->
 <section class="slide" data-n="5" style="justify-content:center">
-  <div class="kicker">SAME PUBLIC DATA · SAME NIGHT — REPLAYED MINUTE BY MINUTE</div>
+  <div class="kicker">SAME PUBLIC DATA · SAME NIGHT — REPLAYED EVENT BY EVENT</div>
   <div class="vs">
     <div class="card" style="border-color:#7e1f10">
       <h3>WHAT HAPPENED</h3>
       <div class="t" style="color:var(--red)">23:40</div>
-      <p>Emergency evacuation order reaches Hoyasu — in darkness, hours after the river was already overtopping upstream.</p>
+      <p>Emergency order reaches Hoyasu — in darkness, hours after the river was already overtopping upstream. The 18:00 advisory came first.</p>
     </div>
     <div class="card" style="border-color:var(--green)">
-      <h3>SONAE'S FAMILY</h3>
-      <div class="t" style="color:var(--green)">15:31</div>
+      <h3>COUNTERFACTUAL · DEMO FAMILY</h3>
+      <div class="t" style="color:var(--green)">15:30</div>
       <p>Verified, personal push at the emergency warning: <b>「今すぐ避難してください」</b> — grandmother walking to the flood-safe site in daylight.</p>
     </div>
   </div>
-  <h1 style="font-size:48px;margin-top:52px">8 h 09 m of warning lead — grounded in the official record.<br>
-  <span style="font-size:34px;color:var(--dim)">On the plan's own 90–120 min walking allowance, at the shelter by ~17:31 — about six hours before the order.</span></h1>
+  <h1 style="font-size:48px;margin-top:52px">8 h 10 m between the warning and the order — grounded in the official record.<br>
+  <span style="font-size:34px;color:var(--dim)">Counterfactual: leaving at 15:30, the plan's own 90–120 min allowance puts her at the shelter by ~17:30.</span></h1>
 </section>
 
 <!-- 6: verifier moment -->
 <section class="slide" data-n="6" style="justify-content:center">
-  <div class="kicker">THE TRUST LAYER — QUOTED FROM data/store/aoki/watch.json IN THIS REPO</div>
+  <div class="kicker">THE TRUST LAYER — LABELED EXCERPTS FROM data/store/aoki/watch.json IN THIS REPO</div>
   <div class="mono-log" style="font-size:21px;line-height:1.8">
-<span class="c"># 15:30, the pivotal push — the draft cited an order that was never issued</span>
+<span class="c"># 15:30, the pivotal push — the draft cited a Nagano City order for this district</span>
 <span class="bad">verification attempt 1: REJECTED</span> (12 checks)
    <span class="c">unsupported:</span> "Level 4 = <span class="bad">避難指示</span>" in the Cabinet Office citation note
    <span class="c">revision:</span> → "…<span class="ok">no 避難指示 was issued</span>; 大雨特別警報 triggers Level 4 per national guidance"
 <span class="ok">verification attempt 2: APPROVED</span> (12 checks) → <span class="k">3 notifications dispatched [verified ✓]</span>
 
-<span class="c"># 18:00 — the Sentinel claimed Level 5 on a Level 4 advisory (避難勧告)</span>
+<span class="c"># an EARLIER RUN in the same journal, 18:00 — Sentinel claimed Level 5 on a Level 4 advisory</span>
 <span class="bad">level_clamped:</span> sentinel_level <span class="bad">5</span> → supported_level <span class="ok">4</span>
    <span class="c"># a deterministic guard, not a model: the official wording is the ceiling.</span>
    <span class="c"># unclamped, a false Level 5 here would have swallowed the real one at 20:50.</span>
@@ -146,7 +148,7 @@
 
 $ aws bedrock-agentcore invoke-agent-runtime --payload <span class="k">{"action":"watch_cycle", …}</span>
 <span class="ok">{"processed_events": 0, "dispatched": 0, "note": "no new events"}</span>
-<span class="c"># EventBridge heartbeat · zero model tokens on a calm day · state durable in S3</span></div>
+<span class="c"># EventBridge→Lambda heartbeat, verified then paused · zero model tokens when no new events · state in S3</span></div>
   <h2 style="margin-top:40px">Boring is the job. The quiet path is the tested path.</h2>
 </section>
 
@@ -161,7 +163,7 @@ $ aws bedrock-agentcore invoke-agent-runtime --payload <span class="k">{"action"
   <ul class="pts" style="margin-top:44px">
     <li><b>Strands Agents SDK</b> — self-correcting Graph · verified pipelines · flight-recorder hooks</li>
     <li><b>Amazon Bedrock AgentCore</b> — deployed, stateful, ambient</li>
-    <li><b>100% government open data</b> — built for Japan, portable to any country with open hazard feeds</li>
+    <li><b>Government hazard + alert data</b> — built for Japan; adaptable wherever official hazard feeds exist</li>
   </ul>
   <div class="foot"><span>github.com/HironobuIga/sonae · MIT</span><span>AWS Agents for Humans Hackathon 2026</span></div>
 </section>

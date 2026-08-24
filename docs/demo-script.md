@@ -85,7 +85,7 @@ through the moments. Pace: linger where it matters.
   banks upstream. Level 5 — final confirmation that everyone is out, and no one goes back."
 - **10/12 23:40** (pause, let it land): "23:40. The official evacuation order. Darkness, driving
   rain. This is when the real residents of Hoyasu were told to leave. Sonae's push went out at
-  **15:31** — **eight hours and nine minutes** of warning lead, from the same public information.
+  **15:30** — **eight hours and ten minutes** of warning lead, from the same public information.
   The plan allows Yoshiko 90–120 minutes on foot, so on this timeline she is inside the shelter around
   half past five: about **six hours of safety margin**. To be clear about what you're watching —
   this is a counterfactual from the replay, not something that happened to anyone that night."

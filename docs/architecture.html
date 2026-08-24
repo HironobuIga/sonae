@@ -59,7 +59,7 @@
 </head>
 <body>
 <h1><span class="mark">そ</span> SONAE — agent architecture <span style="color:var(--faint);font-size:12px;font-weight:400">Strands Agents SDK · Amazon Bedrock</span></h1>
-<div class="sub">Two verified pipelines over one household memory: a self-correcting planning graph (once, calmly) and an ambient watch loop (every 5 minutes, forever).</div>
+<div class="sub">Two verified pipelines over one household memory: a self-correcting planning graph (once, calmly) and an ambient watch loop (every 5 minutes when enabled).</div>
 
 <div class="grid">
   <div class="lane">
@@ -79,7 +79,7 @@
 
   <div class="lane">
     <h2>WATCH & ACT — VERIFIED PIPELINE</h2>
-    <div class="ja">常駐監視 · EventBridge heartbeat → AgentCore Runtime · replay = same pipeline</div>
+    <div class="ja">常駐監視 · EventBridge Scheduler → Lambda → AgentCore Runtime · replay = same pipeline</div>
     <div class="agent"><div class="ic c1">📡</div><div><b>Feed events</b>
       <small>Live JMA warnings for the home's exact warning area — or the Typhoon Hagibis replay reconstructed minute-by-minute from official post-event records.</small></div></div>
     <div class="arrow">new events only (dedup vs watch state)</div>
@@ -109,7 +109,7 @@
 </div>
 
 <div class="foot">
-  <div class="cloud"><b>Amazon Bedrock</b>Claude Sonnet 4.5 powers every agent; model-agnostic via Strands providers</div>
+  <div class="cloud"><b>Amazon Bedrock</b>Claude Sonnet 4.6 powers every agent; model-agnostic via Strands providers</div>
   <div class="cloud"><b>Bedrock AgentCore Runtime</b>hosts the team; EventBridge Scheduler heartbeat makes the Sentinel ambient</div>
   <div class="cloud"><b>Observability</b>Strands OpenTelemetry traces + per-household flight-recorder journal of every tool call & decision</div>
 </div>

@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8">
+<body style="margin:0;background:#fff">
+<script type="text/plain" id="xmlsrc"></script>
+<div class="mxgraph" id="gfx" style="max-width:100%;border:0"></div>
+<script src="https://viewer.diagrams.net/js/viewer-static.min.js"></script>
+<script>
+fetch("architecture-aws.drawio").then(r=>r.text()).then(xml=>{
+  const cfg = {highlight:"#0000ff", nav:false, resize:true, toolbar:"", edit:null, xml:xml};
+  const el = document.getElementById("gfx");
+  el.setAttribute("data-mxgraph", JSON.stringify(cfg));
+  GraphViewer.processElements();
+});
+</script>
