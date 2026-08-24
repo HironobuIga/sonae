@@ -14,6 +14,8 @@ where state lives. One directory per household:
 from __future__ import annotations
 
 import json
+import os
+import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import TypeVar
@@ -24,6 +26,25 @@ from sonae.config import settings
 from sonae.schemas import CheckIn, HazardProfile, Household, TimelinePlan
 
 T = TypeVar("T", bound=BaseModel)
+
+
+def atomic_write_text(path: Path, text: str) -> None:
+    """Write a file so readers never see a half-written one.
+
+    Temp file in the same directory + os.replace (atomic on POSIX and NTFS).
+    A crash, a container recycle, or a concurrent reader mid-write used to be
+    able to leave a household's plan or watch state truncated — i.e. unusable
+    exactly when it matters.
+    """
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as fh:
+            fh.write(text)
+        os.replace(tmp, path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 class WatchState(BaseModel):
@@ -41,8 +62,7 @@ class HouseholdStore:
 
     # -- generic helpers ---------------------------------------------------
     def _save(self, name: str, model: BaseModel) -> None:
-        path = self.dir / f"{name}.json"
-        path.write_text(model.model_dump_json(indent=2))
+        atomic_write_text(self.dir / f"{name}.json", model.model_dump_json(indent=2))
 
     def _load(self, name: str, cls: type[T]) -> T | None:
         path = self.dir / f"{name}.json"
@@ -88,8 +108,10 @@ class HouseholdStore:
         return [CheckIn.model_validate(c) for c in json.loads(path.read_text())]
 
     def save_checkins(self, checkins: list[CheckIn]) -> None:
-        path = self.dir / "checkins.json"
-        path.write_text(json.dumps([c.model_dump(mode="json") for c in checkins], indent=2))
+        atomic_write_text(
+            self.dir / "checkins.json",
+            json.dumps([c.model_dump(mode="json") for c in checkins], indent=2),
+        )
 
     @classmethod
     def list_households(cls, root: Path | None = None) -> list[str]:

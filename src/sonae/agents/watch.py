@@ -10,8 +10,12 @@ Safety posture:
   in advance (`family_approved`); Sonae never invents evacuation judgments.
 - AI-composed prose fails CLOSED (unverified text is never sent), but the
   signal itself fails OPEN: if composition can't be verified in time during
-  a Level 3+ event, Sonae relays the official text verbatim with citations
-  instead of staying silent. Silence is the one unacceptable failure mode.
+  a Level 3+ event — rejected twice, or crashed outright — Sonae relays the
+  official text verbatim with citations instead of staying silent. Silence
+  is the one unacceptable failure mode.
+- An event is recorded as seen only AFTER its notifications were dispatched,
+  or after a journaled decision that it needs none. Anything that fails in
+  between is retried on the next cycle instead of being deduped into silence.
 """
 
 from __future__ import annotations
@@ -28,9 +32,11 @@ from sonae.memory.store import HouseholdStore
 from sonae.schemas import (
     CheckIn,
     FeedEvent,
+    Household,
     Notification,
     NotificationBatch,
     SentinelDecision,
+    TimelinePlan,
     VerificationReport,
 )
 
@@ -91,6 +97,20 @@ def _events_block(events: list[FeedEvent]) -> str:
     )
 
 
+def _record_seen(store: HouseholdStore, events: list[FeedEvent]) -> None:
+    """Mark events as handled — the deduplication memory for the next cycle.
+
+    Called ONLY after notifications have actually been dispatched, or after a
+    journaled decision that this batch warrants none. Recording an event as
+    seen any earlier turns every downstream failure into permanent silence:
+    the next cycle would dedupe away the very warning that never got through.
+    """
+    watch = store.load_watch()
+    watch.seen_event_keys.extend(_event_key(e) for e in events)
+    watch.last_checked = datetime.now(UTC)
+    store.save_watch(watch)
+
+
 def _fallback_notifications(events: list[FeedEvent], store: HouseholdStore) -> NotificationBatch:
     """Raw relay of official text — used only when verified composition fails."""
     household = store.load_household()
@@ -112,6 +132,67 @@ def _fallback_notifications(events: list[FeedEvent], store: HouseholdStore) -> N
         ],
         composed_at=datetime.now(UTC),
     )
+
+
+def _compose_and_verify(
+    store: HouseholdStore,
+    audit: AuditHook,
+    decision: SentinelDecision,
+    household: Household,
+    plan: TimelinePlan,
+    fresh: list[FeedEvent],
+) -> tuple[NotificationBatch, VerificationReport | None, bool]:
+    """Compose the family's notifications and put them through the Verifier.
+
+    Returns (batch, report, fallback_relay). Prose fails CLOSED: after a second
+    rejection the batch handed back is the verbatim official relay, never
+    unverified text.
+    """
+    messenger = factory.make_messenger(audit)
+    compose_prompt = (
+        "Compose the family notifications for this activation.\n\n"
+        f"Decision JSON:\n{decision.model_dump_json(indent=1)}\n\n"
+        f"Household JSON:\n{household.model_dump_json(indent=1)}\n\n"
+        f"Family plan JSON:\n{plan.model_dump_json(indent=1)}\n\n"
+        f"Triggering events:\n{_events_block(fresh)}"
+    )
+    batch = _invoke_json(messenger, compose_prompt, NotificationBatch)
+    batch.composed_at = datetime.now(UTC)
+    batch.alert_level = decision.alert_level
+
+    verifier = factory.make_verifier(audit, with_tools=False)
+    evidence = (
+        f"EVIDENCE — official events:\n{_events_block(fresh)}\n\n"
+        f"EVIDENCE — family plan (approved):\n{plan.model_dump_json(indent=1)}\n\n"
+        f"EVIDENCE — sentinel decision:\n{decision.model_dump_json(indent=1)}"
+    )
+    report = _invoke_json(
+        verifier,
+        f"Audit this notification batch before it is sent.\n\nDRAFT:\n{batch.model_dump_json(indent=1)}\n\n{evidence}",
+        VerificationReport,
+    )
+    _log_verification(store, report, attempt=1)
+    if report.approved:
+        return batch, report, False
+
+    # One revision pass, then relay official text rather than send unverified prose.
+    batch = _invoke_json(
+        messenger,
+        f"{compose_prompt}\n\nA verifier rejected your draft: {report.revision_request}\n"
+        "Fix exactly that and re-emit the JSON.",
+        NotificationBatch,
+    )
+    batch.composed_at = datetime.now(UTC)
+    batch.alert_level = decision.alert_level
+    report = _invoke_json(
+        verifier,
+        f"Audit this revised notification batch.\n\nDRAFT:\n{batch.model_dump_json(indent=1)}\n\n{evidence}",
+        VerificationReport,
+    )
+    _log_verification(store, report, attempt=2)
+    if report.approved:
+        return batch, report, False
+    return _fallback_notifications(fresh, store), report, True
 
 
 def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Channel) -> WatchOutcome:
@@ -143,9 +224,6 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
         SentinelDecision,
     )
 
-    watch.seen_event_keys.extend(_event_key(e) for e in fresh)
-    watch.last_checked = datetime.now(UTC)
-    store.save_watch(watch)
     store.log_event(
         "sentinel_decision",
         {
@@ -157,62 +235,55 @@ def process_events(store: HouseholdStore, events: list[FeedEvent], channel: Chan
     )
 
     if not decision.triggered or (decision.alert_level or 0) <= watch.activated_level:
+        # A deliberate, journaled decision NOT to notify — the one case where
+        # dedupe is safe without a dispatch.
+        _record_seen(store, fresh)
         return WatchOutcome(
             processed_events=len(fresh),
             decision=decision,
             note="stand by — no step activation beyond current level",
         )
 
-    messenger = factory.make_messenger(audit)
-    compose_prompt = (
-        "Compose the family notifications for this activation.\n\n"
-        f"Decision JSON:\n{decision.model_dump_json(indent=1)}\n\n"
-        f"Household JSON:\n{household.model_dump_json(indent=1)}\n\n"
-        f"Family plan JSON:\n{plan.model_dump_json(indent=1)}\n\n"
-        f"Triggering events:\n{_events_block(fresh)}"
-    )
-    batch = _invoke_json(messenger, compose_prompt, NotificationBatch)
-    batch.composed_at = datetime.now(UTC)
-    batch.alert_level = decision.alert_level
-
-    verifier = factory.make_verifier(audit, with_tools=False)
-    evidence = (
-        f"EVIDENCE — official events:\n{_events_block(fresh)}\n\n"
-        f"EVIDENCE — family plan (approved):\n{plan.model_dump_json(indent=1)}\n\n"
-        f"EVIDENCE — sentinel decision:\n{decision.model_dump_json(indent=1)}"
-    )
-    report = _invoke_json(
-        verifier,
-        f"Audit this notification batch before it is sent.\n\nDRAFT:\n{batch.model_dump_json(indent=1)}\n\n{evidence}",
-        VerificationReport,
-    )
-    _log_verification(store, report, attempt=1)
-
-    fallback = False
-    if not report.approved:
-        # One revision pass, then relay official text rather than send unverified prose.
-        batch = _invoke_json(
-            messenger,
-            f"{compose_prompt}\n\nA verifier rejected your draft: {report.revision_request}\n"
-            "Fix exactly that and re-emit the JSON.",
-            NotificationBatch,
+    try:
+        batch, report, fallback = _compose_and_verify(store, audit, decision, household, plan, fresh)
+    except Exception as exc:  # model error, unparseable JSON, schema drift…
+        store.log_event(
+            "error",
+            {"op": "compose_verify", "level": decision.alert_level, "error": str(exc)[:400]},
         )
-        batch.composed_at = datetime.now(UTC)
-        batch.alert_level = decision.alert_level
-        report = _invoke_json(
-            verifier,
-            f"Audit this revised notification batch.\n\nDRAFT:\n{batch.model_dump_json(indent=1)}\n\n{evidence}",
-            VerificationReport,
-        )
-        _log_verification(store, report, attempt=2)
-        if not report.approved:
-            batch = _fallback_notifications(fresh, store)
-            fallback = True
+        if (decision.alert_level or 0) < 3:
+            # Below the evacuation levels, leave the events unseen so the next
+            # cycle retries them instead of dropping the signal for good.
+            return WatchOutcome(
+                processed_events=len(fresh),
+                decision=decision,
+                note=f"composition failed; events left unseen for retry: {exc}",
+            )
+        # Level 3+: the AI layer is down but the family must still hear the
+        # official text — take the same raw-relay exit as a double rejection.
+        batch, report, fallback = _fallback_notifications(fresh, store), None, True
 
     dispatched = 0
-    for notification in batch.notifications:
-        channel.send(notification, household)
-        dispatched += 1
+    try:
+        for notification in batch.notifications:
+            channel.send(notification, household)
+            dispatched += 1
+    except Exception as exc:
+        # Events stay unseen: a channel that died mid-batch must be retried next
+        # cycle. A duplicate notification is a nuisance; a missed one is the
+        # failure mode this whole system exists to prevent.
+        store.log_event(
+            "error",
+            {
+                "op": "dispatch",
+                "level": decision.alert_level,
+                "dispatched": dispatched,
+                "error": str(exc)[:400],
+            },
+        )
+        raise
+
+    _record_seen(store, fresh)
 
     # At Level 4+ the question changes from "did they get the message" to
     # "is everyone accounted for" — open a safety check-in board (deterministic,

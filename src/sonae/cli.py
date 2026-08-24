@@ -26,7 +26,7 @@ def build_household(raw: dict) -> Household:
     """Resolve the geo/JMA fields of a household intake JSON deterministically."""
     g = gsi_geocode.geocode(raw["address"])
     pref, muni = jma_area.muni_name(g.muni_code)
-    area = jma_area.resolve(g.muni_code)
+    area = jma_area.resolve(g.muni_code, locality=g.locality)
     return Household(
         household_id=raw["household_id"],
         address=raw["address"],
@@ -37,6 +37,8 @@ def build_household(raw: dict) -> Household:
         pref_name=pref,
         jma_office_code=area.office_code,
         jma_class20_code=area.class20_code,
+        # Ambiguous resolution: watch every candidate area rather than half the city.
+        jma_class20_candidates=list(area.candidates) if area.ambiguous else [],
         members=[FamilyMember(**m) for m in raw.get("members", [])],
         home_floors=raw.get("home_floors"),
         has_car=raw.get("has_car", True),
@@ -54,6 +56,8 @@ def cmd_onboard(args: argparse.Namespace) -> int:
     print(f"Onboarding household '{household.household_id}' at {household.address} …")
     print(f"  → {household.pref_name}{household.muni_name} (muni {household.muni_code}, "
           f"JMA {household.jma_office_code}/{household.jma_class20_code})")
+    if household.jma_class20_candidates:
+        print(f"  ⚠ area ambiguous — watching all of: {', '.join(household.jma_class20_candidates)}")
     result = run_onboarding(household, store)
     print(summarize_result(result))
     if args.approve:
@@ -137,7 +141,7 @@ def cmd_watch(args: argparse.Namespace) -> int:
     print(f"Watching JMA feeds for {household.pref_name}{household.muni_name} "
           f"(office {household.jma_office_code}) every {args.interval}s. Ctrl-C to stop.")
     while True:
-        events = jma.fetch_active_warnings(household.jma_office_code, household.jma_class20_code)
+        events = jma.fetch_active_warnings(household.jma_office_code, household.watch_area_codes)
         outcome = process_events(store, events, channel)
         stamp = time.strftime("%H:%M:%S")
         print(f"[{stamp}] {len(events)} active signal(s); {outcome.note}")

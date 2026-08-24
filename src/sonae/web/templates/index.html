@@ -416,7 +416,7 @@ const LEVELS = {
   1:{name:"心構えを高める", en:"EARLY ADVISORY", ja:"警戒レベル1"},
   2:{name:"避難行動の確認", en:"ADVISORIES OUT", ja:"警戒レベル2"},
   3:{name:"高齢者等避難", en:"ELDERLY EVACUATE NOW", ja:"警戒レベル3"},
-  4:{name:"避難指示", en:"EVACUATION ORDER", ja:"警戒レベル4"},
+  4:{name:"危険な場所から全員避難", en:"EVERYONE EVACUATE", ja:"警戒レベル4"},
   5:{name:"緊急安全確保", en:"LIFE-SAVING ACTION", ja:"警戒レベル5"},
 };
 const HAZ = {flood:["Flood","洪水"], landslide:["Landslide","土砂災害"], storm_surge:["Storm surge","高潮"],
@@ -771,12 +771,19 @@ async function renderCircle(circleId, level){
     $("circleMini").textContent =
       `${c.circle.name.split(" (")[0]} · ${k.safe||0} safe · ${(k.needs_help||0)} help · ${(k.pending||0)+(k.no_response||0)} unconfirmed`;
     _applyCircleOpen();
-    let html = `<div class="counts">
+    let html = "";
+    if(c.error) html += `<div class="cite" style="color:var(--red);margin-bottom:8px">⚠ ${esc(c.error)}</div>`;
+    // counts are the door-knock population: members who live at these addresses.
+    html += `<div class="counts">
       <div class="cnt safe"><b>${k.safe||0}</b>safe</div>
       <div class="cnt help"><b>${k.needs_help||0}</b>needs help</div>
       <div class="cnt wait"><b>${(k.pending||0)+(k.no_response||0)}</b>unconfirmed</div>
-      <div class="cnt"><b>${k.total||0}</b>members</div>
+      <div class="cnt"><b>${k.total||0}</b>at home</div>
     </div>`;
+    if(c.phone_followups && c.phone_followups.length){
+      html += `<div class="cite" style="margin:-4px 0 10px">📞 call, don't visit — away from home:
+        ${c.phone_followups.map(x=>esc(x.split("/")[1]||x)).join(" · ")}</div>`;
+    }
     html += c.board.map(row => `<div class="hhrow"><b>${esc(row.household_id)}</b>
       ${row.members.map(m=>`<span class="pdot ${m.status}" title="${esc(m.member)}: ${m.status}"></span>`).join("")}
       <span class="addr">${esc(row.address.replace("長野県長野市",""))}</span></div>`).join("");

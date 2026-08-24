@@ -96,6 +96,13 @@ def run_onboarding(household: Household, store: HouseholdStore) -> OnboardingRes
     plan = parse_as(TimelinePlan, str(result.results["planner"]))
     report = parse_as(VerificationReport, str(result.results["verifier"]))
 
+    # A model-authored plan is NEVER an approved plan. The Planner isn't even
+    # shown the field (see factory.make_planner), but if it emits one anyway we
+    # discard it here: only approve_plan() — a human action — may set it.
+    if plan.family_approved:
+        store.log_event("planner_self_approval_ignored", {"household": household.household_id})
+    plan.family_approved = False
+
     # Belt and braces: even under the execution cap, never persist a plan the
     # verifier did not approve.
     if not report.approved:

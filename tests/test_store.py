@@ -1,3 +1,5 @@
+import json
+
 from sonae.memory.store import HouseholdStore
 from sonae.schemas import FamilyMember, Household
 
@@ -24,6 +26,15 @@ def test_household_roundtrip(tmp_store):
     assert loaded is not None
     assert loaded.members[0].name == "Yoshiko"
     assert HouseholdStore.list_households() == ["t1"]
+
+
+def test_saves_are_atomic(tmp_store):
+    """Writes land whole (temp file + os.replace) and leave nothing behind."""
+    store = HouseholdStore("t1")
+    store.save_household(make_household())
+    store.log_event("test", {"a": 1})
+    assert [p.name for p in store.dir.iterdir() if p.name.endswith(".tmp")] == []
+    assert json.loads((store.dir / "household.json").read_text())["household_id"] == "t1"
 
 
 def test_watch_state_and_journal(tmp_store):

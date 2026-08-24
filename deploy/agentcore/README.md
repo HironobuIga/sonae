@@ -115,10 +115,21 @@ new official signal appears it runs the verified pipeline. Verified output of on
 
 ## State (durable via S3)
 
-With `SONAE_S3_BUCKET` set (see Dockerfile), every invocation pulls the household's store from
-`s3://<bucket>/store/<household>/` and pushes it back afterwards — plans, watch state, and the
+`SONAE_S3_BUCKET` is **passed at deploy time** — no bucket is baked into the image, so nothing can
+silently target an account you don't own. With it set, every invocation pulls the household's store
+from `s3://<bucket>/store/<household>/` and pushes it back afterwards — plans, watch state, and the
 flight recorder survive container recycling, so the scheduled watch is genuinely stateful. The
-runtime's execution role needs Get/Put/List on that bucket. Local runs stay purely file-based.
+runtime's execution role needs Get/Put/List on that bucket. The image sets `SONAE_REQUIRE_S3=1`, so
+a container started without a bucket fails loudly instead of quietly losing state on recycle; set
+`SONAE_REQUIRE_S3=0` for a throwaway run with ephemeral in-container state. Local runs stay purely
+file-based.
+
+```bash
+# our verified deployment (bucket created in the same account as the runtime)
+aws s3 mb s3://sonae-store-$(aws sts get-caller-identity --query Account --output text)
+agentcore deploy --env SONAE_S3_BUCKET=sonae-store-<account-id>
+```
+
 Notifications dispatch through the channel layer — swap the inbox channel for LINE/SES/SNS in
 `sonae/channels/`.
 

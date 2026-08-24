@@ -6,9 +6,9 @@ Commands below are the ones we ran for our deployed runtime (AgentCore CLI, `npm
 Most agent demos are conversations: a human asks, an agent answers. Sonae's most important agent
 never gets asked anything. The Sentinel watches Japan Meteorological Agency feeds for one family's
 exact warning area, around the clock, and its correct output on almost every invocation is:
-*nothing happens*. Then one night a typhoon comes, and the same loop that said "stand by" three
-thousand times says "Level 4 — complete the evacuation now," and a 78-year-old leaves her house
-while it's still light.
+*nothing happens*. On a five-minute heartbeat that is 288 invocations a day, essentially all of
+which end in "stand by." The shape only pays off the night a typhoon comes and the same loop says
+"Level 4 — complete the evacuation now," and a 78-year-old leaves her house while it's still light.
 
 This article covers the architecture of that ambient shape on Amazon Bedrock AgentCore: how to
 host a Strands agent team that mostly sleeps, what the heartbeat looks like, and the cost and
@@ -46,8 +46,12 @@ The watch cycle is cheap by design, in three tiers:
    enforces geographic discipline (another basin's alert is not our signal) and monotonic
    activation (never re-announce a level already active). Most storm days are a handful of these.
 3. **Full-pipeline tier.** A signal that activates a plan step runs Messenger + Verifier and
-   dispatches per-member notifications. This happened four times during our replay of the night of
-   Typhoon Hagibis — for fourteen hours of the worst flood in the river's recorded history.
+   dispatches per-member notifications. In our replay of Typhoon Hagibis this fired **four times
+   across thirteen official events** — and the storm day itself, from the first Chikuma flood
+   advisory at 13:40 to the mayor's Level 5 broadcast at 02:12, is twelve and a half hours. Downstream
+   at Tategahana the Chikuma crested at 12.46 m, the highest since observations began in 1949
+   ([Nikkei](https://vdata.nikkei.com/newsgraphics/destruction-map-chikumagawa/)). Four dispatches.
+   Everything else was "stand by."
 
 ## Why a runtime, not a Lambda cron
 
@@ -86,8 +90,9 @@ live in our repo's `deploy/` directory.
 Two properties of this shape matter more than any prompt:
 
 - **The quiet path is the tested path.** Because "stand by" is the overwhelmingly common outcome,
-  every real storm exercises the same dedup, state, and decision code that ran ten thousand quiet
-  cycles before it. There is no cold "emergency mode" that first runs the night it matters.
+  a real storm exercises the same dedup, state, and decision code that the heartbeat has already run
+  288 times a day, every day, on nothing at all. There is no cold "emergency mode" that first runs
+  the night it matters.
 - **Silence is observable.** Every cycle journals what it fetched and decided, even when the
   decision is nothing. A watchdog that might be dead and a watchdog that verifiably chose to stay
   quiet look identical from the outside — unless you log the choice. We log the choice.

@@ -16,16 +16,23 @@ store from a rehearsal in `data/store-backup/` to cut to if a live step misbehav
 ## 0:00–0:35 — The problem (slides / stock B-roll, 3 cards)
 
 > Japan tells every family to prepare a personal evacuation timeline — who does what, at which
-> official alert level. It means reading two-hundred-page hazard maps, checking which shelter covers
-> which disaster, and negotiating with your family. Homework for 125 million people. Almost no one
-> has done it.
+> official alert level. It means reading a separate statutory hazard map for floods, for landslides,
+> for storm surge, then cross-checking which designated shelter covers which disaster, then
+> negotiating with your family. Homework for a country of over a hundred and twenty million people.
+> The work is the reason it doesn't get done.
 >
 > And the people with the least time to do it are the ones we worry about most: aging parents, alone
-> in the family home. About eighty percent of Japan's flood deaths are people over 65.
+> in the family home. In Japan's recent flood disasters, sixty-five to eighty percent of the people
+> who died were sixty-five or older.
 
-Card 1: 政府広報のマイ・タイムライン推奨ページ + a 200-page hazard-map PDF scrolling.
-Card 2: "~80% of flood fatalities: age 65+" (cite Cabinet Office).
-Card 3: photo-style card: son in Tokyo, mother in Nagano. "This is the Aoki family. It's October 11, 2019."
+Card 1: 政府広報のマイ・タイムライン推奨ページ + scroll the actual 長野市洪水ハザードマップ PDF and the
+separate 指定緊急避難場所 list side by side (the point is *two documents that must be cross-read*, not a
+page count).
+Card 2: "Recent flood disasters: 65–80% of fatalities were age 65+ — 2019 East Japan Typhoon ≈65%,
+July 2020 heavy rain ≈79%." Source line on the card:
+`厚生労働省/内閣府 資料 mhlw.go.jp/content/12300000/001075647.pdf · 令和3年版防災白書`
+Card 3: photo-style card: son and daughter far away, mother in Nagano. "This is the Aoki family. It's
+October 11, 2019."
 
 ## 0:35–1:20 — Prepare: the agent team builds the plan (live UI)
 
@@ -38,14 +45,15 @@ calls live. Narrate over it:
 > what most families never learn: the closest site, 600 meters away, is designated for earthquakes,
 > not floods. The Planner turns this into a family timeline, tuned to a 78-year-old's knees.
 > And before anything reaches the family, an adversarial Verifier re-derives every claim from the
-> same official data. In our first test run it caught the Planner inventing a phone number.
-> That's why it exists.
+> same official data. In our runs it caught a draft telling the family to call a city disaster
+> hotline that appears in none of the evidence. That's why it exists.
 
 Cut (speed up waiting with a timelapse crossfade). When the plan renders, hover the timeline:
 
-> Level 3 is the heart of it: Yoshiko starts evacuating when the river reaches flood-warning
-> footing — hours before a general evacuation order. That is literally what Level 3 exists for.
-> The family reviews this once, calmly, and approves it. From here, Sonae is authorized to act.
+> Level 3 is the heart of it: Yoshiko starts moving when the river reaches flood-warning footing —
+> or sooner, if an emergency warning lands first — hours before a general evacuation order. That is
+> literally what Level 3 exists for. The family reviews this once, calmly, and approves it. From
+> here, Sonae is authorized to act.
 
 ## 1:20–3:20 — The night of Typhoon Hagibis (replay, the core)
 
@@ -60,23 +68,31 @@ through the moments. Pace: linger where it matters.
 - **10/12 13:40, 14:55** (quick): "Saturday afternoon: the river reaches advisory levels. Level 2.
   Valuables go upstairs."
 - **10/12 15:30** — 大雨特別警報 (THE moment — slow down): "3:30 PM: an emergency heavy-rain
-  warning, the first in Nagano's history. Formally that's 'Level 5 equivalent' — but Sonae's
-  Sentinel knows what it operationally means: the roads are still dry, so this is the last, most
-  urgent push to finish evacuating. It activates Level 4: *complete the evacuation now.*" — show
-  the phones: Yoshiko's message in Japanese, big simple steps — すぐ避難; Kenji's in English:
-  *call your mother now, stay on the line.* Point at the citation footer. "Every sentence carries
-  its official source, and a Verifier signed off before it was sent. **It is still daylight.**"
+  warning — the first ever issued for Nagano Prefecture. Formally that's 'Level 5 equivalent.' But
+  Level 5 means *protect yourself where you are*, and national guidance is to finish a horizontal
+  evacuation while you still can. So Sonae applies a rule it has written down in advance: it
+  activates the plan's Level 4 step — *complete the evacuation now.*" — show the phones: Yoshiko's
+  message in Japanese, big simple steps — すぐ避難; Kenji's in English: *call your mother now, stay on
+  the line.* Point at the citation footer on Kenji's message — and note that his message says out
+  loud why Level 4 and not Level 5. "The Verifier signed off on both before they were sent. Kenji's
+  carries the source link; grandmother's is deliberately short — four plain paragraphs, no footer,
+  because she is the one who has to walk. **Sunset that day was 17:16. This is the last
+  clearly-daylight window she gets.**"
 - **10/12 16:00 → 18:40** (advance briskly): "Then watch the discipline: landslide advisories for
   other districts, river bulletins the plan already covers — the Sentinel stands by through all of
   them. No spam. A family that trusts its agent is a family that acts when it speaks."
 - **10/12 20:50** — 氾濫発生情報 upstream (pause): "8:50 PM: the river starts coming over its
   banks upstream. Level 5 — final confirmation that everyone is out, and no one goes back."
 - **10/12 23:40** (pause, let it land): "23:40. The official evacuation order. Darkness, driving
-  rain. This is when the real residents of Hoyasu were told to leave. Sonae's family had been
-  safe for **eight hours** — from the same public information."
-- **10/13 01:15 → 02:12** (advance, quiet): "At 1:08 the river came over the levee at Hoyasu
-  itself. By dawn the neighborhood was under water to the rooftops. The journal's last entries
-  read: *stand by — nothing left for Sonae to do.* The family was long safe."
+  rain. This is when the real residents of Hoyasu were told to leave. Sonae's push went out at
+  **15:31** — **eight hours and nine minutes** of warning lead, from the same public information.
+  The plan gives Yoshiko two hours to walk it, so on this timeline she is inside the shelter around
+  half past five: about **six hours of safety margin**. To be clear about what you're watching —
+  this is a counterfactual from the replay, not something that happened to anyone that night."
+- **10/13 01:15 → 02:12** (advance, quiet): "At 1:08 the river began overtopping the levee at
+  Hoyasu itself. The city announced the breach — about seventy meters wide — at six in the morning,
+  by which time the neighborhood was under water to the rooftops. The journal's last entries read:
+  *stand by — nothing left for Sonae to do.*"
 
 ## 3:20–3:50 — The neighborhood, and always on watch
 
@@ -131,7 +147,7 @@ Strands Agents SDK on Amazon Bedrock AgentCore".
 ## Shot checklist
 
 - [ ] UI at Level 0 (calm) → onboarding stream → plan render
-- [ ] Phones close-up at 17:30 moment (both languages visible)
+- [ ] Phones close-up at the 15:30 大雨特別警報 moment (both languages visible)
 - [ ] 23:40 pause with plate pulsing L4
 - [ ] Map close-up: home in the pink zone, dashed route out of it
 - [ ] `sonae watch --once` live terminal

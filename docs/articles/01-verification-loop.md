@@ -1,17 +1,22 @@
-# The night our agent invented a phone number — building a self-correcting agent team with Strands Graph
+# The phone number that wasn't in the data — building a self-correcting agent team with Strands Graph
 
 *Draft for builder.aws — article 1 of 3 for the Agents for Humans Hackathon (Sonae project)*
 
-On its very first live run, our disaster-preparedness agent did something quietly terrifying: it
-invented a phone number.
+The first genuinely dangerous thing our disaster-preparedness agent wrote was not a wrong phone
+number. It was a confident instruction to go find one.
 
-The Planner agent was drafting an evacuation timeline for a 78-year-old woman living beside the
-Chikuma River. Step 4 read: *"If she cannot walk, call 長野市災害対策本部 at 026-224-5011."* The
-number looks real. It has the right city prefix. It is plausible in exactly the way that makes
-large language models dangerous in safety-critical domains — and it appears in none of the
-official data our agents are allowed to use.
+The Messenger was drafting notifications for the family of a 78-year-old woman living beside the
+Chikuma River. Tucked into the paragraph addressed to her daughter was a parenthetical: *"(Look up
+the current number now while the situation is calm — you will need it if things escalate.)"* The
+number in question — "Nagano City's disaster hotline" — appears in none of the official data our
+agents are allowed to read. Nothing in the evidence bundle establishes what that number is, or that
+a single such line exists. It is plausible in exactly the way that makes large language models
+dangerous in safety-critical domains: a family that goes looking for a hotline at 2 a.m. on an
+agent's say-so is a family not walking to the shelter.
 
-It never reached a user. This post is about the architecture that caught it: a self-correcting
+It never reached a user. The Verifier flagged it `unsupported` and returned a one-line mechanical
+fix — delete that sentence — and the exchange is still in the household's journal in the repo
+(`data/store/aoki/watch.json`). This post is about the architecture that caught it: a self-correcting
 verification loop built with the Strands Agents SDK's `Graph`, and the prompt-engineering lessons
 from making that loop actually converge.
 
@@ -57,11 +62,11 @@ the evidence for every claim it accepts. Independent re-derivation, not proofrea
 required output (generated from Pydantic models), and every hop is validated. A hallucinated field
 name is a loud failure, not a silent propagation.
 
-## What actually happened on run #1
+## What actually happened on the early runs
 
-The Verifier caught the phone number — `verdict: unsupported`, exactly as designed. Then the loop
-failed to converge anyway, and the failure mode is worth sharing because every verifier-pattern
-team will hit it:
+The Verifier caught the unsourced hotline — `verdict: unsupported`, exactly as designed. Then the
+loop failed to converge on other drafts, and the failure mode is worth sharing because every
+verifier-pattern team will hit it:
 
 1. **The Verifier nitpicked a correct claim.** The Planner had written that a river flood warning
    (氾濫警戒情報) maps to alert Level 3 — which is precisely right under Japan's Cabinet Office
@@ -83,10 +88,15 @@ The fixes were prompt-architectural, not code:
 - **Remove the temptation at the source.** The Planner's prompt now forbids inventing contact
   details outright — the best verification finding is the one that never occurs.
 
-Run #2 converged in a single pass: 16 claims checked, each with a verbatim evidence quote, zero
-revision loops. The plan it approved moved the grandmother's departure hours earlier than the
-official evacuation order that night in 2019 would have — but that counterfactual is another
-article.
+After those fixes, the onboarding run whose journal ships in this repo converged in a single pass:
+`nodes_executed: ["cartographer", "planner", "verifier"]`, **20 claims checked**, zero revision
+loops (`data/store/aoki/watch.json`, `kind: onboarding_complete`). The watch pipeline still rejects
+regularly — that is the point of it. The same journal records the Verifier rejecting a shelter
+address that differed from the approved plan by one character, and a draft that stated the
+household's exact street address with nothing in evidence to support it.
+
+The plan that run approved starts the grandmother's evacuation hours before the official evacuation
+order arrived that night in 2019 — but that counterfactual is another article.
 
 ## The asymmetric failure rule
 

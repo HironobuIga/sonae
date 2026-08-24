@@ -60,13 +60,32 @@ Three robustness details worth copying:
 3. **Cache aggressively.** Hazard maps change on the timescale of years; a month-long tile cache
    makes the agent loop fast and gentle on a public service.
 
-## Validation: the 2020 Kuma River flood
+## Checking it against places reality has already graded
 
-How do you trust a color-decoder? Point it somewhere reality has already graded. We sampled the
-tiles over Hitoyoshi, Kumamoto — inundated by the July 2020 Kuma River flood — and the decoder
-returned 5–10 m depth classes exactly where post-event surveys reported them. Then, for our demo
-household by the Chikuma River in Nagano (beside the levee that failed during Typhoon Hagibis in
-2019), it returned 10–20 m: consistent with the district that flooded to its rooftops that night.
+How do you trust a color-decoder? Point it somewhere the outcome is on the public record.
+
+Our demo household sits in 長野市穂保, beside the stretch of Chikuma River levee that was overtopped
+and then breached during Typhoon Hagibis in 2019. The decoder returned the **10–20 m** class there —
+consistent with a district that flooded to its rooftops that night, and the number that drives the
+entire generated plan (no vertical evacuation in a two-storey house; walk to a flood-designated
+site).
+
+The second household is more interesting, because it is where the tool's limits show. We onboarded a
+family in Hitoyoshi, Kumamoto — the city inundated by the July 2020 Kuma River flood — through the
+web form, and the address we were given was city-level only: 熊本県人吉市. That geocodes to a city
+centroid, not to anyone's house. At that centroid the decoder returned **no flood class at all**:
+transparent pixel, outside the mapped inundation zone, `at_risk: false`
+(`data/store/hitoyoshi/hazard_profile.json`). That is the correct reading of the tile, and it is a
+useful negative result in two directions. It shows the decoder is not simply painting every riverside
+coordinate red — the failure mode you should actually fear in a legend decoder. And it shows that
+point-sampling a hazard map is only as good as the point: a city centroid answers a question nobody
+asked. Our stored profile says so in the same breath as the result — *"No flood risk indicated at
+this exact coordinate on the statutory hazard map. However, Hitoyoshi is located in the Kuma River
+basin, which experienced catastrophic flooding in July 2020"* — and the generated plan is built for a
+household that must still watch the river.
+
+If you build this, resolve the address to a building before you trust a "no risk" answer, and make
+your tool say which coordinate it sampled.
 
 ## Wrapping it as a Strands tool
 
@@ -96,7 +115,8 @@ have never checked it.
 ## Takeaways
 
 - "No API" often means "an API you haven't decoded yet." Raster legends are data.
-- Validate decoders against ground truth reality has already provided.
+- Check your decoder where the outcome is already on the public record — and treat a "no risk"
+  answer as a question about your coordinate before you treat it as a fact about the place.
 - Ship provenance with every tool result; downstream verifier agents need evidence to quote.
 
 *Sonae is open source (MIT): Strands Agents SDK + Amazon Bedrock + Japan's government open data.*

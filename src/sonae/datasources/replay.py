@@ -82,26 +82,36 @@ class ReplayClock:
             return None
         return self.scenario.events[self._cursor]
 
+    def peek_moment(self, until: datetime | None = None) -> list[FeedEvent]:
+        """The batch `advance()` would release, without moving the cursor.
+
+        Callers that must not lose a moment when processing fails (the web
+        dashboard's step endpoint) peek first and advance only on success.
+        """
+        return self.scenario.events[self._cursor : self._moment_end(until)]
+
     def advance(self, until: datetime | None = None) -> list[FeedEvent]:
         """Release the next event batch.
 
         With `until`, releases all events up to that simulated time. Without,
         releases events sharing the next pending timestamp (one 'moment').
         """
-        if self.exhausted:
-            return []
-        events = self.scenario.events
         start = self._cursor
+        end = self._moment_end(until)
+        self._cursor = end
+        return self.scenario.events[start:end]
+
+    def _moment_end(self, until: datetime | None = None) -> int:
+        """Index one past the last event of the next pending batch."""
+        if self.exhausted:
+            return self._cursor
+        events = self.scenario.events
+        end = self._cursor
         if until is None:
-            moment = events[start].ts
-            end = start
+            moment = events[end].ts
             while end < len(events) and events[end].ts == moment:
                 end += 1
         else:
-            end = start
             while end < len(events) and events[end].ts <= until:
                 end += 1
-            if end == start:
-                return []
-        self._cursor = end
-        return events[start:end]
+        return end

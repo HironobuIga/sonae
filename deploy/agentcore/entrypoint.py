@@ -44,7 +44,21 @@ _replay_clocks: dict[str, ReplayClock] = {}
 # (no bucket set) stay purely file-based.
 import os
 
-_S3_BUCKET = os.getenv("SONAE_S3_BUCKET", "")
+_S3_BUCKET = os.getenv("SONAE_S3_BUCKET", "").strip()
+# The container image sets SONAE_REQUIRE_S3=1: in the managed runtime, state
+# that does not survive a recycle is not state. There is deliberately no
+# default bucket — one baked into the image would point every deployment at
+# one account's bucket, and a deployment elsewhere would fail silently.
+_S3_REQUIRED = os.getenv("SONAE_REQUIRE_S3", "0") == "1"
+
+if _S3_REQUIRED and not _S3_BUCKET:
+    raise RuntimeError(
+        "SONAE_S3_BUCKET is not set, but this deployment expects durable state "
+        "(SONAE_REQUIRE_S3=1). Set SONAE_S3_BUCKET to an S3 bucket in THIS AWS "
+        "account that the runtime's execution role can read and write, or set "
+        "SONAE_REQUIRE_S3=0 to accept ephemeral in-container state that is lost "
+        "when the container is recycled."
+    )
 
 
 def _store_dir(hid: str) -> Path:

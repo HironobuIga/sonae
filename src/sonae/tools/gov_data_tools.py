@@ -23,7 +23,7 @@ def geocode_address(address: str) -> dict[str, Any]:
     """
     g = gsi_geocode.geocode(address)
     pref, muni = jma_area.muni_name(g.muni_code)
-    area = jma_area.resolve(g.muni_code)
+    area = jma_area.resolve(g.muni_code, locality=g.locality)
     return {
         "lat": g.lat,
         "lon": g.lon,
@@ -36,6 +36,10 @@ def geocode_address(address: str) -> dict[str, Any]:
         "jma_office_name": area.office_name,
         "jma_class20_code": area.class20_code,
         "jma_class20_name": area.class20_name,
+        # Set when the municipality splits into several JMA areas and the
+        # locality did not pin the home to one of them — all are then watched.
+        "jma_class20_ambiguous": area.ambiguous,
+        "jma_class20_candidates": list(area.candidates),
         "sources": [
             {"name": "GSI address search / reverse geocoder", "url": "https://msearch.gsi.go.jp/"}
         ],

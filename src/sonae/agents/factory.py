@@ -30,8 +30,11 @@ from sonae.tools.gov_data_tools import (
 _GOV_TOOLS = [geocode_address, assess_hazards_at_point, find_evacuation_sites]
 
 
-def _with_schema(prompt: str, model_cls) -> str:
-    return f"{prompt}\nThe JSON schema of your required output ({model_cls.__name__}):\n{schema_block(model_cls)}"
+def _with_schema(prompt: str, model_cls, exclude: set[str] | None = None) -> str:
+    return (
+        f"{prompt}\nThe JSON schema of your required output ({model_cls.__name__}):\n"
+        f"{schema_block(model_cls, exclude)}"
+    )
 
 
 def make_cartographer(audit: AuditHook | None = None) -> Agent:
@@ -47,11 +50,13 @@ def make_cartographer(audit: AuditHook | None = None) -> Agent:
 
 
 def make_planner(audit: AuditHook | None = None) -> Agent:
+    # family_approved is the human sign-off gate the Sentinel checks; it is kept
+    # out of the Planner's schema so a plan can never approve itself.
     return Agent(
         name="planner",
         description="Designs the family's My-Timeline evacuation plan",
         model=make_model(),
-        system_prompt=_with_schema(prompts.PLANNER, TimelinePlan),
+        system_prompt=_with_schema(prompts.PLANNER, TimelinePlan, exclude={"family_approved"}),
         hooks=[audit] if audit else None,
         callback_handler=None,
     )

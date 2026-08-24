@@ -33,6 +33,17 @@ def test_clock_advances_by_moment():
     assert clock.advance() == []
 
 
+def test_peek_moment_does_not_move_the_cursor():
+    """The web step endpoint peeks, processes, then advances — a failed cycle
+    must leave the moment pending instead of skipping its events."""
+    clock = ReplayClock(load_scenario(SCENARIO))
+    peeked = clock.peek_moment()
+    assert peeked and clock.now is None
+    assert clock.peek_moment() == peeked
+    assert clock.advance() == peeked
+    assert clock.peek_moment() != peeked
+
+
 def test_clock_advance_until():
     clock = ReplayClock(load_scenario(SCENARIO))
     cutoff = datetime.fromisoformat("2019-10-12T18:00:00+09:00")

@@ -53,9 +53,18 @@ Alert-level triggers you may use (Cabinet Office 5-level framework):
   advisory (氾濫注意情報)
 - Level 3: elderly evacuation (高齢者等避難), river flood warning
   (氾濫警戒情報), heavy rain warning (大雨警報)
-- Level 4: evacuation order (避難指示), river flood danger (氾濫危険情報)
-- Level 5: emergency warning (特別警報), flooding occurring (氾濫発生情報) —
+- Level 4: evacuation order (避難指示), river flood danger (氾濫危険情報),
+  AND 大雨特別警報 while evacuation is still possible — see below
+- Level 5: flooding occurring (氾濫発生情報), municipal 緊急安全確保 —
   life-saving action only; evacuation may no longer be safe
+
+大雨特別警報 is formally a Level-5-equivalent signal for rainfall, but
+Level 5 means "protect yourself where you are", and the national guidance
+is to COMPLETE horizontal evacuation while it is still possible. So the
+plan you write must name 大雨特別警報 in its Level 4 trigger, and reserve
+Level 5 for signals that inundation is actually occurring. Say this in the
+Level 4 step text in plain language, so the family approves the rule
+knowingly rather than being surprised by it on the night.
 
 Design rules:
 - Personalize by member needs. Mobility-limited or elderly members START
@@ -105,6 +114,11 @@ Ground truth you accept by definition (Cabinet Office equivalence table):
 氾濫注意情報 → Level 2; 大雨警報 / 氾濫警戒情報 / 高齢者等避難 → Level 3;
 氾濫危険情報 / 避難指示 → Level 4; 大雨特別警報 / 氾濫発生情報 → Level 5.
 A claim consistent with this table is SUPPORTED; do not question it.
+One documented exception, which the family approved as part of the plan:
+大雨特別警報 activates the plan's Level 4 "complete the evacuation" step,
+because Level 5 means "stop moving and protect yourself where you are".
+Activating Level 4 on a 大雨特別警報 is therefore SUPPORTED — but naming
+it as 避難指示, or as any instrument that was not actually issued, is NOT.
 
 For each claim produce a check: quote the exact evidence text that supports
 it, or mark it unsupported/uncertain. Reject ONLY when a claim is
@@ -144,7 +158,8 @@ Rules:
   氾濫危険情報/避難指示→L4, 氾濫発生情報→L5).
 - 大雨特別警報 is formally "Level 5 equivalent" for rainfall, but it does
   NOT mean movement is already impossible — roads may still be safe for
-  hours. Treat it as the most urgent possible push to COMPLETE the current
+  hours. The approved plan names it in its Level 4 trigger for exactly this
+  reason: treat it as the most urgent possible push to COMPLETE the current
   evacuation (activate at most Level 4). Reserve Level 5 for signals that
   inundation is actually occurring (氾濫発生情報, municipal Level 5
   災害発生情報) — Level 5 steps tell people to stop moving, and issuing
@@ -204,8 +219,9 @@ Rules:
   what time), then their tasks, then what confirmation to report back.
 - Never soften an official instruction, never add urgency the officials
   did not state. Facts must come only from the decision, plan, and events
-  you were given — with citations attached (citations may be omitted only
-  for elderly recipients' bodies; put them in the citations field instead).
+  you were given. EVERY notification must carry at least one entry in its
+  citations field — no exceptions. Only the body TEXT is kept URL-free for
+  elderly recipients; the source still travels with the message.
 - Do NOT add derived claims that appear nowhere in your input: no road or
   weather conditions, no timing predictions, no water levels, no shelter
   capacity, no phone numbers. Restate what the officials said and what the

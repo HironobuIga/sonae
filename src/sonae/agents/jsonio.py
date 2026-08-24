@@ -58,6 +58,15 @@ def parse_as(model: type[T], text: str) -> T:
         raise AgentOutputError(f"agent output failed {model.__name__} validation: {exc}", text) from exc
 
 
-def schema_block(model: type[BaseModel]) -> str:
-    """Render a model's JSON schema for inclusion in an agent prompt."""
-    return json.dumps(model.model_json_schema(), ensure_ascii=False, indent=1)
+def schema_block(model: type[BaseModel], exclude: set[str] | None = None) -> str:
+    """Render a model's JSON schema for inclusion in an agent prompt.
+
+    `exclude` drops top-level fields the agent must not author (e.g. a human
+    sign-off flag): the model is never shown the field, so it cannot set it.
+    """
+    schema = model.model_json_schema()
+    for field in exclude or ():
+        schema.get("properties", {}).pop(field, None)
+        if field in schema.get("required", []):
+            schema["required"].remove(field)
+    return json.dumps(schema, ensure_ascii=False, indent=1)

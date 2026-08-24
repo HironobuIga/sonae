@@ -23,7 +23,7 @@ from sonae import circles
 from sonae.channels.inbox import InboxChannel
 from sonae.config import REPO_ROOT, settings
 from sonae.datasources.replay import ReplayClock, load_scenario
-from sonae.memory.store import HouseholdStore
+from sonae.memory.store import HouseholdStore, atomic_write_text
 
 app = FastAPI(title="Sonae")
 
@@ -31,16 +31,25 @@ _TEMPLATE = Path(__file__).parent / "templates" / "index.html"
 
 # In-memory session state (files remain the source of truth for everything else)
 _replay_clocks: dict[str, ReplayClock] = {}
-_busy: dict[str, str] = {}  # household_id -> current long-running operation
+_busy: dict[str, str] = {}  # household_id (or 'circle:<id>') -> current long-running operation
+_circle_errors: dict[str, str] = {}  # circle_id -> last coordinator-report failure
 _lock = threading.Lock()
 
 
-def _set_busy(household: str, op: str | None) -> None:
+def _acquire(key: str, op: str) -> bool:
+    """Claim the single worker slot for `key`. Check-and-set under one lock:
+    claiming it in the worker thread instead let two requests both pass the
+    check and start two agent runs over the same household state."""
     with _lock:
-        if op is None:
-            _busy.pop(household, None)
-        else:
-            _busy[household] = op
+        if key in _busy:
+            return False
+        _busy[key] = op
+        return True
+
+
+def _release(key: str) -> None:
+    with _lock:
+        _busy.pop(key, None)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -131,13 +140,11 @@ def onboard(req: OnboardRequest) -> dict:
     except Exception as exc:
         raise HTTPException(422, f"could not resolve household: {exc}") from exc
     hid = household.household_id
-    if _busy.get(hid):
-        raise HTTPException(409, f"busy: {_busy[hid]}")
     store = HouseholdStore(hid)
-    store.log_event("onboarding_started", {"address": household.address})
+    if not _acquire(hid, "onboarding"):
+        raise HTTPException(409, f"busy: {_busy.get(hid)}")
 
     def work() -> None:
-        _set_busy(hid, "onboarding")
         try:
             run_onboarding(household, store)
             if req.approve:
@@ -145,9 +152,14 @@ def onboard(req: OnboardRequest) -> dict:
         except Exception as exc:  # surfaced via journal; demo must never die silently
             store.log_event("error", {"op": "onboarding", "error": str(exc), "trace": traceback.format_exc()[-800:]})
         finally:
-            _set_busy(hid, None)
+            _release(hid)
 
-    threading.Thread(target=work, daemon=True).start()
+    try:
+        store.log_event("onboarding_started", {"address": household.address})
+        threading.Thread(target=work, daemon=True).start()
+    except BaseException:  # never leave the slot claimed by a worker that never ran
+        _release(hid)
+        raise
     return {"started": True, "household": hid}
 
 
@@ -202,21 +214,22 @@ def replay_step(req: ReplayStepRequest) -> dict:
         raise HTTPException(400, "no scenario loaded")
     if clock.exhausted:
         return {"done": True}
-    if _busy.get(hid):
-        raise HTTPException(409, f"busy: {_busy[hid]}")
+    if not _acquire(hid, "watch-cycle"):
+        raise HTTPException(409, f"busy: {_busy.get(hid)}")
 
-    batch = clock.advance()
+    # Peek only: the cursor moves after the cycle succeeds, so a failed step
+    # leaves the moment pending instead of skipping the events it carried.
+    batch = clock.peek_moment()
+    if not batch:
+        _release(hid)
+        return {"done": True}
     store = HouseholdStore(hid)
-    store.log_event(
-        "replay_moment",
-        {"sim_time": batch[0].ts.isoformat(), "events": [e.title for e in batch]},
-    )
 
     def work() -> None:
-        _set_busy(hid, "watch-cycle")
         try:
             household = store.load_household()
             outcome = process_events(store, batch, InboxChannel(store))
+            clock.advance()
             store.log_event(
                 "replay_outcome",
                 {
@@ -227,11 +240,27 @@ def replay_step(req: ReplayStepRequest) -> dict:
                 },
             )
         except Exception as exc:
-            store.log_event("error", {"op": "replay_step", "error": str(exc), "trace": traceback.format_exc()[-800:]})
+            store.log_event(
+                "error",
+                {
+                    "op": "replay_step",
+                    "error": str(exc),
+                    "trace": traceback.format_exc()[-800:],
+                    "note": "replay cursor held at this moment; press Advance to retry",
+                },
+            )
         finally:
-            _set_busy(hid, None)
+            _release(hid)
 
-    threading.Thread(target=work, daemon=True).start()
+    try:
+        store.log_event(
+            "replay_moment",
+            {"sim_time": batch[0].ts.isoformat(), "events": [e.title for e in batch]},
+        )
+        threading.Thread(target=work, daemon=True).start()
+    except BaseException:  # never leave the slot claimed by a worker that never ran
+        _release(hid)
+        raise
     return {"stepped": True, "sim_time": batch[0].ts.isoformat(), "events": [e.title for e in batch]}
 
 # ---------------------------------------------------------------------------
@@ -268,8 +297,10 @@ def circle_state(circle_id: str) -> dict:
         "circle": json.loads(circle.model_dump_json()),
         "board": board,
         "counts": circles.board_counts(board),
+        "phone_followups": circles.phone_followups(board),
         "report": report,
         "busy": _busy.get(f"circle:{circle_id}"),
+        "error": _circle_errors.get(circle_id),
     }
 
 
@@ -283,26 +314,38 @@ def circle_report(req: CircleReportRequest) -> dict:
     if circle is None:
         raise HTTPException(404, "unknown circle")
     key = f"circle:{req.circle_id}"
-    if _busy.get(key):
+    if not _acquire(key, "coordinator-report"):
         raise HTTPException(409, "report already being composed")
+    _circle_errors.pop(req.circle_id, None)
 
     def work() -> None:
-        _set_busy(key, "coordinator-report")
         try:
             from datetime import UTC, datetime
 
             report = circles.compose_report(circle)
-            _report_path(req.circle_id).write_text(
+            atomic_write_text(
+                _report_path(req.circle_id),
                 json.dumps(
                     {"composed_at": datetime.now(UTC).isoformat(), **json.loads(report.model_dump_json())},
                     ensure_ascii=False,
                     indent=1,
-                )
+                ),
             )
-        except Exception:
-            pass  # visible via missing report; coordinator retries are manual
+        except Exception as exc:
+            # A missing report is indistinguishable from one nobody asked for.
+            # Journal the failure and hand it to the UI instead of swallowing it.
+            _circle_errors[req.circle_id] = str(exc)[:400]
+            circles.log_circle_event(
+                req.circle_id,
+                "error",
+                {"op": "coordinator_report", "error": str(exc), "trace": traceback.format_exc()[-800:]},
+            )
         finally:
-            _set_busy(key, None)
+            _release(key)
 
-    threading.Thread(target=work, daemon=True).start()
+    try:
+        threading.Thread(target=work, daemon=True).start()
+    except BaseException:  # never leave the slot claimed by a worker that never ran
+        _release(key)
+        raise
     return {"started": True}

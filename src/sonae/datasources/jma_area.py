@@ -32,6 +32,8 @@ class JmaArea:
     office_name: str
     class20_code: str  # e.g. "2020111" (Nagano City / Nagano area)
     class20_name: str
+    candidates: tuple[str, ...] = ()  # every class20 area under this municipality
+    ambiguous: bool = False  # True when the home could not be pinned to one of them
 
 
 @lru_cache(maxsize=1)
@@ -73,16 +75,62 @@ def muni_name(muni_code: str) -> tuple[str, str]:
     return table[code]
 
 
-def resolve(muni_code: str) -> JmaArea:
-    """Map a 5-digit municipality code to its JMA office and class20 area."""
+def _name_affinity(area_name: str, muni: str, locality: str) -> int:
+    """How strongly a class20 area name matches a reverse-geocoded locality.
+
+    Class20 names are municipality-prefixed ('長野市鬼無里戸隠'); strip the
+    municipality and compare what is left with the 大字 name of the home
+    ('鬼無里日下野' shares three characters with 鬼無里戸隠, none with 長野).
+    """
+    name = area_name.removeprefix(muni)
+    if not name or not locality:
+        return 0
+    if name in locality or locality in name:
+        return len(name)
+    common = 0
+    for a, b in zip(name, locality, strict=False):
+        if a != b:
+            break
+        common += 1
+    return common
+
+
+def _pick_class20(candidates: list[str], class20s: dict, code5: str, locality: str | None) -> tuple[str, bool]:
+    """Choose the class20 area covering this home; returns (code, ambiguous)."""
+    if len(candidates) == 1:
+        return candidates[0], False
+    try:
+        muni = muni_name(code5)[1]
+    except KeyError:
+        muni = ""
+    scores = {c: _name_affinity(class20s[c]["name"], muni, locality or "") for c in candidates}
+    best = max(scores.values())
+    winners = [c for c in candidates if scores[c] == best]
+    if best >= 2 and len(winners) == 1:
+        return winners[0], False
+    # Nothing decides it. Keep the first sub-area as the primary (it is the
+    # municipality's core area) but say so: silently watching one half of a
+    # split municipality is how a warning misses the home it was issued for.
+    return candidates[0], True
+
+
+def resolve(muni_code: str, locality: str | None = None) -> JmaArea:
+    """Map a 5-digit municipality code to its JMA office and class20 area.
+
+    Some municipalities are split across several class20 areas (Nagano City is
+    長野市長野 + 長野市鬼無里戸隠). `locality` — the 大字 name from the GSI
+    reverse geocoder — decides which one covers the home. When it cannot,
+    `ambiguous` is set and every `candidates` code is reported so callers can
+    watch them all instead of guessing.
+    """
     area = _area_master()
     class20s = area["class20s"]
     code5 = muni_code.zfill(5)
 
-    candidates = [c for c in class20s if c.startswith(code5)]
+    candidates = sorted(c for c in class20s if c.startswith(code5))
     if not candidates:
         raise KeyError(f"no JMA class20 area found for municipality {muni_code}")
-    class20_code = sorted(candidates)[0]  # first sub-area is the municipality's core area
+    class20_code, ambiguous = _pick_class20(candidates, class20s, code5, locality)
     class20 = class20s[class20_code]
 
     # Walk parents: class20 -> class15 -> class10 -> office
@@ -101,4 +149,6 @@ def resolve(muni_code: str) -> JmaArea:
         office_name=office["name"],
         class20_code=class20_code,
         class20_name=class20["name"],
+        candidates=tuple(candidates),
+        ambiguous=ambiguous,
     )

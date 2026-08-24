@@ -10,8 +10,9 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
+from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class HazardType(str, Enum):
@@ -72,11 +73,30 @@ class Household(BaseModel):
     jma_class20_code: str | None = Field(
         default=None, description="JMA class20 (municipality-level) area code, e.g. '2020100'"
     )
+    jma_class20_candidates: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Every class20 area that could cover this home. Populated only when the "
+            "municipality splits into several JMA areas and the home could not be "
+            "pinned to one of them — all of them are then watched."
+        ),
+    )
     members: list[FamilyMember] = Field(default_factory=list)
     home_floors: int | None = Field(default=None, description="Number of floors, for vertical evacuation")
     has_car: bool = True
     pets: list[str] = Field(default_factory=list)
     notes: str | None = None
+
+    @property
+    def watch_area_codes(self) -> list[str]:
+        """Class20 areas whose warnings apply to this home.
+
+        Every candidate when area resolution was ambiguous — watching one area
+        too many costs a redundant alert; watching one too few costs silence.
+        """
+        if self.jma_class20_candidates:
+            return list(self.jma_class20_candidates)
+        return [self.jma_class20_code] if self.jma_class20_code else []
 
 
 # ---------------------------------------------------------------------------
@@ -156,7 +176,14 @@ class TimelinePlan(BaseModel):
     supply_checklist: list[str] = Field(default_factory=list)
     sources: list[Source] = Field(default_factory=list)
     created_at: datetime
-    family_approved: bool = False
+    family_approved: bool = Field(
+        default=False,
+        description=(
+            "Human-in-the-loop sign-off. Set ONLY by agents.onboarding.approve_plan(); "
+            "it is never part of what the Planner is asked to produce, and any value a "
+            "model emits for it is discarded before the plan is stored."
+        ),
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -212,20 +239,58 @@ class NotificationBatch(BaseModel):
 # ---------------------------------------------------------------------------
 
 
+Verdict = Literal["supported", "unsupported", "uncertain"]
+
+
 class ClaimCheck(BaseModel):
     claim: str
     source_quote: str | None = Field(
         default=None, description="Verbatim text from the official source backing the claim"
     )
-    verdict: str = Field(description="'supported' | 'unsupported' | 'uncertain'")
+    verdict: Verdict = Field(description="'supported' | 'unsupported' | 'uncertain'")
+
+    @field_validator("verdict", mode="before")
+    @classmethod
+    def _normalize_verdict(cls, value: object) -> object:
+        """Map free-text verdicts (older stored reports, creative models) onto the
+        three allowed values. Anything unrecognized becomes 'uncertain' — never
+        'supported', so a fuzzy word can't smuggle a claim past the gate."""
+        if not isinstance(value, str):
+            return value
+        v = value.strip().lower()
+        if v in ("supported", "unsupported", "uncertain"):
+            return v
+        if v.startswith("unsupport") or v in ("contradicted", "false", "fail", "failed", "rejected"):
+            return "unsupported"
+        if v.startswith("support") or v in ("ok", "pass", "passed", "true", "verified"):
+            return "supported"
+        return "uncertain"
 
 
 class VerificationReport(BaseModel):
-    approved: bool
+    """A verifier's audit of a draft. Approval is checked against the evidence.
+
+    `approved` used to be whatever boolean the model felt like emitting, while
+    both pipelines gated dispatch on it alone — an empty `checks` list with
+    `"approved": true` waved a draft straight through. Approval is now
+    recomputed on every validation (including reports read back from disk) and
+    the recomputation can only ever WITHHOLD it: a report stands approved only
+    if the verifier said so AND something was actually checked AND nothing came
+    back unsupported. Anything else fails closed.
+    """
+
+    approved: bool = False
     checks: list[ClaimCheck]
     revision_request: str | None = Field(
         default=None, description="If not approved: what must be fixed before sending"
     )
+
+    @model_validator(mode="after")
+    def _derive_approval(self) -> VerificationReport:
+        self.approved = (
+            self.approved and bool(self.checks) and all(c.verdict != "unsupported" for c in self.checks)
+        )
+        return self
 
 
 # ---------------------------------------------------------------------------

@@ -10,6 +10,7 @@ every event carries the raw source URL as its citation.
 
 from __future__ import annotations
 
+from collections.abc import Iterable
 from datetime import UTC, datetime
 
 from sonae.datasources.http import fetch_json
@@ -55,15 +56,30 @@ WARNING_CODES: dict[str, tuple[str, str, str]] = {
 # Cabinet Office alert-level equivalences for JMA information
 # (警戒レベル相当情報). Level 4/5 evacuation orders themselves are issued by
 # municipalities, so from JMA feeds alone we can only assert "equivalent" levels.
-_KIND_TO_LEVEL = {"advisory": 2, "warning": 3, "emergency": 5}
+# "unclassified" is not a JMA category: it is a code this table does not know
+# (JMA adds codes). Ranking it as an advisory quietly under-ranked whatever it
+# actually was, so it is treated as warning-equivalent and labeled as unknown.
+_KIND_TO_LEVEL = {"advisory": 2, "warning": 3, "emergency": 5, "unclassified": 3}
+
+UNCLASSIFIED = "unclassified"
 
 
 def describe_warning_code(code: str) -> tuple[str, str, str]:
-    return WARNING_CODES.get(code, (f"警報コード{code}", f"JMA code {code}", "advisory"))
+    return WARNING_CODES.get(
+        code, (f"未分類コード{code}", f"unclassified JMA code {code}", UNCLASSIFIED)
+    )
 
 
-def fetch_active_warnings(office_code: str, class20_code: str | None = None) -> list[FeedEvent]:
-    """Return active warnings for an office, optionally narrowed to one class20 area."""
+def fetch_active_warnings(
+    office_code: str, class20_code: str | Iterable[str] | None = None
+) -> list[FeedEvent]:
+    """Return active warnings for an office, narrowed to one or more class20 areas.
+
+    Pass every candidate area when the home's area could not be resolved
+    unambiguously (see jma_area.resolve) — filtering to a single guessed area
+    is how a household ends up watched under its neighbors' warnings.
+    """
+    wanted = {class20_code} if isinstance(class20_code, str) else set(class20_code or ())
     url = WARNING_URL.format(office=office_code)
     data = fetch_json(url, max_age_seconds=60)
     reported = _parse_dt(data.get("reportDatetime"))
@@ -73,7 +89,7 @@ def fetch_active_warnings(office_code: str, class20_code: str | None = None) -> 
     for area_type in data.get("areaTypes", []):
         for area in area_type.get("areas", []):
             code = str(area.get("code", ""))
-            if class20_code and code != class20_code:
+            if wanted and code not in wanted:
                 continue
             active = [
                 w for w in area.get("warnings", [])
@@ -87,6 +103,14 @@ def fetch_active_warnings(office_code: str, class20_code: str | None = None) -> 
             level = max((_KIND_TO_LEVEL[k] for _, _, k in names), default=2)
             title_ja = "・".join(n for n, _, _ in names)
             title_en = ", ".join(e for _, e, _ in names)
+            unknown = [en for _, en, k in names if k == UNCLASSIFIED]
+            caveat = (
+                f" UNCLASSIFIED: {', '.join(unknown)} — not in Sonae's code table, "
+                "treated as warning-equivalent (level 3) pending human confirmation; "
+                "the real severity may be higher."
+                if unknown
+                else ""
+            )
             events.append(
                 FeedEvent(
                     ts=reported,
@@ -96,6 +120,7 @@ def fetch_active_warnings(office_code: str, class20_code: str | None = None) -> 
                     body=(
                         f"Active JMA notices for area {code}: {title_en}. "
                         f"Highest equivalence: alert level {level}. Headline: {headline or 'n/a'}"
+                        f"{caveat}"
                     ),
                     source=Source(name="JMA warning feed", url=url, retrieved_at=datetime.now(UTC)),
                 )

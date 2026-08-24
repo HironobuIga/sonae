@@ -62,32 +62,33 @@
   <h1 style="max-width:1560px">Japan asks every household to prepare a personal evacuation timeline.</h1>
   <h2 style="margin-top:30px">マイ・タイムライン — who does what, at which official alert level.</h2>
   <ul class="pts">
-    <li>Read 200-page statutory hazard maps</li>
-    <li>Find which evacuation site covers <b>which</b> hazard — they differ</li>
+    <li>Read the statutory hazard map for <b>your</b> address</li>
+    <li>Find which evacuation site is designated for <b>which</b> hazard — they differ</li>
     <li>Negotiate it with your family, then keep it current</li>
   </ul>
-  <h1 style="margin-top:56px;font-size:52px;color:var(--amber)">Homework assigned to 125 million people.<br>Almost no one has done it.</h1>
+  <h1 style="margin-top:56px;font-size:52px;color:var(--amber)">Homework assigned to every household in Japan.<br>It waits until the river is rising.</h1>
 </section>
 
 <!-- 3: who dies -->
 <section class="slide" data-n="3" style="justify-content:center">
   <div class="kicker">WHO IS AT RISK</div>
-  <div class="big-stat">~80%</div>
-  <h1 style="font-size:50px;margin-top:24px;max-width:1500px">of Japan's flood fatalities are people aged 65 and over.</h1>
+  <div class="big-stat">65–80%</div>
+  <h1 style="font-size:50px;margin-top:24px;max-width:1500px">of those who died in Japan's recent flood disasters were aged 65 or over.</h1>
   <h2 style="margin-top:40px;max-width:1500px;line-height:1.7">The hardest case is the one millions live with:<br>
   an aging parent, alone in the family home, hours away.<br>
   <span class="ja">— 東京の息子は、実家の裏の川の水位を知らない。</span></h2>
+  <div class="foot"><span>2019 East Japan Typhoon ≈65% · July 2020 heavy rain ≈79% — Cabinet Office / MHLW</span><span></span></div>
 </section>
 
 <!-- 4: the night -->
 <section class="slide" data-n="4" style="justify-content:center">
   <div class="kicker">OCTOBER 12, 2019 — TYPHOON HAGIBIS · CHIKUMA RIVER, NAGANO</div>
-  <div class="ts"><span class="time" style="color:var(--amber)">17:30</span>
-    <span class="what">River reaches flood-warning footing (氾濫警戒情報)<small>It is still daylight. Roads are clear.</small></span></div>
+  <div class="ts"><span class="time" style="color:var(--amber)">15:30</span>
+    <span class="what">大雨特別警報 — first ever issued for Nagano Prefecture<small>Sunset is at 17:16. This is the last full-daylight window.</small></span></div>
   <div class="ts"><span class="time" style="color:var(--red)">23:40</span>
-    <span class="what">Official evacuation order (避難指示)<small>Darkness. Driving rain. A 78-year-old walks 3× slower.</small></span></div>
+    <span class="what">Emergency evacuation order (避難指示・緊急)<small>Darkness. Driving rain. Yoshiko's family says her knees triple the walk.</small></span></div>
   <div class="ts"><span class="time" style="color:#ff5a5a">01:08</span>
-    <span class="what">The levee fails at Hoyasu — the district floods to roof height<small>Chronology: Nagano City post-event verification report, pp.24–28</small></span></div>
+    <span class="what">The river overtops the bank at Hoyasu — the district floods to roof height<small>Breach announced 06:00. Chronology: Nagano City verification report, pp.24–28</small></span></div>
   <h1 style="font-size:46px;margin-top:44px;max-width:1600px">The information was public the whole time.<br>
   <span style="color:var(--cyan)">What families lacked was an agent on watch.</span></h1>
 </section>
@@ -99,7 +100,7 @@
     <div class="card" style="border-color:#7e1f10">
       <h3>WHAT HAPPENED</h3>
       <div class="t" style="color:var(--red)">23:40</div>
-      <p>Evacuation order reaches Hoyasu — in darkness, hours after the river was already overtopping upstream.</p>
+      <p>Emergency evacuation order reaches Hoyasu — in darkness, hours after the river was already overtopping upstream.</p>
     </div>
     <div class="card" style="border-color:var(--green)">
       <h3>SONAE'S FAMILY</h3>
@@ -107,24 +108,29 @@
       <p>Verified, personal push at the emergency warning: <b>“すぐに避難してください”</b> — grandmother walking to the flood-safe site in daylight.</p>
     </div>
   </div>
-  <h1 style="font-size:52px;margin-top:52px">Eight hours of margin — grounded in the official record.</h1>
+  <h1 style="font-size:48px;margin-top:52px">8 h 09 m of warning lead — grounded in the official record.<br>
+  <span style="font-size:34px;color:var(--dim)">On the plan's own 2-hour walking allowance, at the shelter by ~17:31 — about six hours before the order.</span></h1>
 </section>
 
 <!-- 6: verifier moment -->
 <section class="slide" data-n="6" style="justify-content:center">
-  <div class="kicker">THE TRUST LAYER — REAL CATCHES FROM OUR FLIGHT RECORDER</div>
-  <div class="mono-log">
-<span class="c"># live run 1 — the Planner invented a plausible phone number</span>
-<span class="bad">verifier: REJECTED</span> — "the number 026-224-5011 cannot be verified; delete it"
+  <div class="kicker">THE TRUST LAYER — QUOTED FROM data/store/aoki/watch.json IN THIS REPO</div>
+  <div class="mono-log" style="font-size:22px;line-height:1.85">
+<span class="c"># Level 2 — the draft told Mika to look up a hotline number</span>
+<span class="bad">verifier attempt 1: REJECTED</span> (11 checks) — <span class="c">unsupported:</span> "Nagano City's disaster hotline phone number"
+   → "The evidence bundle contains no disaster hotline phone number for Nagano City."
+<span class="ok">verifier attempt 2: APPROVED</span> (12 checks)
 
-<span class="c"># the replay's pivotal moment, 15:30 — draft subject over-claimed an order</span>
-<span class="bad">verifier pass 1: REJECTED</span> — subject says 避難指示; no municipal order exists yet
-<span class="ok">verifier pass 2: APPROVED</span> → <span class="k">3 notifications dispatched [verified ✓]</span>
+<span class="c"># the pivotal moment, 15:30 — the draft subject over-claimed an order</span>
+<span class="bad">verifier attempt 1: REJECTED</span> (12 checks) — <span class="c">unsupported:</span> subject "避難指示 大雨 長野市"
+   → "The actual alert issued is 大雨特別警報, not 避難指示 (evacuation order)."
+<span class="ok">verifier attempt 2: APPROVED</span> (13 checks) → <span class="k">3 notifications dispatched [verified ✓]</span>
   </div>
-  <ul class="pts" style="font-size:29px">
+  <ul class="pts" style="font-size:27px;line-height:1.75">
     <li>AI prose fails <b>closed</b> — unverified text is never sent</li>
     <li>The official signal fails <b>open</b> — verbatim relay rather than silence</li>
-    <li>Family approval is the authorization boundary — Sonae never invents an evacuation judgment</li>
+    <li>Family approval is the authorization boundary — Sonae maps official signals onto the plan they
+      signed, and never originates an evacuation judgment of its own</li>
   </ul>
 </section>
 

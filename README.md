@@ -1,9 +1,10 @@
 # Sonae (そなえ) — the agent team that stands watch over your family
 
-> Japan tells every family to prepare a personal evacuation timeline. Almost no one does — it's hours of
-> hazard-map reading, shelter research, and family coordination. **Sonae is a team of Strands agents that
-> does that work in minutes, then stays on watch over official government feeds, and — when the water
-> rises — runs your family's plan, person by person, in each person's language.**
+> Japan tells every family to prepare a personal evacuation timeline. Doing it properly takes hours
+> of hazard-map reading, shelter research, and family coordination — so it stays on the to-do list.
+> **Sonae is a team of Strands agents that does that work in minutes, then stays on watch over
+> official government feeds, and — when the water rises — runs your family's plan, person by person,
+> in each person's language.**
 
 Built for the **AWS Agents for Humans Hackathon** (Good Neighbor track) with the
 [Strands Agents SDK](https://strandsagents.com/) and Japan's government open data.
@@ -13,23 +14,34 @@ Built for the **AWS Agents for Humans Hackathon** (Good Neighbor track) with the
 ![Sonae dashboard during the Typhoon Hagibis replay](docs/screenshots/dashboard-replay.png)
 *Mid-replay, all content agent-generated: the home (amber) sits in the Chikuma River's 10–20 m
 statutory inundation zone; the plan's steps light up as official signals fire; each family member's
-phone receives their verified, cited instructions — Japanese for grandmother, English for her son in
-Tokyo — with safety check-in buttons, and the neighborhood association board on the right.*
+phone receives their instructions, verified before dispatch — Japanese for grandmother, English for
+the son and daughter who live far away — with safety check-in buttons, and the neighborhood
+association board on the right.*
 
 ---
 
 ## The problem
 
 - Japan's Cabinet Office urges every household to prepare a **My-Timeline (マイ・タイムライン)** — a
-  pre-agreed plan of who does what at each official alert level. Making one means reading statutory
-  hazard maps, finding which designated evacuation site covers *which* hazard, and negotiating with your
-  family. It is homework assigned to 125 million people, and almost nobody has done it.
-- **About 80% of flood fatalities in Japan are people aged 65+.** The hardest case is the one millions of
-  adult children live with: an aging parent alone in the family home, hours away.
-- The night of Typhoon Hagibis (October 12, 2019), Nagano City issued its evacuation order for the
-  Chikuma riverside at **23:40 — in darkness and driving rain**. The river had been on flood *warning*
-  footing since **17:30**, while it was still light. People with time to leave didn't know their window
-  was closing. The levee at Hoyasu failed before dawn; the Naganuma district flooded to roof height.
+  pre-agreed plan of who does what at each official alert level. Making one means reading your
+  municipality's statutory hazard-map booklets — a separate map per hazard — then cross-checking the
+  designated-shelter list to find which site is designated for *which* hazard, then negotiating with
+  your family. It is homework assigned to a country of over 120 million people, and the work itself
+  is the barrier.
+- **In Japan's recent flood disasters, 65–80% of those who died were aged 65 or over** — about 65% in
+  the 2019 East Japan Typhoon, about 79% in the July 2020 heavy rain
+  ([Cabinet Office / MHLW material](https://www.mhlw.go.jp/content/12300000/001075647.pdf);
+  [Cabinet Office White Paper on Disaster Management FY2021](https://www.bousai.go.jp/kaigirep/hakusho/r03/honbun/0b_1s_02_01.html)).
+  The hardest case is the one millions of adult children live with: an aging parent alone in the
+  family home, hours away.
+- The night of Typhoon Hagibis (October 12, 2019), Nagano City issued its evacuation order
+  (避難指示・緊急) for the Chikuma riverside at **23:40 — in darkness and driving rain**. The signals had
+  been arriving since the afternoon: a Chikuma flood advisory at **13:40**, then at **15:30** the first
+  **大雨特別警報** ever issued for Nagano Prefecture — nearly two hours before sunset (17:16 JST) — and a
+  river flood *warning* bulletin at **17:30**. People with time to leave didn't know their window was
+  closing. The river began overtopping the levee at Hoyasu at **01:08**, and the city announced the
+  breach — about 70 m wide — at **06:00**; the Naganuma district flooded to roof height. Flooding in
+  Nagano City covered 1,541 ha and damaged more than 4,000 buildings.
   (Chronology: [Nagano City post-event verification report](https://www.city.nagano.nagano.jp/documents/1803/346440.pdf), pp. 24–28.)
 
 Alert apps broadcast the same warning to everyone. **What families lack is not information — it's
@@ -42,8 +54,8 @@ sleeps binding tonight's official signals to that plan.
 |---|---|---|
 | **Prepare** (5 min) | Give it an address and your family's reality ("mother, 78, bad knees, no car"). It reads the statutory hazard maps at that exact point, picks designated evacuation sites *per hazard*, and drafts the family My-Timeline — then an adversarial verifier re-derives every claim from official data before you see it. | Cartographer → Planner → Verifier |
 | **Watch** (always) | It monitors JMA warning feeds for that household's exact warning area. Nothing happening is the normal, boring case — that's the job. | Sentinel |
-| **Act** (the bad night) | When official signals cross the plan's triggers, it activates the right step — not the whole plan — and messages each family member *their* tasks, in *their* language, with citations to the official source. Elderly-first at Level 3, exactly what Level 3 exists for. | Sentinel → Messenger → Verifier |
-| **Recover** | Safety check-ins fan out and consolidate; post-disaster paperwork guidance (罹災証明書, support programs) follows. | Navigator |
+| **Act** (the bad night) | When official signals cross the plan's triggers, it activates the right step — not the whole plan — and messages each family member *their* tasks, in *their* language. Every message is verified against the official events before dispatch, and the family-facing copies carry the source link. Elderly-first at Level 3, exactly what Level 3 exists for. | Sentinel → Messenger → Verifier |
+| **Recover** | Safety check-ins fan out across the household and the neighborhood circle, and a Coordinator consolidates them into a report. *(Roadmap: post-disaster paperwork guidance — 罹災証明書, support programs — is not implemented.)* | Coordinator |
 
 ## Why this is an agent, not an app
 
@@ -52,7 +64,7 @@ Yahoo! Bosai and NERV broadcast alerts — one message, everyone, no memory. Son
 - **holds state**: your family, your plan, what level is already activated, what was already sent;
 - **makes scoped decisions**: "does *this* bulletin, for *this* river, activate *this* step?" — and stands by
   through dozens of irrelevant signals without crying wolf;
-- **acts**: composes and dispatches per-person instructions, in Japanese for grandma, English for her son abroad;
+- **acts**: composes and dispatches per-person instructions, in Japanese for grandma, English for the adult children who live far away;
 - **audits itself**: every claim is checked against official sources before it ships, and every tool call is
   journaled to a per-household flight recorder — the same discipline Japan's post-event verification
   reports apply to municipal decisions, applied to the agents.
@@ -87,7 +99,7 @@ flowchart TB
     F[Feed events<br/>live JMA / scenario replay] --> S[Sentinel<br/>watch officer]
     S -- "activate step N" --> M[Messenger<br/>per-member, per-language]
     M --> V2[Verifier<br/>evidence = the events themselves]
-    V2 -- approved --> D[Dispatch<br/>console / web inbox / LINE]
+    V2 -- approved --> D[Dispatch<br/>console / web inbox / both<br/>LINE: roadmap]
     V2 -- "unverifiable at L3+" --> R[Raw official-text relay<br/>fail-open for the signal,<br/>fail-closed for AI prose]
   end
 
@@ -116,13 +128,24 @@ is verified end-to-end, including a complete onboarding graph run inside the clo
 
 An agent that tells your mother when to leave her home must not hallucinate. Sonae's answer is layered:
 
-1. **No invented judgments.** Sonae never decides *whether* evacuation is warranted. Officials do. Sonae
-   binds a **family-approved** plan to official signals; the approval (human-in-the-loop) happens calmly,
-   in advance, not at 2 a.m.
+1. **No originated judgments.** Sonae maps official signals onto the family's approved plan; it never
+   originates an evacuation judgment of its own. The approval (human-in-the-loop) happens calmly, in
+   advance, not at 2 a.m. **One deviation is encoded as an explicit, reviewable rule rather than
+   improvised:** a 大雨特別警報 is Level-5-equivalent for rainfall, but Sonae pushes the plan's Level 4
+   *"complete the evacuation"* step, because national guidance is to finish horizontal evacuation
+   while routes are still usable; Level 5 ("protect yourself where you are") is reserved for signals
+   that inundation is actually occurring. This is the one place Sonae's mapping departs from a literal
+   reading of the plan's trigger text, and it is a written policy, not a runtime improvisation: it
+   lives in the Sentinel's and Verifier's prompts ([`src/sonae/agents/prompts.py`](src/sonae/agents/prompts.py)),
+   and every time it fires the household journal records which level was activated and on which event.
 2. **Independent re-verification.** The onboarding Verifier holds the same government-data tools and
    re-derives depths, distances, and shelter designations itself before approving the plan. In the watch
    pipeline, drafts are audited against the verbatim official events.
-3. **Citations everywhere.** Every user-facing claim carries its official source.
+3. **Verified before dispatch, cited where a citation helps.** Every dispatched message is verified
+   against the official source before it is sent, and the messages to the remote family members carry
+   that source as a link. The message to the elderly recipient at home is deliberately kept short and
+   actionable — big plain steps, no citation footer. That is a legibility choice about who has to act
+   on it, not a gap in verification: the same Verifier gated it.
 4. **Asymmetric failure.** AI prose fails **closed** (unverified text is never sent). The signal fails
    **open**: if composition can't be verified during a Level 3+ event, Sonae relays the official text
    verbatim rather than staying silent.
@@ -151,7 +174,7 @@ uv sync
 export AWS_PROFILE=your-profile AWS_REGION=us-west-2   # Amazon Bedrock (default)
 # or: export SONAE_MODEL_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-ant-...
 
-# 1. Onboard the demo family (grandmother by the Chikuma River, son in Tokyo)
+# 1. Onboard the demo family (grandmother by the Chikuma River, son and daughter far away)
 uv run sonae onboard examples/aoki_family.json --approve
 
 # 2. Replay the night of Typhoon Hagibis against the plan (official chronology)
@@ -180,11 +203,15 @@ city-specific code.
 
 ## The 2019 counterfactual
 
-Run the replay and watch the timestamps. The official evacuation order came at **23:40**. Sonae's plan —
-generated from the same hazard maps anyone could have read — starts Yoshiko's evacuation at the
-**17:30 flood-warning bulletin (Level 3 equivalent), while it was still daylight**, and has her son
-calling her at 15:30 when the emergency warning is issued. Six hours of margin, reconstructed
-minute-by-minute from the official record. That margin is the product.
+This is a counterfactual reconstructed from the replay, not an observed outcome for a real household.
+Run the replay and watch the timestamps. Nagano City's evacuation order for the riverside districts
+came at **23:40**, in darkness. In the replay, the 大雨特別警報 lands at **15:30** and Sonae's verified
+push goes out at **15:31** — **8 hours 9 minutes of warning lead** before the official order, and the
+last clearly-daylight window of the day (sunset was 17:16 JST). The approved plan allows Yoshiko
+**120 minutes** to walk the 2.6 km to her flood-designated shelter, so on that timeline she is inside
+it around **17:31** — roughly a **6-hour safety margin** ahead of the order that the real residents of
+Hoyasu received. Every timestamp comes from the official record; the plan came from the same hazard
+maps anyone could have read. That margin is the product.
 
 ## Responsible AI
 
