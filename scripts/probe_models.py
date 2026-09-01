@@ -16,6 +16,8 @@ import sys
 import boto3
 from botocore.exceptions import ClientError
 
+# Strongest first. Ids differ in shape between generations — the 4.6 Opus id ends
+# `-v1`, the 4.5 ones carry a date — so each is spelled out rather than generated.
 CANDIDATES = [
     "global.anthropic.claude-opus-5",
     "us.anthropic.claude-opus-5",
@@ -25,6 +27,9 @@ CANDIDATES = [
     "us.anthropic.claude-sonnet-5",
     "global.anthropic.claude-opus-4-8",
     "global.anthropic.claude-opus-4-7",
+    "global.anthropic.claude-opus-4-6-v1",
+    "us.anthropic.claude-opus-4-6-v1",
+    "global.anthropic.claude-opus-4-5-20251101-v1:0",
     "global.anthropic.claude-sonnet-4-6",
     "global.anthropic.claude-sonnet-4-5-20250929-v1:0",
     "global.anthropic.claude-haiku-4-5-20251001-v1:0",
