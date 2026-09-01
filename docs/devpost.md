@@ -5,6 +5,10 @@
 evacuation plan from Japan's official hazard data, monitors government feeds around the clock, and
 when the water rises, runs the plan person-by-person, in each person's language.
 
+**What we built:** six agents on the **Strands Agents SDK** — Cartographer, Planner, Verifier,
+Sentinel, Messenger, Coordinator — orchestrated as a Strands `Graph` with an adversarial
+verification loop, running on Amazon Bedrock and deployed on Amazon Bedrock AgentCore Runtime.
+
 ---
 
 ## Inspiration
@@ -73,8 +77,9 @@ decisions.
   home's coordinates and decode against the official depth legend.
 - **Amazon Bedrock** (Claude Sonnet 4.6) for all agents; **Amazon Bedrock AgentCore Runtime** hosts
   the team in production — deployed with the AgentCore CLI (CDK) as a bring-your-own container, with
-  an EventBridge Scheduler heartbeat making the Sentinel ambient. The same payload-selected
-  entrypoint serves onboarding, watch cycles, and replay.
+  an EventBridge Scheduler heartbeat making the Sentinel ambient (the schedule is paused between
+  demos to avoid idle spend; one command re-enables it). The same payload-selected entrypoint
+  serves onboarding, watch cycles, and replay.
 - **The replay engine** — our demo replays Typhoon Hagibis minute-by-minute from the official
   chronology in Nagano City's disaster-response verification report (pp. 24–28), the MLIT Hokuriku
   damage report, and the JMA Nagano weather report. The scenario file encodes 13 events: 6 of the
@@ -127,6 +132,14 @@ decisions.
   for neighborhood associations (自主防災会) — the paper name-list problem.
 - More feeds: earthquake early warning, river gauge telemetry, L-Alert.
 - Country adapters: the architecture is data-driven — NOAA/NWS + FEMA shelters would port it.
+
+## AI assistance & pre-existing work (disclosure)
+
+All code and content were created during the Submission Period. We used AI coding assistants
+throughout — Claude Code as the primary pair programmer, and OpenAI Codex for adversarial review
+of the code and docs. No pre-existing project code was incorporated; third-party dependencies are
+the standard open-source libraries declared in `pyproject.toml`, and every data source is public
+Japanese government open data, cited inline above.
 
 ## Built with
 

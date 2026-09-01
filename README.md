@@ -166,28 +166,52 @@ through the pipeline and shown to users — relaying caveats is part of relaying
 
 ## Quickstart
 
+**Prerequisites:** Python 3.12+ and [uv](https://docs.astral.sh/uv/getting-started/installation/).
+Nothing else is needed to explore the recorded demo; running the agents yourself additionally needs
+one model provider (below).
+
+### 1. See it running — zero credentials
+
+The repo ships the demo households' full recorded state
+([`data/store/`](data/store/README.md) — the flight-recorder evidence behind every number in this
+README), so the dashboard and tests work straight after cloning, with no AWS account and no API key:
+
 ```bash
 git clone https://github.com/HironobuIga/sonae.git && cd sonae
 uv sync
-
-# Model provider (pick one)
-export AWS_PROFILE=your-profile AWS_REGION=us-west-2   # Amazon Bedrock (default)
-# or: export SONAE_MODEL_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-ant-...
-
-# 1. Onboard the demo family (grandmother by the Chikuma River, son and daughter far away)
-uv run sonae onboard examples/aoki_family.json --approve
-
-# 2. Replay the night of Typhoon Hagibis against the plan (official chronology)
-uv run sonae replay aoki scenarios/hagibis_2019_nagano.json --pause
-
-# 3. Or watch live JMA feeds for the household's real warning area
-uv run sonae watch aoki --interval 300
-
-# Web dashboard (what the demo video shows)
-uv run uvicorn sonae.web.app:app --port 8000   # → http://localhost:8000
+uv run pytest                                  # 37 tests, fully offline (bundled data extracts)
+uv run uvicorn sonae.web.app:app --port 8000   # → http://localhost:8000 — the recorded demo, browsable
 ```
 
-Tests run fully offline against bundled data extracts: `uv run pytest`.
+### 2. Run the agents yourself
+
+Pick one model provider:
+
+```bash
+# Amazon Bedrock (default). Requires model access to Anthropic Claude Sonnet 4.6
+# (Bedrock console → "Model access") — default model global.anthropic.claude-sonnet-4-6,
+# default region us-west-2 (override with SONAE_BEDROCK_MODEL_ID / AWS_REGION).
+export AWS_PROFILE=your-profile
+
+# — or the Anthropic API directly:
+export SONAE_MODEL_PROVIDER=anthropic ANTHROPIC_API_KEY=sk-ant-...
+```
+
+```bash
+# Onboard the demo family (grandmother by the Chikuma River, son and daughter far away).
+# Note: this regenerates the committed demo state for "aoki" — scripts/regen_demo.sh
+# rebuilds everything from scratch if you want it back.
+uv run sonae onboard examples/aoki_family.json --approve
+
+# Replay the night of Typhoon Hagibis against the plan (official chronology)
+uv run sonae replay aoki scenarios/hagibis_2019_nagano.json --pause
+
+# Or watch live JMA feeds for the household's real warning area
+uv run sonae watch aoki --interval 300
+```
+
+Cloud deployment (AgentCore Runtime container + EventBridge/Lambda heartbeat):
+[`deploy/agentcore/README.md`](deploy/agentcore/README.md).
 
 ## Not just one town
 
@@ -219,6 +243,16 @@ See [docs/responsible-ai.md](docs/responsible-ai.md): scope limits (organize & r
 information, never predict or advise beyond it), the verification gate, failure-mode analysis, and why
 family approval is the authorization boundary. Sonae is a preparedness aid, not a replacement for
 official warnings — municipal instructions always take precedence.
+
+## AI assistance & pre-existing work (disclosure)
+
+All code, documentation, and demo assets in this repository were created during the hackathon
+submission period. We used AI coding assistants throughout: **Claude Code** as the primary pair
+programmer, and **OpenAI Codex** for adversarial review passes (which caught real factual errors in
+our docs — see the git history). No pre-existing project code was incorporated. Third-party
+dependencies are the standard open-source libraries declared in [`pyproject.toml`](pyproject.toml);
+all data comes from the public Japanese government sources listed above. Every claim in this README
+and the video was checked against the committed journals in [`data/store/`](data/store/README.md).
 
 ## License
 
