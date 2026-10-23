@@ -10,7 +10,7 @@ dependencies = [
     "fastapi>=0.141.1",
     "httpx>=0.28.1",
     "jinja2>=3.1.6",
-    "pillow>=12.3.0",
+    "pillow>=13.0.0",
     "pydantic>=2.13.4",
     "python-dotenv>=1.2.3",
     "strands-agents>=1.53.0",
@@ -32,6 +32,12 @@ dev = [
     "pytest-asyncio>=0.24.0",
     "ruff>=0.16.4",
 ]
+
+[tool.uv]
+# strands-agents-tools (<= 0.8.10) still caps pillow<13, but the security fixes
+# are only in Pillow 13.0.0 and gsi_hazard decodes fetched map tiles with it.
+# Sonae never imports strands_tools. Drop this once strands-agents/tools#625 ships.
+override-dependencies = ["pillow>=13.0.0"]
 
 [build-system]
 requires = ["hatchling"]
