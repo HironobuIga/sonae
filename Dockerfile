@@ -5,7 +5,15 @@ FROM public.ecr.aws/docker/library/python:3.12-slim
 WORKDIR /app
 
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# requirements.txt pins Pillow 13 (security fixes) via a uv override, but
+# strands-agents-tools <= 0.8.10 still declares pillow<13 and pip has no override.
+# Resolve everything else exactly as before, then add strands-agents-tools without
+# re-resolving it (all of its dependencies are pinned in the file). Go back to a
+# single `pip install -r requirements.txt` once strands-agents/tools#625 ships.
+RUN grep -v '^strands-agents-tools==' requirements.txt > /tmp/requirements-base.txt \
+    && pip install --no-cache-dir -r /tmp/requirements-base.txt \
+    && pip install --no-cache-dir --no-deps "$(grep '^strands-agents-tools==' requirements.txt)" \
+    && rm /tmp/requirements-base.txt
 
 COPY src/ src/
 COPY deploy/agentcore/entrypoint.py deploy/agentcore/entrypoint.py
